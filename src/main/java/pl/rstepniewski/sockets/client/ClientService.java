@@ -1,4 +1,4 @@
-package src.main.java.pl.stepniewski.sockets.client;
+package pl.rstepniewski.sockets.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;

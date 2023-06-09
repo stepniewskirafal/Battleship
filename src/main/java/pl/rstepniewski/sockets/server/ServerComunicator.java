@@ -1,4 +1,6 @@
-package src.main.java.pl.stepniewski.sockets.client;
+package pl.rstepniewski.sockets.server;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Scanner;
 
@@ -9,11 +11,12 @@ import java.util.Scanner;
  * @date : 09.06.2023
  * @project : Battleship
  */
-public class ClientComunicator {
+public class ServerComunicator {
 
-    private final ClientService serverService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ServerService serverService;
 
-    public ClientComunicator(ClientService serverService) {
+    public ServerComunicator(ServerService serverService) {
         this.serverService = serverService;
     }
 

@@ -1,6 +1,6 @@
-package src.main.java.pl.stepniewski.sockets.server;
+package pl.rstepniewski.sockets.server;
 
-import java.io.*;
+import java.io.IOException;
 
 /**
 Created by rafal on 09.06.2023

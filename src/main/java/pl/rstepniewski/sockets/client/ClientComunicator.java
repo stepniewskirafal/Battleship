@@ -1,4 +1,4 @@
-package src.main.java.pl.stepniewski.sockets.server;
+package pl.rstepniewski.sockets.client;
 
 import java.util.Scanner;
 
@@ -9,11 +9,11 @@ import java.util.Scanner;
  * @date : 09.06.2023
  * @project : Battleship
  */
-public class ServerComunicator {
+public class ClientComunicator {
 
-    private final ServerService serverService;
+    private final ClientService serverService;
 
-    public ServerComunicator(ServerService serverService) {
+    public ClientComunicator(ClientService serverService) {
         this.serverService = serverService;
     }
 
