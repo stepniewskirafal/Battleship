@@ -19,8 +19,8 @@ public class ClientService {
     public static final String LOCALHOST = "localhost";
     private final Client client;
     private Socket socket;
-    private PrintWriter printWriter;
-    private BufferedReader bufferedReader;
+    PrintWriter printWriter;
+    BufferedReader bufferedReader;
 
     public ClientService(Client client) {
         this.client = client;

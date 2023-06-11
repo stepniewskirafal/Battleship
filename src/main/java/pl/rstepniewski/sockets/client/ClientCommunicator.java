@@ -2,8 +2,7 @@ package pl.rstepniewski.sockets.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import pl.rstepniewski.sockets.json.Request;
-import pl.rstepniewski.sockets.json.RequestType;
+import pl.rstepniewski.sockets.jsonCommunication.Request;
 
 import java.io.PrintWriter;
 
@@ -16,17 +15,16 @@ import java.io.PrintWriter;
  */
 public class ClientCommunicator {
     private final ClientService serverService;
+    private PrintWriter printWriter;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public ClientCommunicator(ClientService serverService) {
         this.serverService = serverService;
+        printWriter = serverService.getPrintWriter();
     }
 
-    public void startComunication() throws JsonProcessingException {
-        PrintWriter printWriter = serverService.getPrintWriter();
-
-        Request request = new Request(RequestType.GAME_INVITATION.name(), null);
-        String json = objectMapper.writeValueAsString(request);
+    public void sendGameInvitation() throws JsonProcessingException {
+        String json = objectMapper.writeValueAsString(Request.gameInvitation());
         printWriter.println(json);
     }
 }

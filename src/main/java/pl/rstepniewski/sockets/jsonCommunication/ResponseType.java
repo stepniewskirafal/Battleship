@@ -1,4 +1,4 @@
-package pl.rstepniewski.sockets.json;
+package pl.rstepniewski.sockets.jsonCommunication;
 
 public enum ResponseType {
     GAME_INVITATION,

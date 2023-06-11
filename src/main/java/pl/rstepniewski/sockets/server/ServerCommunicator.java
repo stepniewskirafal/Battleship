@@ -1,7 +1,7 @@
 package pl.rstepniewski.sockets.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import pl.rstepniewski.sockets.json.Response;
+import pl.rstepniewski.sockets.jsonCommunication.Response;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,14 +17,16 @@ public class ServerCommunicator {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    private BufferedReader bufferedReader;
     private final ServerService serverService;
 
     public ServerCommunicator(ServerService serverService) {
         this.serverService = serverService;
+        bufferedReader    = serverService.getBufferedReader();
     }
 
     public void startComunication() throws IOException {
-        BufferedReader bufferedReader = serverService.getBufferedReader();
+
 
         String responseJson = bufferedReader.readLine();
 
