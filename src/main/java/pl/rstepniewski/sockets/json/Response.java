@@ -1,5 +1,8 @@
 package pl.rstepniewski.sockets.json;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by rafal on 11.06.2023
  *
@@ -13,7 +16,9 @@ public class Response {
     private String message;
     private Object body;
 
-    public Response(String type, int status, String message, Object body) {
+    @JsonCreator
+    public Response(@JsonProperty("type") String type, @JsonProperty("status") int status,
+                    @JsonProperty("message") String message, @JsonProperty("body") Object body) {
         this.type = type;
         this.status = status;
         this.message = message;
@@ -24,31 +29,15 @@ public class Response {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public int getStatus() {
         return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public Object getBody() {
         return body;
-    }
-
-    public void setBody(Object body) {
-        this.body = body;
     }
 }

@@ -16,8 +16,9 @@ public class Client {
     public static void main(String[] args) throws IOException {
         Client client = new Client();
         ClientService clientService = new ClientService(client);
-        ClientComunicator clientComunicator = new ClientComunicator(clientService);
+        ClientCommunicator clientComunicator = new ClientCommunicator(clientService);
         clientComunicator.startComunication();
+
     }
 
 }

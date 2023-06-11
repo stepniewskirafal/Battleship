@@ -18,8 +18,9 @@ public class ClientService {
     public static final int PORT = 6767;
     public static final String LOCALHOST = "localhost";
     private final Client client;
-    PrintWriter printWriter;
-    BufferedReader bufferedReader;
+    private Socket socket;
+    private PrintWriter printWriter;
+    private BufferedReader bufferedReader;
 
     public ClientService(Client client) {
         this.client = client;
@@ -27,8 +28,8 @@ public class ClientService {
     }
 
     private void startClient() {
-        try ( Socket socket = connectToServer()
-        ) {
+        try{
+            socket = connectToServer();
             startBufferedStreams(socket);
         } catch (IOException e) {
             throw new RuntimeException(e);

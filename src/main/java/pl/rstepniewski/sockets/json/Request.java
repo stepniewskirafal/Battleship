@@ -1,5 +1,8 @@
 package pl.rstepniewski.sockets.json;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by rafal on 11.06.2023
  *
@@ -11,24 +14,9 @@ public class Request {
     private String type;
     private Object body;
 
-    public Request(String type, Object body) {
+    @JsonCreator
+    public Request(@JsonProperty("type") String type, @JsonProperty("body") Object body) {
         this.type = type;
-        this.body = body;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Object getBody() {
-        return body;
-    }
-
-    public void setBody(Object body) {
         this.body = body;
     }
 }

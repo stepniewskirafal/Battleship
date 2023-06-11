@@ -12,7 +12,7 @@ public class Server {
     public static void main(String[] args) throws IOException {
         Server server = new Server();
         ServerService serverService = new ServerService(server);
-        ServerComunicator serverComunicator = new ServerComunicator(serverService);
+        ServerCommunicator serverComunicator = new ServerCommunicator(serverService);
         serverComunicator.startComunication();
     }
 

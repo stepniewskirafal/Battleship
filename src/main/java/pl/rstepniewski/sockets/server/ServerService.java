@@ -17,8 +17,9 @@ import java.net.Socket;
 public class ServerService {
     private static final int PORT = 6767;
     private final Server server;
-    PrintWriter printWriter;
-    BufferedReader bufferedReader;
+    private Socket clientSocket;
+    private PrintWriter printWriter;
+    private BufferedReader bufferedReader;
 
     public ServerService(Server server) {
         this.server = server;
@@ -26,23 +27,22 @@ public class ServerService {
     }
 
     private void startServer(){
-        try (Socket socket = startSocket())
-        {
-            startBufferedStreams(socket);
+        try{
+            startSocket();
+            startBufferedStreams();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private Socket startSocket() throws IOException{
+    private void startSocket() throws IOException{
         ServerSocket serverSocket = new ServerSocket(PORT);
-        Socket clientSocket = serverSocket.accept();
-        return clientSocket;
+        clientSocket = serverSocket.accept();
     }
 
-    private void startBufferedStreams(Socket socket) throws IOException {
-        bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        printWriter = new PrintWriter(socket.getOutputStream(), true);
+    private void startBufferedStreams() throws IOException {
+        bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        printWriter = new PrintWriter(clientSocket.getOutputStream(), true);
     }
 
     public PrintWriter getPrintWriter() {
