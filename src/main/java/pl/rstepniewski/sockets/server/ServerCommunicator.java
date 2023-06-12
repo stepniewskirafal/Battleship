@@ -25,11 +25,11 @@ public class ServerCommunicator {
         bufferedReader    = serverService.getBufferedReader();
     }
 
-    public void startCommunication() throws IOException {
+    public void handleGame() throws IOException {
         String responseJson = bufferedReader.readLine();
 
         Response response = objectMapper.readValue(responseJson, Response.class);
 
-        System.out.println(response.getType());
+        System.out.println(response.type() );
     }
 }

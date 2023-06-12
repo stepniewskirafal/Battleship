@@ -1,5 +1,9 @@
 package pl.rstepniewski.sockets.client;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import pl.rstepniewski.sockets.server.Server;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,6 +25,7 @@ public class ClientService {
     private Socket socket;
     PrintWriter printWriter;
     BufferedReader bufferedReader;
+    private static final Logger logger = LogManager.getLogger(ClientService.class);
 
     public ClientService(Client client) {
         this.client = client;
@@ -31,6 +36,7 @@ public class ClientService {
         try{
             socket = connectToServer();
             startBufferedStreams(socket);
+            logger.info("Client is ready to play");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -39,6 +45,7 @@ public class ClientService {
     private void startBufferedStreams(Socket socket) throws IOException {
         bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         printWriter = new PrintWriter(socket.getOutputStream(), true);
+        logger.info("bufferedReader and printWriter created");
     }
 
     private static Socket connectToServer() {
@@ -50,6 +57,7 @@ public class ClientService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        logger.info("Client connected to the server");
         return socket;
     }
 

@@ -19,7 +19,7 @@ public class Server {
         logger.info("Starting serwer");
         ServerService serverService = new ServerService(server);
         ServerCommunicator serverComunicator = new ServerCommunicator(serverService);
-        serverComunicator.startCommunication();
+        serverComunicator.handleGame();
 
 
     }

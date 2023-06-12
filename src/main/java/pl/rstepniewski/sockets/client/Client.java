@@ -1,8 +1,10 @@
 package pl.rstepniewski.sockets.client;
 
-import java.io.BufferedReader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import pl.rstepniewski.sockets.server.Server;
+
 import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
 Created by rafal on 09.06.2023
@@ -11,13 +13,14 @@ Created by rafal on 09.06.2023
 @project : Battleship
 */
 public class Client {
-    static PrintWriter printWriter;
-    static BufferedReader bufferedReader;
+    private static final Logger logger = LogManager.getLogger(Server.class);
     public static void main(String[] args) throws IOException {
+        logger.info("Starting Battleship application");
         Client client = new Client();
         ClientService clientService = new ClientService(client);
         ClientCommunicator clientComunicator = new ClientCommunicator(clientService);
-        clientComunicator.startCommunication();
+        logger.info("Starting Battleship game");
+        clientComunicator.playGame();
 
     }
 

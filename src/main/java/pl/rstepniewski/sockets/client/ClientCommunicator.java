@@ -25,12 +25,12 @@ public class ClientCommunicator {
     }
 
     public void sendGameInvitation() throws JsonProcessingException {
-        String json = objectMapper.writeValueAsString(Request.gameInvitation());
-        //String json = objectMapper.writeValueAsString(new Request(RequestType.GAME_INVITATION.name(), null));
+        Request request = Request.gameInvitation();
+        String json = objectMapper.writeValueAsString(request);
         printWriter.println(json);
     }
 
-    public void startCommunication() throws JsonProcessingException {
+    public void playGame() throws JsonProcessingException {
         sendGameInvitation();
     }
 }
