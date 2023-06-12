@@ -21,7 +21,5 @@ public class Client {
         ClientCommunicator clientComunicator = new ClientCommunicator(clientService);
         logger.info("Starting Battleship game");
         clientComunicator.playGame();
-
     }
-
 }

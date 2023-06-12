@@ -23,25 +23,32 @@ public record Response(
         return new Response(ResponseType.GAME_INVITATION.name(), 1, "Server is playing the other game.", null);
     }
 
-    public static Response shotStatusHit(ShotType shotType) {
-        return new Response(RequestType.SHOT.name(), 0, null, ShotType.HIT.name());
+    public static Response shotResultHit(ShotType shotType) {
+        return new Response(ResponseType.SHOT.name(), 0, null, ShotType.HIT.name());
     }
 
-    public static Response shotStatusMiss(ShotType shotType) {
-        return new Response(RequestType.SHOT.name(), 0, null, ShotType.MISS.name());
+    public static Response shotResultMiss(ShotType shotType) {
+        return new Response(ResponseType.SHOT.name(), 0, null, ShotType.MISS.name());
     }
 
-    public static Response shotStatusSinking(ShotType shotType) {
-        return new Response(RequestType.SHOT.name(), 0, null, ShotType.SINKING.name());
+    public static Response shotResultSinking(ShotType shotType) {
+        return new Response(ResponseType.SHOT.name(), 0, null, ShotType.SINKING.name());
     }
 
-    public static Response shotStatusUnknown(ShotType shotType) {
-        return new Response(RequestType.SHOT.name(), 0, "The shot is not within the boundaries of the board.", null);
+    public static Response shotResultUnknown(ShotType shotType) {
+        return new Response(ResponseType.SHOT.name(), 0, "The shot is not within the boundaries of the board.", null);
     }
 
-    public static Response shotServer(Shot shot) {
-        return new Response(RequestType.SHOT_REQUEST.name(), 0, null, shot);
+    public static Response shot(Shot shot) {
+        return new Response(ResponseType.SHOT_REQUEST.name(), 0, null, shot);
     }
 
-    // Gettery są automatycznie generowane przez rekord
+    public static Response acceptShotResult() {
+        return new Response(ResponseType.RESULT.name(), 0, null, null);
+    }
+
+    public static Response serverStatus(int errorNumber) {
+        return new Response(ResponseType.UNNOWN.name(), errorNumber, null, null);
+    }
+
 }
