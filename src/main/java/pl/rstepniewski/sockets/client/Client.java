@@ -17,7 +17,7 @@ public class Client {
         Client client = new Client();
         ClientService clientService = new ClientService(client);
         ClientCommunicator clientComunicator = new ClientCommunicator(clientService);
-        clientComunicator.startComunication();
+        clientComunicator.startCommunication();
 
     }
 

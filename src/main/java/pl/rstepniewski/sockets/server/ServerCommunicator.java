@@ -25,9 +25,7 @@ public class ServerCommunicator {
         bufferedReader    = serverService.getBufferedReader();
     }
 
-    public void startComunication() throws IOException {
-
-
+    public void startCommunication() throws IOException {
         String responseJson = bufferedReader.readLine();
 
         Response response = objectMapper.readValue(responseJson, Response.class);
