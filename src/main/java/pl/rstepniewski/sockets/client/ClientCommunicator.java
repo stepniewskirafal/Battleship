@@ -2,10 +2,13 @@ package pl.rstepniewski.sockets.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import pl.rstepniewski.sockets.game.ShipPosition;
 import pl.rstepniewski.sockets.jsonCommunication.Request;
 import pl.rstepniewski.sockets.jsonCommunication.RequestType;
 
 import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by rafal on 09.06.2023
@@ -25,7 +28,10 @@ public class ClientCommunicator {
     }
 
     public void sendGameInvitation() throws JsonProcessingException {
-        Request request = Request.gameInvitation();
+        Request request = Request.shipsArrangement(new ShipPosition("qweq",
+                new String[]{"3", "3"},
+                new String[]{"2", "2", "2"},
+                new String[]{"1", "1", "1", "1"}));
         String json = objectMapper.writeValueAsString(request);
         printWriter.println(json);
     }
