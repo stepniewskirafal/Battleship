@@ -2,7 +2,7 @@ package pl.rstepniewski.sockets.jsonCommunication;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import pl.rstepniewski.sockets.game.Shot;
+import pl.rstepniewski.sockets.game.Point;
 import pl.rstepniewski.sockets.game.ShotType;
 
 public record Response(
@@ -39,7 +39,7 @@ public record Response(
         return new Response(ResponseType.SHOT.name(), 0, "The shot is not within the boundaries of the board.", null);
     }
 
-    public static Response shot(Shot shot) {
+    public static Response shot(Point shot) {
         return new Response(ResponseType.SHOT_REQUEST.name(), 0, null, shot);
     }
 

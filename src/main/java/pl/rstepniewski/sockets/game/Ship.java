@@ -1,6 +1,5 @@
 package pl.rstepniewski.sockets.game;
 
-import java.awt.*;
 import java.util.List;
 
 /**

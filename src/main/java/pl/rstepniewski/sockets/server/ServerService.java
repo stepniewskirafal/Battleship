@@ -18,6 +18,7 @@ public class ServerService {
     private static final int PORT = 6767;
     private final Server server;
     private Socket clientSocket;
+    ServerSocket serverSocket;
     private PrintWriter printWriter;
     private BufferedReader bufferedReader;
 
@@ -36,7 +37,7 @@ public class ServerService {
     }
 
     private void startSocket() throws IOException{
-        ServerSocket serverSocket = new ServerSocket(PORT);
+        serverSocket = new ServerSocket(PORT);
         clientSocket = serverSocket.accept();
     }
 

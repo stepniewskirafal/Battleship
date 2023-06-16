@@ -13,21 +13,19 @@ import java.util.stream.IntStream;
  * @project : Battleship
  */
 public class Board {
-
-    private final ShipPosition shipPosition;
     private static List<List<BoardCellStatus>> board = new ArrayList<>();
 
-
-    Board(ShipPosition shipPosition) {
-        this.shipPosition = shipPosition;
-        initiateBoard();
-    }
-
-    public void initiateBoard(){ // przpisz z main
+    public Board(){
         markEmptyPosition();
-        markShipPosition();
     }
 
+    private void markEmptyPosition() {
+        board = IntStream.range(0, 10)
+                .mapToObj(i -> IntStream.range(0, 10)
+                        .mapToObj(j -> BoardCellStatus.EMPTY)
+                        .collect(Collectors.toList()))
+                .collect(Collectors.toList());
+    }
 
     public static void printBoard(List<List<BoardCellStatus>> board) {
         System.out.println("  1 2 3 4 5 6 7 8 9 10");
@@ -58,19 +56,41 @@ public class Board {
     }
 
 
-    private static void markEmptyPosition() {
-        board = IntStream.range(0, 10)
-                .mapToObj(i -> IntStream.range(0, 10)
-                        .mapToObj(j -> BoardCellStatus.EMPTY)
-                        .collect(Collectors.toList()))
-                .collect(Collectors.toList());
+
+
+    static void markShipPosition(ShipPosition shipPosition) {
+
+        shipPosition.ships()
+                .stream()
+                .map( x -> x.pozycja() )
+                .forEach(System.out::println);
+/*                .map( x-> x. )
+                .forEach( {
+                        int
+                        x-> board.get((int) x. x()  ).set((int) x.getY(), BoardCellStatus.SHIP)
+                }  );
+
+
+        x-> board.get((int) x.get().x()).set((int) x.getY(), BoardCellStatus.SHIP)*/
     }
 
-    private static void markShipPosition() {
+    public static ShipPosition convertShipsPosition(String[] shipCoordinates) {
+        List<Point> pozycja = new ArrayList<>();
+        List<Ship>  ships = new ArrayList<>();
+        for (String shipCoordinate : shipCoordinates) {
+            pozycja.clear();
+            Point pointStart = new Point(shipCoordinate.substring(0,1));
+            Point pointEnd = new Point(shipCoordinate.substring(2,3));
+
+            for (int x = pointStart.x(); x <= pointEnd.x(); x++) {
+                for (int y = pointStart.y(); y <= pointEnd.y(); y++) {
+                    pozycja.add(new Point(x, y));
+                }
+            }
+            ships.add(new Ship(pozycja, pozycja.size()));
+        }
+
+        return new ShipPosition(ships);
     }
 
-/*    public static void main(String[] args) {
-        markEmptyPosition();
-        printBoard(board);
-    }*/
 }

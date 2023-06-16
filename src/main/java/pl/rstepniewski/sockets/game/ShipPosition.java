@@ -1,3 +1,5 @@
 package pl.rstepniewski.sockets.game;
 
-public record ShipPosition(String four, String[] three, String[] two, String[] one) {}
+import java.util.List;
+
+public record ShipPosition(List<Ship> ships) {}
