@@ -1,5 +1,9 @@
 package pl.rstepniewski.sockets.game;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by rafal on 16.06.2023
  *
@@ -26,63 +30,67 @@ public class GameController {
     public void runGame(){
         userInterface.printProperty("game.start");
 
-        String[] shipCoordinates = getShipCoordinatesFromUser();
-        ShipPosition shipPosition = Board.convertShipsPosition(shipCoordinates);
-        Board.markShipPosition(shipPosition);
+        List<Ship> shipCoordinatesFromUser = getShipCoordinatesFromUser();
+        board.markShipPosition(shipCoordinatesFromUser);
+        board.printBoard();
     }
 
-    private String[] getShipCoordinatesFromUser() {
-
-        String[] shipCoordinates = new String[NUMBER_OF_ALL_SHIPS];
-        String shipTempCoordinates;
+    private List<Ship> getShipCoordinatesFromUser() {
+        List<Ship> shipList = new ArrayList<>();
         int shipCounter = 0;
 
-        for(int i=0; i<NUMBER_OF_ALL_SHIPS; i++){
-
+            userInterface.printProperty("ship.oneMast.desc");
             while(shipCounter < NUMBER_OF_1_MASTE_SHIPS){
-                userInterface.printProperty("ship.oneMast.bow.coordinates");
-                shipTempCoordinates = userInterface.readText();
-                userInterface.printProperty("ship.oneMast.stern.coordinates");
-                shipTempCoordinates += userInterface.readText();
-                shipCoordinates[i] = shipTempCoordinates;
-                shipTempCoordinates = "";
+                userInterface.printProperty("ship.oneMast.coordinates");
+                userInterface.printText("  -one mast ship nr." + (shipCounter + 1) );
+                Point point = new Point(userInterface.readText());
+                createShipAndAddToList(shipList, point, point);
                 shipCounter++;
             }
            /* shipCounter=0;
+            userInterface.printProperty("ship.twoMast.desc");
             while(shipCounter < NUMBER_OF_2_MASTE_SHIPS){
                 userInterface.printProperty("ship.twoMast.bow.coordinates");
-                shipTempCoordinates = userInterface.readText();
+                userInterface.printText("  -two mast ship nr." + (shipCounter + 1) );
+                Point pointBow = new Point(userInterface.readText());
                 userInterface.printProperty("ship.twoMast.stern.coordinates");
-                shipTempCoordinates += userInterface.readText();
-                shipCoordinates[i] = shipTempCoordinates;
-                shipTempCoordinates = "";
+                userInterface.printText("  -two mast ship nr." + (shipCounter + 1) );
+                Point pointStern = new Point(userInterface.readText());
+                createShipAndAddToList(shipList, pointBow, pointStern);
                 shipCounter++;
             }
             shipCounter=0;
+            userInterface.printProperty("ship.treeMast.desc");
             while(shipCounter < NUMBER_OF_3_MASTE_SHIPS){
                 userInterface.printProperty("ship.treeMast.bow.coordinates");
-                shipTempCoordinates = userInterface.readText();
+                userInterface.printText("  -tree mast ship nr." + (shipCounter + 1) );
+                Point pointBow = new Point(userInterface.readText());
                 userInterface.printProperty("ship.treeMast.stern.coordinates");
-                shipTempCoordinates += userInterface.readText();
-                shipCoordinates[i] = shipTempCoordinates;
-                shipTempCoordinates = "";
+                userInterface.printText("  -tree mast ship nr." + (shipCounter + 1) );
+                Point pointStern = new Point(userInterface.readText());
+                createShipAndAddToList(shipList, pointBow, pointStern);
                 shipCounter++;
             }
             shipCounter=0;
+            userInterface.printProperty("ship.fourMast.desc");
             while(shipCounter < NUMBER_OF_4_MASTE_SHIPS){
                 userInterface.printProperty("ship.fourMast.bow.coordinates");
-                shipTempCoordinates = userInterface.readText();
+                userInterface.printText("  -four mast ship nr." + (shipCounter + 1) );
+                Point pointBow = new Point(userInterface.readText());
                 userInterface.printProperty("ship.fourMast.stern.coordinates");
-                shipTempCoordinates += userInterface.readText();
-                shipCoordinates[i] = shipTempCoordinates;
-                shipTempCoordinates = "";
+                userInterface.printText("  -four mast ship nr." + (shipCounter + 1) );
+                Point pointStern = new Point(userInterface.readText());
+                createShipAndAddToList(shipList, pointBow, pointStern);
                 shipCounter++;
             }*/
-        }
-        return shipCoordinates;
+
+        return shipList;
     }
 
-
+    private static void createShipAndAddToList(List<Ship> shipList, Point pointBow, Point pointStern) {
+        ArrayList<Point> points = new ArrayList<>(Arrays.asList(pointBow, pointStern));
+        shipList.add( new Ship(points) );
+    }
 
 
 }

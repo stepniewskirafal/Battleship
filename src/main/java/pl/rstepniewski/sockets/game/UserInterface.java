@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class UserInterface {
     private static final Scanner scanner = new Scanner(System.in);
 
-    private UserInterface() {
+    public UserInterface() {
     }
 
     public static void printText(String string) {

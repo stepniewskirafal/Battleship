@@ -3,8 +3,10 @@ package pl.rstepniewski.sockets.jsonCommunication;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import pl.rstepniewski.sockets.game.Point;
-import pl.rstepniewski.sockets.game.ShipPosition;
+import pl.rstepniewski.sockets.game.Ship;
 import pl.rstepniewski.sockets.game.ShotType;
+
+import java.util.List;
 
 public record Request(
         @JsonProperty("type") String type,
@@ -38,7 +40,7 @@ public record Request(
         return new Request(RequestType.RESULT.name(), ShotType.SINKING.name());
     }
 
-    public static Request shipsArrangement(ShipPosition shipPosition) {
+    public static Request shipsArrangement(List<Ship> shipPosition) {
         return new Request(RequestType.BOARD.name(), shipPosition);
     }
 }

@@ -20,8 +20,6 @@ public class Server {
         ServerService serverService = new ServerService(server);
         ServerCommunicator serverComunicator = new ServerCommunicator(serverService);
         serverComunicator.handleGame();
-
-
     }
 
 }

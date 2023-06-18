@@ -3,6 +3,7 @@ package pl.rstepniewski.sockets.server;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import pl.rstepniewski.sockets.jsonCommunication.Request;
 import pl.rstepniewski.sockets.jsonCommunication.Response;
 import pl.rstepniewski.sockets.jsonCommunication.ResponseType;
 
@@ -36,16 +37,16 @@ public class ServerCommunicator {
 
         String responseJson = bufferedReader.readLine();
 
-        Response response = objectMapper.readValue(responseJson, Response.class);
+        Request response = objectMapper.readValue(responseJson, Request.class);
         logger.info("Request received from client. Request type: " + response.type());
         if(response.type().equals(ResponseType.GAME_INVITATION.name())){
             logger.info("Server accepted game invitation");
-            printWriter.println(new Response(ResponseType.GAME_INVITATION.name(), 0, null, null ));
+            String gameInvitationPositiveResponse = objectMapper.writeValueAsString(new Response(ResponseType.GAME_INVITATION.name(), 0, null, null));
+            printWriter.println(gameInvitationPositiveResponse);
         }else {
             logger.info("Server decline game invitation");
-            printWriter.println(new Response(ResponseType.GAME_INVITATION.name(), 1, "Server is playing the other game.", null ));
+            String gameInvitationNegativeResponse = objectMapper.writeValueAsString(new Response(ResponseType.GAME_INVITATION.name(), 1, "Server is playing the other game.", null ));
+            printWriter.println(gameInvitationNegativeResponse);
         }
-
-
     }
 }

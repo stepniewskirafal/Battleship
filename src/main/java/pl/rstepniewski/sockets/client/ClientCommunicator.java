@@ -25,9 +25,7 @@ public class ClientCommunicator {
     private final ClientService serverService;
     private PrintWriter printWriter;
     private BufferedReader bufferedReader;
-    private UserInterface userInterface;
-    private Board board;
-    GameController gameController = new GameController(userInterface, board);
+    GameController gameController = new GameController(new UserInterface(), new Board());
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
