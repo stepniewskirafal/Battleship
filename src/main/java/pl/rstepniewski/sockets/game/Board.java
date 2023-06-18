@@ -29,11 +29,11 @@ public class Board {
     }
 
     public void printBoard() {
-        System.out.println("  A B C D E F G H I J");
-        AtomicInteger rowNumber = new AtomicInteger(1);
+        System.out.println("  1 2 3 4 5 6 7 8 9 10");
+        AtomicInteger rowNumber = new AtomicInteger();
         List<String> output = board.stream()
                 .map(rowList -> {
-                    StringBuilder builder = new StringBuilder(rowNumber.getAndIncrement() + " ");
+                    StringBuilder builder = new StringBuilder(Character.toString((char) (rowNumber.getAndIncrement() + 'A')) + " ");
                     return builder.append(
                             rowList.stream()
                                     .map(cell -> {
