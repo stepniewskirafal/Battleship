@@ -1,5 +1,6 @@
 package pl.rstepniewski.sockets.game;
 
+import java.util.ArrayList;
 import java.util.List;
 /**
  * Created by rafal on 16.06.2023
@@ -10,31 +11,32 @@ import java.util.List;
  */
 public class Ship {
     private List<Point> position;
-    private int length;
 
     public Ship(List<Point> pozycja) {
         this.position = pozycja;
-        this.length = pozycja.size();
     }
-
-    // Gettery dla pól pozycja i dlugosc
 
     public List<Point> getPosition() {
         return position;
     }
 
-    public int getLength() {
-        return length;
+    public static int getLength(ArrayList<Point> newShipPoints) {
+        Point p1 = newShipPoints.get(0);
+        Point p2 = newShipPoints.get(1);
+
+        double dx = p2.x() - p1.x();
+        double dy = p2.y() - p1.y();
+
+        return (int) (Math.sqrt(dx * dx + dy * dy) + 1);
     }
 
     public boolean isNeighbour(List<Point> newShipPosition){
-        for(int i=0; i<newShipPosition.size(); i++){
-            for(int j=0; j<position.size(); j++){
-                if( position.get(j).x() == newShipPosition.get(j).x() && position.get(j).y() == newShipPosition.get(j).y() -1 ||
-                    position.get(j).x() == newShipPosition.get(j).x() && position.get(j).y() == newShipPosition.get(j).y() +1 ||
-
-                    position.get(j).y() == newShipPosition.get(j).y() && position.get(j).x() == newShipPosition.get(j).x() -1 ||
-                    position.get(j).y() == newShipPosition.get(j).y() && position.get(j).x() == newShipPosition.get(j).x() +1 ){
+        for(Point newPoint: newShipPosition){
+            for(Point currentPoint: position){
+                if(( currentPoint.x() == newPoint.x() && currentPoint.y() == newPoint.y() -1 ) ||
+                        ( currentPoint.x() == newPoint.x() && currentPoint.y() == newPoint.y() +1 ) ||
+                        ( currentPoint.y() == newPoint.y() && currentPoint.x() == newPoint.x() -1 ) ||
+                        ( currentPoint.y() == newPoint.y() && currentPoint.x() == newPoint.x() +1 )){
                     return true;
                 }
             }
