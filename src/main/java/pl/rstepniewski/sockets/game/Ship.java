@@ -31,12 +31,15 @@ public class Ship {
     }
 
     public boolean isNeighbour(List<Point> newShipPosition){
-        for(Point newPoint: newShipPosition){
-            for(Point currentPoint: position){
-                if(( currentPoint.x() == newPoint.x() && currentPoint.y() == newPoint.y() -1 ) ||
-                        ( currentPoint.x() == newPoint.x() && currentPoint.y() == newPoint.y() +1 ) ||
-                        ( currentPoint.y() == newPoint.y() && currentPoint.x() == newPoint.x() -1 ) ||
-                        ( currentPoint.y() == newPoint.y() && currentPoint.x() == newPoint.x() +1 )){
+        for(int i=0; i<newShipPosition.size(); i++){
+            for(int j=0; j<position.size(); j++){
+                if(     position.get(j).x() == newShipPosition.get(i).x() && position.get(j).y() == newShipPosition.get(i).y()    ||
+                        position.get(j).x() == newShipPosition.get(i).x() && position.get(j).y() == newShipPosition.get(i).y() -1 ||
+                        position.get(j).x() == newShipPosition.get(i).x() && position.get(j).y() == newShipPosition.get(i).y() +1 ||
+
+                        position.get(j).y() == newShipPosition.get(i).y() && position.get(j).x() == newShipPosition.get(i).x()    ||
+                        position.get(j).y() == newShipPosition.get(i).y() && position.get(j).x() == newShipPosition.get(i).x() -1 ||
+                        position.get(j).y() == newShipPosition.get(i).y() && position.get(j).x() == newShipPosition.get(i).x() +1 ){
                     return true;
                 }
             }

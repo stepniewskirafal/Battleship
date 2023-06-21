@@ -18,6 +18,7 @@ public class GameController {
     private final int NUMBER_OF_2_MASTE_SHIPS = 3;
     private final int NUMBER_OF_3_MASTE_SHIPS = 2;
     private final int NUMBER_OF_4_MASTE_SHIPS = 1;
+    private final int LENGTH_OF_1_MASTE_SHIPS = 1;
     private final int LENGTH_OF_2_MASTE_SHIPS = 2;
     private final int LENGTH_OF_3_MASTE_SHIPS = 3;
     private final int LENGTH_OF_4_MASTE_SHIPS = 4;
@@ -38,75 +39,118 @@ public class GameController {
         board.printBoard();
     }
 
-    private List<Ship> getShipCoordinatesFromUser() {
+
+    private List<Ship> getShipCoordinatesFromUser(){
+        List<Ship> allShipsFromUser = new ArrayList<>();
+
+        userInterface.printProperty("ship.oneMast.desc");
+        allShipsFromUser.addAll(getCoordinatesForOneMastShips());
+
+        userInterface.printProperty("ship.twoMast.desc");
+        allShipsFromUser.addAll(getCoordinatesForTwoMastShips());
+
+        userInterface.printProperty("ship.treeMast.desc");
+        allShipsFromUser.addAll(getCoordinatesForThreeMastShips());
+
+        userInterface.printProperty("ship.fourMast.desc");
+        allShipsFromUser.addAll(getCoordinatesForFourMastShips());
+
+        return allShipsFromUser;
+    }
+
+    private List<Ship> getCoordinatesForOneMastShips(){
         List<Ship> shipList = new ArrayList<>();
         int shipCounter = 0;
 
-            userInterface.printProperty("ship.oneMast.desc");
-            while(shipCounter < NUMBER_OF_1_MASTE_SHIPS){
-                userInterface.printProperty("ship.oneMast.coordinates");
-                userInterface.printText("  -one mast ship nr." + (shipCounter + 1) );
-                Point point = new Point(userInterface.readText());
-                ArrayList<Point> points = new ArrayList<>(Arrays.asList(point, point));
-                if(!checkIfCoordinatesCorrect(shipList, points)){
-                    createShipAndAddToList(shipList, points);
+        while(shipCounter < NUMBER_OF_1_MASTE_SHIPS){
+            userInterface.printProperty("ship.oneMast.coordinates");
+            userInterface.printText("-onemastshipnr."+(shipCounter+1));
+            Point point=new Point(userInterface.readText());
+            ArrayList<Point> newShipPoints = createListOfShipPoints(point, point);
+
+            if(validateCoordinates(shipList, newShipPoints, LENGTH_OF_1_MASTE_SHIPS)){
+                    createShipAndAddToList(shipList,newShipPoints);
                     shipCounter++;
-                }
             }
-            shipCounter=0;                                                    // pobranie koordynat do funckji i sprawdzaj czy zakres liczby i litery sie zgadza!!!
-            userInterface.printProperty("ship.twoMast.desc");
-            while(shipCounter < NUMBER_OF_2_MASTE_SHIPS){
-                userInterface.printProperty("ship.twoMast.bow.coordinates");
-                userInterface.printText("  -two mast ship nr." + (shipCounter + 1) );
-                Point pointBow = new Point(userInterface.readText());
-                userInterface.printProperty("ship.twoMast.stern.coordinates");
-                userInterface.printText("  -two mast ship nr." + (shipCounter + 1) );
-                Point pointStern = new Point(userInterface.readText());
-                ArrayList<Point> newShipPoints = new ArrayList<>(Arrays.asList(pointBow, pointStern));
-                if(checkIfShipLengthIsCorrect(newShipPoints, LENGTH_OF_2_MASTE_SHIPS )) {
-                    if (!checkIfCoordinatesCorrect(shipList, newShipPoints)) {
-                        createShipAndAddToList(shipList, newShipPoints);
-                        shipCounter++;
-                    }
-                }
-            }
-            shipCounter=0;
-            userInterface.printProperty("ship.treeMast.desc");
-            while(shipCounter < NUMBER_OF_3_MASTE_SHIPS){
-                userInterface.printProperty("ship.treeMast.bow.coordinates");
-                userInterface.printText("  -tree mast ship nr." + (shipCounter + 1) );
-                Point pointBow = new Point(userInterface.readText());
-                userInterface.printProperty("ship.treeMast.stern.coordinates");
-                userInterface.printText("  -tree mast ship nr." + (shipCounter + 1) );
-                Point pointStern = new Point(userInterface.readText());
-                ArrayList<Point> newShipPoints = new ArrayList<>(Arrays.asList(pointBow, pointStern));
-                newShipPoints = fillGaps(newShipPoints);
-                if(checkIfShipLengthIsCorrect(newShipPoints, LENGTH_OF_3_MASTE_SHIPS )) {
-                    if (!checkIfCoordinatesCorrect(shipList, newShipPoints)) {
-                        createShipAndAddToList(shipList, newShipPoints);
-                        shipCounter++;
-                    }
-                }
-            }
-            shipCounter=0;
-            userInterface.printProperty("ship.fourMast.desc");
-            while(shipCounter < NUMBER_OF_4_MASTE_SHIPS){
-                userInterface.printProperty("ship.fourMast.bow.coordinates");
-                userInterface.printText("  -four mast ship nr." + (shipCounter + 1) );
-                Point pointBow = new Point(userInterface.readText());
-                userInterface.printProperty("ship.fourMast.stern.coordinates");
-                userInterface.printText("  -four mast ship nr." + (shipCounter + 1) );
-                Point pointStern = new Point(userInterface.readText());
-                ArrayList<Point> newShipPoints = new ArrayList<>(Arrays.asList(pointBow, pointStern));
-                newShipPoints = fillGaps(newShipPoints);
-                if(checkIfShipLengthIsCorrect(newShipPoints, LENGTH_OF_4_MASTE_SHIPS )) {
-                    if (!checkIfCoordinatesCorrect(shipList, newShipPoints)) {
-                        createShipAndAddToList(shipList, newShipPoints);
-                        shipCounter++;
-                    }
-                }
-            }
+        }
         return shipList;
+    }
+
+    private boolean validateCoordinates(List<Ship> shipList, ArrayList<Point> newShipPoints, int shipLength) {
+        return checkIfShipLengthIsCorrect(newShipPoints, shipLength) &&
+                !checkIfCoordinatesCorrect(shipList, newShipPoints);
+    }
+
+    private List<Ship> getCoordinatesForTwoMastShips(){
+        List<Ship> shipList = new ArrayList<>();
+        int shipCounter = 0;
+
+        while(shipCounter < NUMBER_OF_2_MASTE_SHIPS){
+            userInterface.printProperty("ship.twoMast.bow.coordinates");
+            userInterface.printText("-twomastshipnr."+(shipCounter+1));
+            Point pointBow=new Point(userInterface.readText());
+            userInterface.printProperty("ship.twoMast.stern.coordinates");
+            userInterface.printText("-twomastshipnr."+(shipCounter+1));
+            Point pointStern=new Point(userInterface.readText());
+            ArrayList<Point> newShipPoints = createListOfShipPoints(pointBow, pointStern);
+
+            if(validateCoordinates(shipList, newShipPoints, LENGTH_OF_2_MASTE_SHIPS)){
+                createShipAndAddToList(shipList,newShipPoints);
+                shipCounter++;
+            }
+        }
+
+        return shipList;
+    }
+
+    private List<Ship> getCoordinatesForThreeMastShips(){
+        List<Ship> shipList = new ArrayList<>();
+        int shipCounter = 0;
+
+        while(shipCounter < NUMBER_OF_3_MASTE_SHIPS){
+            userInterface.printProperty("ship.treeMast.bow.coordinates");
+            userInterface.printText("-treemastshipnr."+(shipCounter+1));
+            Point pointBow=new Point(userInterface.readText());
+            userInterface.printProperty("ship.treeMast.stern.coordinates");
+            userInterface.printText("-treemastshipnr."+(shipCounter+1));
+            Point pointStern=new Point(userInterface.readText());
+            ArrayList<Point> newShipPoints = createListOfShipPoints(pointBow, pointStern);
+
+            if(validateCoordinates(shipList, newShipPoints, LENGTH_OF_3_MASTE_SHIPS)){
+                createShipAndAddToList(shipList,newShipPoints);
+                shipCounter++;
+            }
+        }
+
+        return shipList;
+    }
+
+    private List<Ship> getCoordinatesForFourMastShips(){
+        List<Ship> shipList = new ArrayList<>();
+        int shipCounter = 0;
+
+        while(shipCounter < NUMBER_OF_4_MASTE_SHIPS){
+            userInterface.printProperty("ship.fourMast.bow.coordinates");
+            userInterface.printText("-fourmastshipnr."+(shipCounter+1));
+            Point pointBow=new Point(userInterface.readText());
+            userInterface.printProperty("ship.fourMast.stern.coordinates");
+            userInterface.printText("-fourmastshipnr."+(shipCounter+1));
+            Point pointStern=new Point(userInterface.readText());
+            ArrayList<Point> newShipPoints = createListOfShipPoints(pointBow, pointStern);
+
+            if(validateCoordinates(shipList, newShipPoints, LENGTH_OF_4_MASTE_SHIPS)){
+                createShipAndAddToList(shipList,newShipPoints);
+                shipCounter++;
+            }
+        }
+
+        return shipList;
+    }
+
+    private ArrayList<Point> createListOfShipPoints(Point pointBow, Point pointStern) {
+        ArrayList<Point> newShipPoints=new ArrayList<>(Arrays.asList(pointBow, pointStern));
+        newShipPoints=fillGaps(newShipPoints);
+        return newShipPoints;
     }
 
     private ArrayList<Point> fillGaps(ArrayList<Point> newShipPoints) {
