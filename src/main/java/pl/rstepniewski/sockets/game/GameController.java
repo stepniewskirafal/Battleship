@@ -44,8 +44,10 @@ public class GameController {
                 userInterface.printProperty("ship.oneMast.coordinates");
                 userInterface.printText("  -one mast ship nr." + (shipCounter + 1) );
                 Point point = new Point(userInterface.readText());
-                createShipAndAddToList(shipList, point, point);
-                shipCounter++;
+                if(!checkIfCoordinatesCorrect(shipList, point, point)){
+                    createShipAndAddToList(shipList, point, point);
+                    shipCounter++;
+                }
             }
            /* shipCounter=0;
             userInterface.printProperty("ship.twoMast.desc");
@@ -85,6 +87,13 @@ public class GameController {
             }*/
 
         return shipList;
+    }
+
+    private boolean checkIfCoordinatesCorrect(List<Ship> shipList, Point pointBow, Point pointStern) {
+        List<Point> newShipPoints = Arrays.asList(pointBow, pointStern);
+
+        return shipList.stream()
+                .anyMatch(x-> x.isNeighbour(newShipPoints));
     }
 
     private static void createShipAndAddToList(List<Ship> shipList, Point pointBow, Point pointStern) {

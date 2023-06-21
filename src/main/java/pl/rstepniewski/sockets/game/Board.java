@@ -57,7 +57,7 @@ public class Board {
 
     public void markShipPosition(List<Ship> shipPosition) {
         shipPosition.forEach(ship -> {
-            ship.getPozycja()
+            ship.getPosition()
                     .forEach(point -> board.get((int) point.x()).set((int) point.y(), BoardCellStatus.SHIP));
         });
     }

@@ -9,21 +9,36 @@ import java.util.List;
  * @project : Battleship
  */
 public class Ship {
-    private List<Point> pozycja;
-    private int dlugosc;
+    private List<Point> position;
+    private int length;
 
     public Ship(List<Point> pozycja) {
-        this.pozycja = pozycja;
-        this.dlugosc = pozycja.size();
+        this.position = pozycja;
+        this.length = pozycja.size();
     }
 
     // Gettery dla pól pozycja i dlugosc
 
-    public List<Point> getPozycja() {
-        return pozycja;
+    public List<Point> getPosition() {
+        return position;
     }
 
-    public int getDlugosc() {
-        return dlugosc;
+    public int getLength() {
+        return length;
+    }
+
+    public boolean isNeighbour(List<Point> newShipPosition){
+        for(int i=0; i<newShipPosition.size(); i++){
+            for(int j=0; j<position.size(); j++){
+                if( position.get(j).x() == newShipPosition.get(j).x() && position.get(j).y() == newShipPosition.get(j).y() -1 ||
+                    position.get(j).x() == newShipPosition.get(j).x() && position.get(j).y() == newShipPosition.get(j).y() +1 ||
+
+                    position.get(j).y() == newShipPosition.get(j).y() && position.get(j).x() == newShipPosition.get(j).x() -1 ||
+                    position.get(j).y() == newShipPosition.get(j).y() && position.get(j).x() == newShipPosition.get(j).x() +1 ){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
