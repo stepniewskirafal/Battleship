@@ -34,19 +34,29 @@ public class ServerCommunicator {
     }
 
     public void handleGame() throws IOException {
+        String responseJson;
+        Request request;
 
-        String responseJson = bufferedReader.readLine();
-
-        Request response = objectMapper.readValue(responseJson, Request.class);
-        logger.info("Request received from client. Request type: " + response.type());
-        if(response.type().equals(ResponseType.GAME_INVITATION.name())){
-            logger.info("Server accepted game invitation");
-            String gameInvitationPositiveResponse = objectMapper.writeValueAsString(new Response(ResponseType.GAME_INVITATION.name(), 0, null, null));
-            printWriter.println(gameInvitationPositiveResponse);
-        }else {
+        responseJson = bufferedReader.readLine();
+        request = objectMapper.readValue(responseJson, Request.class);
+        logger.info("Request received from client. Request type: " + request.type());
+        if(!request.type().equals(ResponseType.GAME_INVITATION.name())) {
             logger.info("Server decline game invitation");
-            String gameInvitationNegativeResponse = objectMapper.writeValueAsString(new Response(ResponseType.GAME_INVITATION.name(), 1, "Server is playing the other game.", null ));
+            String gameInvitationNegativeResponse = objectMapper.writeValueAsString(new Response(ResponseType.GAME_INVITATION.name(), 1, "Server is playing the other game.", null));
             printWriter.println(gameInvitationNegativeResponse);
+            return;
         }
+
+        logger.info("Server accepted game invitation");
+        String gameInvitationPositiveResponse = objectMapper.writeValueAsString(new Response(ResponseType.GAME_INVITATION.name(), 0, null, null));
+        printWriter.println(gameInvitationPositiveResponse);
+
+        responseJson = bufferedReader.readLine();
+        request = objectMapper.readValue(responseJson, Request.class);
+        System.out.println(request.body().toString());
+
+        String gameShotStatusResponse = objectMapper.writeValueAsString(new Response(ResponseType.SHOT.name(), 0, null, "HIT"));
+        printWriter.println(gameShotStatusResponse);
+
     }
 }

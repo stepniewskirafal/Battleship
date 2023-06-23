@@ -6,6 +6,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static pl.rstepniewski.sockets.game.ShotType.MISS;
+
 /**
  * Created by rafal on 13.06.2023
  *
@@ -45,6 +47,8 @@ public class Board {
                                                 return "O ";
                                             case HIT:
                                                 return "X ";
+                                            case MISS:
+                                                return "M ";
                                             default:
                                                 return "";
                                         }
@@ -63,4 +67,7 @@ public class Board {
         });
     }
 
+    public void markShot(Point shot, BoardCellStatus boardCellStatus) {
+        board.get(shot.x()).set(shot.y(), boardCellStatus);
+    }
 }

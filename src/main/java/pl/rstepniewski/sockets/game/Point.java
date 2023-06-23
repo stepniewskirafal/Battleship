@@ -13,4 +13,5 @@ public record Point ( int x,
     public Point(String positionOnBoard){
         this(Integer.parseInt(positionOnBoard.substring(1)) - 1, positionOnBoard.toUpperCase().charAt(0) - 'A');
     }
+
 }

@@ -10,25 +10,23 @@ import java.util.Scanner;
  * @date : 16.06.2023
  * @project : Battleship
  */
-public class UserInterface {
-    private static final Scanner scanner = new Scanner(System.in);
 
-    public UserInterface() {
-    }
+public interface UserInterface {
+    static final Scanner scanner = new Scanner(System.in);
 
-    public static void printText(String string) {
+    static void printText(String string) {
         System.out.println(string);
     }
 
-    public static void printProperty(String string) {
+    static void printProperty(String string) {
         System.out.println(PropertiesUtil.getString(string));
     }
 
-    public static String readText() {
+    static String readText() {
         return scanner.nextLine();
     }
 
-    public static String printAndReadText(String string) {
+    static String printAndReadText(String string) {
         printText(string);
         return scanner.nextLine();
     }

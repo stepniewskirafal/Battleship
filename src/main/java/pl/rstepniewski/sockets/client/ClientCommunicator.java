@@ -12,8 +12,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static pl.rstepniewski.sockets.game.UserInterface.printText;
-
 /**
  * Created by rafal on 09.06.2023
  *
@@ -25,7 +23,7 @@ public class ClientCommunicator {
     private final ClientService serverService;
     private PrintWriter printWriter;
     private BufferedReader bufferedReader;
-    GameController gameController = new GameController(new UserInterface(), new Board());
+    BoardController boardController = new BoardController(new Board());
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -35,29 +33,41 @@ public class ClientCommunicator {
         bufferedReader = serverService.getBufferedReader();
     }
 
+    public void playGame() throws IOException {
+        sendGameInvitation();
+
+        Response response = getInvitationResponse();
+        if ( response.type().equals(ResponseType.GAME_INVITATION.name()) && response.status() != 0) {
+            UserInterface.printText(response.message());
+            return;
+        }
+
+        boardController.initialiseBord();
+
+        Point shot = ShotInterface.getNewShot();
+        Request request = new Request(RequestType.SHOT_REQUEST.name(), shot);
+        String json = objectMapper.writeValueAsString(request);
+        printWriter.println(json);
+
+        String responseJson = bufferedReader.readLine();
+        response = objectMapper.readValue(responseJson, Response.class);
+        switch(response.body().toString()){
+            case "HIT" : boardController.markShotHit(shot);
+            case "MISS" : boardController.markShotMiss(shot);
+            //case "SINKING" :
+        }
+
+    }
+
     public void sendGameInvitation() throws JsonProcessingException {
         Request request = new Request(RequestType.GAME_INVITATION.name(), null);
         String json = objectMapper.writeValueAsString(request);
         printWriter.println(json);
     }
 
-    public void playGame() throws IOException {
-        sendGameInvitation();
+    private Response getInvitationResponse() throws IOException {
         String responseJson = bufferedReader.readLine();
-
         Response response = objectMapper.readValue(responseJson, Response.class);
-
-        if ( response.type().equals(ResponseType.GAME_INVITATION.name()) && response.status() != 0) {
-            printText(response.message());
-            return;
-        }
-
-        gameController.runGame();
-
-
-        Point shot = new Point("A5");
-        Request request = new Request(RequestType.SHOT_REQUEST.name(), shot);
-        String json = objectMapper.writeValueAsString(request);
-
+        return response;
     }
 }
