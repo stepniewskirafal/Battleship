@@ -6,8 +6,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static pl.rstepniewski.sockets.game.ShotType.MISS;
-
 /**
  * Created by rafal on 13.06.2023
  *
