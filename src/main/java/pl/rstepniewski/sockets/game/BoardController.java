@@ -30,8 +30,9 @@ public class BoardController {
     public void initialiseBord(){
         UserInterface.printProperty("game.start");
 
-/*        List<Ship> shipCoordinatesFromUser = getShipCoordinatesFromUser();
-        board.markShipPosition(shipCoordinatesFromUser);*/
+        Fleet fleet = new Fleet(getShipCoordinatesFromUser());
+
+        board.markShipPosition(fleet.getFleet());
         board.printBoard();
     }
 
@@ -59,7 +60,7 @@ public class BoardController {
             ArrayList<Point> newShipPoints = createListOfShipPoints(point, point);
 
             if(validateCoordinates(shipList, newShipPoints, ONE_MAST_SHIP_LENGTH)){
-                createShipAndAddToList(shipList,newShipPoints);
+                createShipAndAddToList(shipList,newShipPoints, ONE_MAST_SHIP_LENGTH);
                 shipCounter++;
             }
         }
@@ -82,7 +83,7 @@ public class BoardController {
             ArrayList<Point> newShipPoints = createListOfShipPoints(pointBow, pointStern);
 
             if(validateCoordinates(shipList, newShipPoints, TWO_MAST_SHIP_LENGTH)){
-                createShipAndAddToList(shipList,newShipPoints);
+                createShipAndAddToList(shipList,newShipPoints, TWO_MAST_SHIP_LENGTH);
                 shipCounter++;
             }
         }
@@ -106,7 +107,7 @@ public class BoardController {
             ArrayList<Point> newShipPoints = createListOfShipPoints(pointBow, pointStern);
 
             if(validateCoordinates(shipList, newShipPoints, THREE_MAST_SHIP_LENGTH)){
-                createShipAndAddToList(shipList,newShipPoints);
+                createShipAndAddToList(shipList,newShipPoints, THREE_MAST_SHIP_LENGTH);
                 shipCounter++;
             }
         }
@@ -130,7 +131,7 @@ public class BoardController {
             ArrayList<Point> newShipPoints = createListOfShipPoints(pointBow, pointStern);
 
             if(validateCoordinates(shipList, newShipPoints, FOUR_MAST_SHIP_LENGTH)){
-                createShipAndAddToList(shipList,newShipPoints);
+                createShipAndAddToList(shipList,newShipPoints, FOUR_MAST_SHIP_LENGTH);
                 shipCounter++;
             }
         }
@@ -152,8 +153,8 @@ public class BoardController {
                 .anyMatch(ship -> ship.isNeighbour(newShipPoints));
     }
 
-    private static void createShipAndAddToList(List<Ship> shipList, ArrayList<Point> points) {
-        shipList.add( new Ship(points) );
+    private static void createShipAndAddToList(List<Ship> shipList, ArrayList<Point> points, int lenght) {
+        shipList.add( new Ship(points, lenght) );
     }
 
     private ArrayList<Point> createListOfShipPoints(Point pointBow, Point pointStern) {
@@ -188,16 +189,21 @@ public class BoardController {
 
     public void markShotHit(Point shot){
         board.markShot(shot, BoardCellStatus.HIT);
+        UserInterface.printProperty("shoot.hit");
         board.printBoard();
     }
 
     public void markShotMiss(Point shot){
         board.markShot(shot, BoardCellStatus.MISS);
+        UserInterface.printProperty("shoot.miss");
         board.printBoard();
     }
 
     public void markShotSinking(Point shot){
-        board.markShot(shot, BoardCellStatus.HIT);
+        markShotHit(shot);
+        UserInterface.printProperty("shoot.sunk");
         board.printBoard();
+
     }
+
 }

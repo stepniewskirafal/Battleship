@@ -11,9 +11,12 @@ import java.util.List;
  */
 public class Ship {
     private List<Point> position;
+    private boolean isSinking;
+    private int length;
 
-    public Ship(List<Point> pozycja) {
+    public Ship(List<Point> pozycja, int length) {
         this.position = pozycja;
+        this.isSinking = false;
     }
 
     public List<Point> getPosition() {
@@ -45,5 +48,17 @@ public class Ship {
             }
         }
         return false;
+    }
+
+    public boolean isSinking() {
+        return isSinking;
+    }
+
+    public void setSinking(boolean sinking) {
+        isSinking = sinking;
+    }
+
+    public int getLength() {
+        return length;
     }
 }
