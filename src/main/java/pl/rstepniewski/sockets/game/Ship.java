@@ -11,12 +11,12 @@ import java.util.List;
  */
 public class Ship {
     private List<Point> position;
-    private boolean isSinking;
+    private boolean isShipSinking;
     private int length;
 
     public Ship(List<Point> pozycja, int length) {
         this.position = pozycja;
-        this.isSinking = false;
+        this.isShipSinking = false;
     }
 
     public List<Point> getPosition() {
@@ -27,8 +27,8 @@ public class Ship {
         Point p1 = newShipPoints.get(0);
         Point p2 = newShipPoints.get(1);
 
-        double dx = p2.x() - p1.x();
-        double dy = p2.y() - p1.y();
+        double dx = p2.getX() - p1.getX();
+        double dy = p2.getY() - p1.getY();
 
         return (int) (Math.sqrt(dx * dx + dy * dy) + 1);
     }
@@ -36,13 +36,13 @@ public class Ship {
     public boolean isNeighbour(List<Point> newShipPosition){
         for(int i=0; i<newShipPosition.size(); i++){
             for(int j=0; j<position.size(); j++){
-                if(     position.get(j).x() == newShipPosition.get(i).x() && position.get(j).y() == newShipPosition.get(i).y()    ||
-                        position.get(j).x() == newShipPosition.get(i).x() && position.get(j).y() == newShipPosition.get(i).y() -1 ||
-                        position.get(j).x() == newShipPosition.get(i).x() && position.get(j).y() == newShipPosition.get(i).y() +1 ||
+                if(     position.get(j).getX() == newShipPosition.get(i).getX() && position.get(j).getY() == newShipPosition.get(i).getY()    ||
+                        position.get(j).getX() == newShipPosition.get(i).getX() && position.get(j).getY() == newShipPosition.get(i).getY() -1 ||
+                        position.get(j).getX() == newShipPosition.get(i).getX() && position.get(j).getY() == newShipPosition.get(i).getY() +1 ||
 
-                        position.get(j).y() == newShipPosition.get(i).y() && position.get(j).x() == newShipPosition.get(i).x()    ||
-                        position.get(j).y() == newShipPosition.get(i).y() && position.get(j).x() == newShipPosition.get(i).x() -1 ||
-                        position.get(j).y() == newShipPosition.get(i).y() && position.get(j).x() == newShipPosition.get(i).x() +1 ){
+                        position.get(j).getY() == newShipPosition.get(i).getY() && position.get(j).getX() == newShipPosition.get(i).getX()    ||
+                        position.get(j).getY() == newShipPosition.get(i).getY() && position.get(j).getX() == newShipPosition.get(i).getX() -1 ||
+                        position.get(j).getY() == newShipPosition.get(i).getY() && position.get(j).getX() == newShipPosition.get(i).getX() +1 ){
                     return true;
                 }
             }
@@ -51,11 +51,11 @@ public class Ship {
     }
 
     public boolean isSinking() {
-        return isSinking;
+        return isShipSinking;
     }
 
     public void setSinking(boolean sinking) {
-        isSinking = sinking;
+        isShipSinking = sinking;
     }
 
     public int getLength() {

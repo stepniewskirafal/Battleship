@@ -19,7 +19,7 @@ public class Fleet {
     }
 
     public boolean isFleetAilive(){
-        return fleet.stream().anyMatch(Ship::isSinking);
+        return fleet.stream().allMatch(Ship::isSinking);
     }
     
     public Ship findShip(Point point){

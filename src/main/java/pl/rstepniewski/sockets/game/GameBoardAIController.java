@@ -1,5 +1,9 @@
 package pl.rstepniewski.sockets.game;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import pl.rstepniewski.sockets.server.ServerCommunicator;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +15,7 @@ import java.util.List;
  * @date : 16.06.2023
  * @project : Battleship
  */
-public class BoardController {
+public class GameBoardAIController {
     private static final int ONE_MAST_SHIP_COUNT = 4;
     private static final int TWO_MAST_SHIP_COUNT = 3;
     private static final int THREE_MAST_SHIP_COUNT = 2;
@@ -21,19 +25,28 @@ public class BoardController {
     private static final int THREE_MAST_SHIP_LENGTH = 3;
     private static final int FOUR_MAST_SHIP_LENGTH = 4;
 
-    private final Board board;
+    private static final Logger logger = LogManager.getLogger(ServerCommunicator.class);
 
-    public BoardController(Board board) {
-        this.board = board;
+    private final GameBoard gameBoard;
+
+    public GameBoardAIController(GameBoard gameBoard) {
+        this.gameBoard = gameBoard;
     }
 
     public void initialiseBord(){
-        UserInterface.printProperty("game.start");
+        logger.info("Server initialized it's gameboards succesfully");
 
-        Fleet fleet = new Fleet(getShipCoordinatesFromUser());
+/*        Fleet fleet = new Fleet(getShipCoordinatesFromUser());
 
         board.markShipPosition(fleet.getFleet());
-        board.printBoard();
+        board.printBoard();*/
+
+        Ship ship = new Ship(Arrays.asList(new Point("C1"), new Point("C2")), 2);
+        List<Ship> list = Arrays.asList(ship);
+        Fleet fleet = new Fleet(list);
+
+        gameBoard.markShipPosition(fleet.getFleet());
+        gameBoard.printBoards();
     }
 
     private List<Ship> getShipCoordinatesFromUser(){
@@ -52,7 +65,7 @@ public class BoardController {
         int shipCounter = 0;
 
         UserInterface.printProperty("ship.oneMast.desc");
-        board.printBoard();
+        gameBoard.printShipBoard();
         while(shipCounter < ONE_MAST_SHIP_COUNT){
             UserInterface.printProperty("ship.oneMast.coordinates");
             UserInterface.printText("-one mast ship nr."+(shipCounter+1));
@@ -72,7 +85,7 @@ public class BoardController {
         int shipCounter = 0;
 
         UserInterface.printProperty("ship.twoMast.desc");
-        board.printBoard();
+        gameBoard.printShipBoard();
         while(shipCounter < TWO_MAST_SHIP_COUNT){
             UserInterface.printProperty("ship.twoMast.bow.coordinates");
             UserInterface.printText("-two mast ship nr."+(shipCounter+1));
@@ -96,7 +109,7 @@ public class BoardController {
         int shipCounter = 0;
 
         UserInterface.printProperty("ship.treeMast.desc");
-        board.printBoard();
+        gameBoard.printShipBoard();
         while(shipCounter < THREE_MAST_SHIP_COUNT){
             UserInterface.printProperty("ship.treeMast.bow.coordinates");
             UserInterface.printText("-tree mast ship nr."+(shipCounter+1));
@@ -111,7 +124,6 @@ public class BoardController {
                 shipCounter++;
             }
         }
-
         return shipList;
     }
 
@@ -120,7 +132,7 @@ public class BoardController {
         int shipCounter = 0;
 
         UserInterface.printProperty("ship.fourMast.desc");
-        board.printBoard();
+        gameBoard.printShipBoard();
         while(shipCounter < FOUR_MAST_SHIP_COUNT){
             UserInterface.printProperty("ship.fourMast.bow.coordinates");
             UserInterface.printText("-four mast ship nr."+(shipCounter+1));
@@ -168,19 +180,19 @@ public class BoardController {
         Point pointA = newShipPoints.get(0);
         Point pointB = newShipPoints.get(1);
 
-        if(pointA.x() == pointB.x()){
-            int startY = Math.min(pointA.y(), pointB.y());
-            int stopY = Math.max(pointA.y(), pointB.y());
+        if(pointA.getX() == pointB.getX()){
+            int startY = Math.min(pointA.getY(), pointB.getY());
+            int stopY = Math.max(pointA.getY(), pointB.getY());
 
             for(int i=startY+1; i<stopY; i++){
-                filledNewShipPoints.add(new Point(pointA.x(), i));
+                filledNewShipPoints.add(new Point(pointA.getX(), i));
             }
         }else {
-            int startX = Math.min(pointA.x(), pointB.x());
-            int stopX = Math.max(pointA.x(), pointB.x());
+            int startX = Math.min(pointA.getX(), pointB.getX());
+            int stopX = Math.max(pointA.getX(), pointB.getX());
 
             for(int i=startX+1; i<stopX; i++){
-                filledNewShipPoints.add(new Point(i, pointA.y()));
+                filledNewShipPoints.add(new Point(i, pointA.getY()));
             }
         }
 
@@ -188,22 +200,21 @@ public class BoardController {
     }
 
     public void markShotHit(Point shot){
-        board.markShot(shot, BoardCellStatus.HIT);
+        gameBoard.markHitOnShortBoard(shot, BoardCellStatus.HIT);
         UserInterface.printProperty("shoot.hit");
-        board.printBoard();
+        gameBoard.printBoards();
     }
 
     public void markShotMiss(Point shot){
-        board.markShot(shot, BoardCellStatus.MISS);
+        gameBoard.markHitOnShortBoard(shot, BoardCellStatus.MISS);
         UserInterface.printProperty("shoot.miss");
-        board.printBoard();
+        gameBoard.printBoards();
     }
 
     public void markShotSinking(Point shot){
         markShotHit(shot);
         UserInterface.printProperty("shoot.sunk");
-        board.printBoard();
-
+        gameBoard.printBoards();
     }
 
 }

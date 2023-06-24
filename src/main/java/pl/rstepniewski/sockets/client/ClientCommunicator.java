@@ -23,7 +23,10 @@ public class ClientCommunicator {
     private final ClientService serverService;
     private PrintWriter printWriter;
     private BufferedReader bufferedReader;
-    BoardController boardController = new BoardController(new Board());
+    GameBoardUserController gameBoardUserController = new GameBoardUserController(new GameBoard());
+    private String jsonString;
+    private Request request;
+    private Response response;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -36,30 +39,50 @@ public class ClientCommunicator {
     public void playGame() throws IOException {
         sendGameInvitation();
 
-        Response response = getInvitationResponse();
-        if ( response.type().equals(ResponseType.GAME_INVITATION.name()) && response.status() != 0) {
-            UserInterface.printText(response.message());
-            return;
+        handleServerInvitationResponce();
+
+        gameBoardUserController.initialiseBord();
+
+        while (gameBoardUserController.isFleetAilive()) {
+            Point shot = shoot();
+            response = getShootResutFromServer();
+            markShootResut(shot, response);
         }
 
-        boardController.initialiseBord();
+    }
 
+    private void markShootResut(Point shot, Response response) {
+        if (response.status() == 2) {
+            UserInterface.printText(response.message().toString());
+        }
+        switch (response.body().toString()) {
+            case "HIT":
+                gameBoardUserController.markHitOnShortBoard(shot);
+            case "MISS":
+                gameBoardUserController.markMissOnShortBoard(shot);
+            case "SINKING":
+                gameBoardUserController.markSinkingOnShortBoard(shot);
+        }
+    }
+
+    private Response getShootResutFromServer() throws IOException {
+        String responseJson = bufferedReader.readLine();
+        return objectMapper.readValue(responseJson, Response.class);
+    }
+
+    private Point shoot() throws JsonProcessingException {
         Point shot = ShotInterface.getNewShot();
         Request request = new Request(RequestType.SHOT_REQUEST.name(), shot);
         String json = objectMapper.writeValueAsString(request);
         printWriter.println(json);
+        return shot;
+    }
 
-        String responseJson = bufferedReader.readLine();
-        response = objectMapper.readValue(responseJson, Response.class);
-        if(response.status() == 2){
-            UserInterface.printText(response.message().toString());
+    private void handleServerInvitationResponce() throws IOException {
+        Response response = getInvitationResponse();
+        if ( response.type().equals(ResponseType.GAME_INVITATION.name()) && response.status() != 0) {
+            UserInterface.printText(response.message());
         }
-        switch(response.body().toString()){
-            case "HIT" : boardController.markShotHit(shot);
-            case "MISS" : boardController.markShotMiss(shot);
-            case "SINKING" : boardController.markShotSinking(shot);
-        }
-
     }
 
     public void sendGameInvitation() throws JsonProcessingException {
