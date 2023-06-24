@@ -51,10 +51,13 @@ public class ClientCommunicator {
 
         String responseJson = bufferedReader.readLine();
         response = objectMapper.readValue(responseJson, Response.class);
+        if(response.status() == 2){
+            UserInterface.printText(response.message().toString());
+        }
         switch(response.body().toString()){
             case "HIT" : boardController.markShotHit(shot);
             case "MISS" : boardController.markShotMiss(shot);
-            //case "SINKING" :
+            case "SINKING" : boardController.markShotSinking(shot);
         }
 
     }
