@@ -144,4 +144,5 @@ public class GameBoard {
     public void markShotShooted(Point shot, BoardCellStatus boardCellStatus) {
         boardShips.get(shot.getX()).set(shot.getY(), boardCellStatus);
     }
+
 }

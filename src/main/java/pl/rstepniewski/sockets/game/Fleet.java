@@ -2,7 +2,7 @@ package pl.rstepniewski.sockets.game;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 /**
  * Created by rafal on 24.06.2023
@@ -18,15 +18,14 @@ public class Fleet {
         this.fleet = fleet;
     }
 
-    public boolean isFleetAilive(){
+    public boolean isFleetSunk(){
         return fleet.stream().allMatch(Ship::isSinking);
     }
     
-    public Ship findShip(Point point){
+    public Optional<Ship> findShip(Point point){
         return fleet.stream()
                 .filter(ship -> ship.getPosition().contains(point))
-                .findFirst()
-                .orElseThrow();
+                .findAny();
     }
 
     List<Ship> getFleet() {

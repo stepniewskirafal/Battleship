@@ -2,6 +2,7 @@ package pl.rstepniewski.sockets.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import pl.rstepniewski.sockets.dto.ShotDto;
 import pl.rstepniewski.sockets.game.*;
 import pl.rstepniewski.sockets.jsonCommunication.Request;
 import pl.rstepniewski.sockets.jsonCommunication.RequestType;
@@ -43,9 +44,9 @@ public class ClientCommunicator {
 
         gameBoardUserController.initialiseBord();
 
-        while (gameBoardUserController.isFleetAilive()) {
+        while (gameBoardUserController.isFleetAlive()) {
             Point shot = shoot();
-            response = getShootResutFromServer();
+            response = getShotResutFromServer();
             markShootResut(shot, response);
         }
 
@@ -65,14 +66,14 @@ public class ClientCommunicator {
         }
     }
 
-    private Response getShootResutFromServer() throws IOException {
+    private Response getShotResutFromServer() throws IOException {
         String responseJson = bufferedReader.readLine();
         return objectMapper.readValue(responseJson, Response.class);
     }
 
     private Point shoot() throws JsonProcessingException {
         Point shot = ShotInterface.getNewShot();
-        Request request = new Request(RequestType.SHOT_REQUEST.name(), shot);
+        Request request = Request.shot( new ShotDto(shot.getX(), shot.getY()) );
         String json = objectMapper.writeValueAsString(request);
         printWriter.println(json);
         return shot;

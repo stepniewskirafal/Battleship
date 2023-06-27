@@ -51,7 +51,7 @@ public class Ship {
     }
 
     public boolean isSinking() {
-        return isShipSinking;
+        return position.stream().allMatch(Point::isPointSinking);
     }
 
     public void setSinking(boolean sinking) {

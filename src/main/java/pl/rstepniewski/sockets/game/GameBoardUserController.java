@@ -3,6 +3,7 @@ package pl.rstepniewski.sockets.game;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by rafal on 16.06.2023
@@ -212,8 +213,18 @@ public class GameBoardUserController {
         gameBoard.printBoards();
     }
 
-    public boolean isFleetAilive(){
-        return fleet.isFleetAilive();
+    public boolean isFleetAlive(){
+        return !fleet.isFleetSunk();
+    }
+
+    public boolean isShipAlive(Point point){
+        Ship ship = fleet.findShip(point).get();
+        return ship.isSinking();
+    }
+
+    public boolean isShotHit(Point shot){
+        Optional<Ship> ship = fleet.findShip(shot);
+        return ship.isPresent();
     }
 
 }

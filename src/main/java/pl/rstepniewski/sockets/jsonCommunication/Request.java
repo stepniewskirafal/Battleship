@@ -2,7 +2,7 @@ package pl.rstepniewski.sockets.jsonCommunication;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import pl.rstepniewski.sockets.game.Point;
+import pl.rstepniewski.sockets.dto.ShotDto;
 import pl.rstepniewski.sockets.game.Ship;
 import pl.rstepniewski.sockets.game.ShotType;
 
@@ -20,7 +20,7 @@ public record Request(
         return new Request(RequestType.GAME_INVITATION.name(), null);
     }
 
-    public static Request shot(Point shot) {
+    public static Request shot(ShotDto shot) {
         return new Request(RequestType.SHOT.name(), shot);
     }
 

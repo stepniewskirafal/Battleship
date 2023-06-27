@@ -23,15 +23,15 @@ public record Response(
         return new Response(ResponseType.GAME_INVITATION.name(), 1, "Server is playing the other game.", null);
     }
 
-    public static Response shotResultHit(ShotType shotType) {
+    public static Response shotResultHit() {
         return new Response(ResponseType.SHOT.name(), 0, null, ShotType.HIT.name());
     }
 
-    public static Response shotResultMiss(ShotType shotType) {
+    public static Response shotResultMiss() {
         return new Response(ResponseType.SHOT.name(), 0, null, ShotType.MISS.name());
     }
 
-    public static Response shotResultSinking(ShotType shotType) {
+    public static Response shotResultSinking() {
         return new Response(ResponseType.SHOT.name(), 0, null, ShotType.SINKING.name());
     }
 

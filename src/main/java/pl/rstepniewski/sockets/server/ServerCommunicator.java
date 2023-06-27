@@ -3,10 +3,13 @@ package pl.rstepniewski.sockets.server;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import pl.rstepniewski.sockets.dto.ShotDto;
 import pl.rstepniewski.sockets.game.GameBoard;
 import pl.rstepniewski.sockets.game.GameBoardAIController;
 import pl.rstepniewski.sockets.game.GameBoardUserController;
+import pl.rstepniewski.sockets.game.Point;
 import pl.rstepniewski.sockets.jsonCommunication.Request;
+import pl.rstepniewski.sockets.jsonCommunication.RequestType;
 import pl.rstepniewski.sockets.jsonCommunication.Response;
 import pl.rstepniewski.sockets.jsonCommunication.ResponseType;
 
@@ -23,7 +26,7 @@ import java.io.PrintWriter;
  */
 public class ServerCommunicator {
     private static final Logger logger = LogManager.getLogger(ServerCommunicator.class);
-    GameBoardAIController gameBoardAIController = new GameBoardAIController(new GameBoard());
+    GameBoardUserController gameBoardUserController = new GameBoardUserController(new GameBoard());
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private BufferedReader bufferedReader;
@@ -43,15 +46,31 @@ public class ServerCommunicator {
 
         handleGameInvitation();
 
-        gameBoardAIController.initialiseBord();
+        gameBoardUserController.initialiseBord();
 
         while (true) {
             jsonString = bufferedReader.readLine();
             request = objectMapper.readValue(jsonString, Request.class);
             System.out.println(request.body().toString());
 
-            String gameShotStatusResponse = objectMapper.writeValueAsString(new Response(ResponseType.SHOT.name(), 0, null, "HIT"));
-            printWriter.println(gameShotStatusResponse);
+            if (request.type().equals(RequestType.SHOT.name())) {
+                ShotDto point = objectMapper.readValue(objectMapper.writeValueAsString(request.body()), ShotDto.class);
+                Point receivedShot = new Point(point.getX(), point.getY());
+                boolean shotStatus = gameBoardUserController.isShotHit(receivedShot);
+                String gameShotStatusResponse;
+                if(shotStatus) {
+                    if (gameBoardUserController.isShipAlive(receivedShot)) {
+                        gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultHit());
+                        printWriter.println(gameShotStatusResponse);
+                    }else {
+                        gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultSinking());
+                        printWriter.println(gameShotStatusResponse);
+                    }
+                }else{
+                    gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultMiss());
+                    printWriter.println(gameShotStatusResponse);
+                }
+            }
         }
     }
 
