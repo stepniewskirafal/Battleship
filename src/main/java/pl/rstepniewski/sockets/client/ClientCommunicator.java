@@ -59,9 +59,13 @@ public class ClientCommunicator {
         switch (response.body().toString()) {
             case "HIT":
                 gameBoardUserController.markHitOnShortBoard(shot);
+                gameBoardUserController.markHitOnShipBoard(shot);
+                break;
             case "MISS":
                 gameBoardUserController.markMissOnShortBoard(shot);
+                break;
             case "SINKING":
+                gameBoardUserController.markHitOnShipBoard(shot);
                 gameBoardUserController.markSinkingOnShortBoard(shot);
         }
     }

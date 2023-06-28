@@ -5,7 +5,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.rstepniewski.sockets.dto.ShotDto;
 import pl.rstepniewski.sockets.game.GameBoard;
-import pl.rstepniewski.sockets.game.GameBoardAIController;
 import pl.rstepniewski.sockets.game.GameBoardUserController;
 import pl.rstepniewski.sockets.game.Point;
 import pl.rstepniewski.sockets.jsonCommunication.Request;
@@ -59,17 +58,18 @@ public class ServerCommunicator {
                 boolean shotStatus = gameBoardUserController.isShotHit(receivedShot);
                 String gameShotStatusResponse;
                 if(shotStatus) {
-                    if (gameBoardUserController.isShipAlive(receivedShot)) {
-                        gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultHit());
+                    if (gameBoardUserController.isShipSinking(receivedShot)) {
+                        gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultSinking());
                         printWriter.println(gameShotStatusResponse);
                     }else {
-                        gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultSinking());
+                        gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultHit());
                         printWriter.println(gameShotStatusResponse);
                     }
                 }else{
                     gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultMiss());
                     printWriter.println(gameShotStatusResponse);
                 }
+                System.out.println(gameShotStatusResponse);
             }
         }
     }

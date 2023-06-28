@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Created by rafal on 16.06.2023
@@ -217,7 +218,7 @@ public class GameBoardUserController {
         return !fleet.isFleetSunk();
     }
 
-    public boolean isShipAlive(Point point){
+    public boolean isShipSinking(Point point){
         Ship ship = fleet.findShip(point).get();
         return ship.isSinking();
     }
@@ -227,4 +228,31 @@ public class GameBoardUserController {
         return ship.isPresent();
     }
 
+/*    public void markHitOnShipBoard(Point shot) {
+        Ship ship = fleet.findShip(shot).orElseThrow();
+        Point hitedPoint = ship.getPosition().stream().filter(position -> position.equals(shot)).findFirst().orElseThrow();
+        hitedPoint.setPointSinking(true);
+
+        int j = ship.getPosition().indexOf(shot);
+        ship.getPosition().set(j,hitedPoint);
+        int i = fleet.getFleet().indexOf(ship);
+        fleet.getFleet().set(i,ship);
+    }*/
+
+    public void markHitOnShipBoard(Point shot) {
+        Ship ship = fleet.findShip(shot).orElseThrow();
+
+        Point hitPoint = ship.getPosition().stream()
+                .filter(position -> position.equals(shot))
+                .findFirst()
+                .orElseThrow();
+
+        hitPoint.setPointSinking(true);
+
+        int index = ship.getPosition().indexOf(hitPoint);
+        ship.getPosition().set(index, hitPoint);
+
+        int shipIndex = fleet.getFleet().indexOf(ship);
+        fleet.getFleet().set(shipIndex, ship);
+    }
 }

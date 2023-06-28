@@ -24,7 +24,8 @@ public class Fleet {
     
     public Optional<Ship> findShip(Point point){
         return fleet.stream()
-                .filter(ship -> ship.getPosition().contains(point))
+                .filter(ship -> ship.getPosition().contains(point)
+                )
                 .findAny();
     }
 

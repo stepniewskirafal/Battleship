@@ -1,5 +1,7 @@
 package pl.rstepniewski.sockets.game;
 
+import java.util.Objects;
+
 /**
  * Created by rafal on 24.06.2023
  *
@@ -37,5 +39,18 @@ public class Point {
 
     public void setPointSinking(boolean pointSinking) {
         isPointSinking = pointSinking;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point point = (Point) o;
+        return x == point.x && y == point.y && isPointSinking == point.isPointSinking;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, isPointSinking);
     }
 }
