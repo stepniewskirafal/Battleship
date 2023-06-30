@@ -24,7 +24,7 @@ public class ClientCommunicator {
     private final ClientService serverService;
     private PrintWriter printWriter;
     private BufferedReader bufferedReader;
-    GameBoardUserController gameBoardUserController = new GameBoardUserController(new GameBoard());
+    GameBoardAIController gameBoardUserController = new GameBoardAIController(new GameBoard());
     private String jsonString;
     private Request request;
     private Response response;
@@ -50,6 +50,7 @@ public class ClientCommunicator {
             markShootResut(shot, response);
         }
 
+        UserInterface.printProperty("win");
     }
 
     private void markShootResut(Point shot, Response response) {

@@ -1,10 +1,13 @@
 package pl.rstepniewski.sockets.game;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import pl.rstepniewski.sockets.server.ServerCommunicator;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * Created by rafal on 16.06.2023
@@ -22,6 +25,8 @@ public class GameBoardUserController {
     private static final int TWO_MAST_SHIP_LENGTH = 2;
     private static final int THREE_MAST_SHIP_LENGTH = 3;
     private static final int FOUR_MAST_SHIP_LENGTH = 4;
+
+    private static final Logger logger = LogManager.getLogger(GameBoardUserController.class);
 
     private final GameBoard gameBoard;
     private Fleet fleet;
@@ -227,17 +232,6 @@ public class GameBoardUserController {
         Optional<Ship> ship = fleet.findShip(shot);
         return ship.isPresent();
     }
-
-/*    public void markHitOnShipBoard(Point shot) {
-        Ship ship = fleet.findShip(shot).orElseThrow();
-        Point hitedPoint = ship.getPosition().stream().filter(position -> position.equals(shot)).findFirst().orElseThrow();
-        hitedPoint.setPointSinking(true);
-
-        int j = ship.getPosition().indexOf(shot);
-        ship.getPosition().set(j,hitedPoint);
-        int i = fleet.getFleet().indexOf(ship);
-        fleet.getFleet().set(i,ship);
-    }*/
 
     public void markHitOnShipBoard(Point shot) {
         Ship ship = fleet.findShip(shot).orElseThrow();

@@ -7,6 +7,7 @@ import pl.rstepniewski.sockets.server.ServerCommunicator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by rafal on 16.06.2023
@@ -25,9 +26,10 @@ public class GameBoardAIController {
     private static final int THREE_MAST_SHIP_LENGTH = 3;
     private static final int FOUR_MAST_SHIP_LENGTH = 4;
 
-    private static final Logger logger = LogManager.getLogger(ServerCommunicator.class);
+    private static final Logger logger = LogManager.getLogger(GameBoardAIController.class);
 
     private final GameBoard gameBoard;
+    private Fleet fleet;
 
     public GameBoardAIController(GameBoard gameBoard) {
         this.gameBoard = gameBoard;
@@ -43,7 +45,7 @@ public class GameBoardAIController {
 
         Ship ship = new Ship(Arrays.asList(new Point("C1"), new Point("C2")), 2);
         List<Ship> list = Arrays.asList(ship);
-        Fleet fleet = new Fleet(list);
+        fleet = new Fleet(list);
 
         gameBoard.markShipPosition(fleet.getFleet());
         gameBoard.printBoards();
@@ -199,22 +201,52 @@ public class GameBoardAIController {
         return filledNewShipPoints;
     }
 
-    public void markShotHit(Point shot){
+    public void markHitOnShortBoard(Point shot){
         gameBoard.markHitOnShortBoard(shot, BoardCellStatus.HIT);
         UserInterface.printProperty("shoot.hit");
         gameBoard.printBoards();
     }
 
-    public void markShotMiss(Point shot){
+    public void markMissOnShortBoard(Point shot){
         gameBoard.markHitOnShortBoard(shot, BoardCellStatus.MISS);
         UserInterface.printProperty("shoot.miss");
         gameBoard.printBoards();
     }
 
-    public void markShotSinking(Point shot){
-        markShotHit(shot);
+    public void markSinkingOnShortBoard(Point shot){
+        markHitOnShortBoard(shot);
         UserInterface.printProperty("shoot.sunk");
         gameBoard.printBoards();
     }
 
+    public boolean isFleetAlive(){
+        return !fleet.isFleetSunk();
+    }
+
+    public boolean isShipSinking(Point point){
+        Ship ship = fleet.findShip(point).get();
+        return ship.isSinking();
+    }
+
+    public boolean isShotHit(Point shot){
+        Optional<Ship> ship = fleet.findShip(shot);
+        return ship.isPresent();
+    }
+
+    public void markHitOnShipBoard(Point shot) {
+        Ship ship = fleet.findShip(shot).orElseThrow();
+
+        Point hitPoint = ship.getPosition().stream()
+                .filter(position -> position.equals(shot))
+                .findFirst()
+                .orElseThrow();
+
+        hitPoint.setPointSinking(true);
+
+        int index = ship.getPosition().indexOf(hitPoint);
+        ship.getPosition().set(index, hitPoint);
+
+        int shipIndex = fleet.getFleet().indexOf(ship);
+        fleet.getFleet().set(shipIndex, ship);
+    }
 }
