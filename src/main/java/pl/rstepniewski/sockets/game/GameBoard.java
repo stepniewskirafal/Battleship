@@ -67,8 +67,8 @@ public class GameBoard {
 
     //public void printBoards(List<List<BoardCellStatus>> board1, List<List<BoardCellStatus>> board2) {
     public void printBoards() {
-        System.out.println("   You're fleet           You're shots");
-        System.out.println("   A B C D E F G H I J    A B C D E F G H I J");
+        System.out.println("   You're fleet           You're shots                                               legend:");
+        System.out.println("   A B C D E F G H I J    A B C D E F G H I J                                        O: Ship    X: Hit    M: Missed Shot");
         AtomicInteger counter = new AtomicInteger(1);
         List<String> output = IntStream.range(0, boardShips.size())
                 .mapToObj(index -> {
@@ -128,6 +128,7 @@ public class GameBoard {
                 })
                 .collect(Collectors.toList());
         output.forEach(System.out::println);
+        System.out.println("");
     }
 
     public void markShipPosition(List<Ship> shipPosition) {
@@ -139,6 +140,10 @@ public class GameBoard {
 
     public void markHitOnShotBoard(Point shot, BoardCellStatus boardCellStatus) {
         boardShots.get(shot.getX()).set(shot.getY(), boardCellStatus);
+    }
+
+    public void markHitOnFleetBoard(Point shot, BoardCellStatus boardCellStatus) {
+        boardShips.get(shot.getX()).set(shot.getY(), boardCellStatus);
     }
 
     public void markShotShooted(Point shot, BoardCellStatus boardCellStatus) {
