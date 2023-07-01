@@ -23,10 +23,12 @@ public class Fleet {
     }
     
     public Optional<Ship> findShip(Point point){
-        return fleet.stream()
+        Optional<Ship> any = fleet.stream()
                 .filter(ship -> ship.getPosition().contains(point)
                 )
                 .findAny();
+
+        return any;
     }
 
     List<Ship> getFleet() {

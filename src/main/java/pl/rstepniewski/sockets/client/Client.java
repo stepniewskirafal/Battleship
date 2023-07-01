@@ -13,7 +13,7 @@ Created by rafal on 09.06.2023
 @project : Battleship
 */
 public class Client {
-    private static final Logger logger = LogManager.getLogger(Server.class);
+    private static final Logger logger = LogManager.getLogger(Client.class);
     public static void main(String[] args) throws IOException {
         logger.info("Starting Battleship application");
         Client client = new Client();

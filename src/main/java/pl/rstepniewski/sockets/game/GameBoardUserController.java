@@ -37,8 +37,10 @@ public class GameBoardUserController {
         Ship ship = new Ship(Arrays.asList(new Point("B3"), new Point("B4")), 2);
         List<Ship> list = Arrays.asList(ship);
         fleet = new Fleet(list);
+        logger.info("Client initialized it's gameboards succesfully");
 
         gameBoard.markShipPosition(fleet.getFleet());
+        logger.info("Client marked ships positions succesfully");
         gameBoard.printBoards();
     }
 
@@ -224,7 +226,7 @@ public class GameBoardUserController {
         return ship.isPresent();
     }
 
-    public void markHitOnShipBoard(Point shot) {
+    public boolean markHitOnShipBoard(Point shot) {
         Ship ship = fleet.findShip(shot).get();
 
         Point hitPoint = ship.getPosition().stream()
@@ -236,8 +238,9 @@ public class GameBoardUserController {
 
         int index = ship.getPosition().indexOf(hitPoint);
         ship.getPosition().set(index, hitPoint);
-
+        ship.setSinking(ship.isSinking());
         int shipIndex = fleet.getFleet().indexOf(ship);
         fleet.getFleet().set(shipIndex, ship);
+        return ship.isSinking();
     }
 }

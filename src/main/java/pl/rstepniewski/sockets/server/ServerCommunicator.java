@@ -1,12 +1,11 @@
 package pl.rstepniewski.sockets.server;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.rstepniewski.sockets.dto.ShotDto;
-import pl.rstepniewski.sockets.game.GameBoard;
-import pl.rstepniewski.sockets.game.GameBoardAIController;
-import pl.rstepniewski.sockets.game.Point;
+import pl.rstepniewski.sockets.game.*;
 import pl.rstepniewski.sockets.jsonCommunication.Request;
 import pl.rstepniewski.sockets.jsonCommunication.RequestType;
 import pl.rstepniewski.sockets.jsonCommunication.Response;
@@ -48,31 +47,71 @@ public class ServerCommunicator {
         gameBoardAIController.initialiseBord();
 
         while (gameBoardAIController.isFleetAlive()) {
-            jsonString = bufferedReader.readLine();
-            request = objectMapper.readValue(jsonString, Request.class);
-            System.out.println(request.body().toString());
+            Request shotRequest = getShotRequest();
+            handleShotRequest(shotRequest);
 
-            if (request.type().equals(RequestType.SHOT.name())) {
-                ShotDto point = objectMapper.readValue(objectMapper.writeValueAsString(request.body()), ShotDto.class);
-                Point receivedShot = new Point(point.getX(), point.getY());
-                boolean shotStatus = gameBoardAIController.isShotHit(receivedShot);
-                String gameShotStatusResponse;
-                if(shotStatus) {
-                    if (gameBoardAIController.isShipSinking(receivedShot)) {
-                        gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultSinking());
-                        printWriter.println(gameShotStatusResponse);
-                        gameBoardAIController.markHitOnShipBoard(receivedShot);
-                    }else {
-                        gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultHit());
-                        printWriter.println(gameShotStatusResponse);
-                        gameBoardAIController.markHitOnShipBoard(receivedShot);
-                    }
-                }else{
-                    gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultMiss());
+            Point shot = shoot();
+            response = getShotResut();
+            markShootResut(shot, response);
+        }
+    }
+
+    private void markShootResut(Point shot, Response response) {
+        if (response.status() == 2) {
+            UserInterface.printText(response.message().toString());
+        }
+        switch (response.body().toString()) {
+            case "HIT":
+                gameBoardAIController.markHitOnShotBoard(shot);
+                break;
+            case "MISS":
+                gameBoardAIController.markMissOnShotBoard(shot);
+                break;
+            case "SINKING":
+                gameBoardAIController.markSinkingOnShotBoard(shot);
+        }
+    }
+
+    private Response getShotResut() throws IOException {
+        String responseJson = bufferedReader.readLine();
+        return objectMapper.readValue(responseJson, Response.class);
+    }
+
+    private Point shoot() throws JsonProcessingException {
+        Point shot = ShotInterface.getNewShot();
+        Request request = Request.shot( new ShotDto(shot.getX(), shot.getY()) );
+        String json = objectMapper.writeValueAsString(request);
+        printWriter.println(json);
+        return shot;
+    }
+
+    private Request getShotRequest() throws IOException {
+        jsonString = bufferedReader.readLine();
+        request = objectMapper.readValue(jsonString, Request.class);
+        logger.info("The coordinates of the shot sent by user: "+ request.body().toString());
+        return request;
+    }
+
+    private void handleShotRequest(Request request) throws IOException {
+        if (request.type().equals(RequestType.SHOT.name())) {
+            ShotDto point = objectMapper.readValue(objectMapper.writeValueAsString(request.body()), ShotDto.class);
+            Point receivedShot = new Point(point.getX(), point.getY());
+            boolean isShotAccurate = gameBoardAIController.isShotHit(receivedShot);
+            String gameShotStatusResponse;
+            if (isShotAccurate) {
+                boolean isShipSinking = gameBoardAIController.markHitOnShipBoard(receivedShot);
+                if (isShipSinking) {
+                    gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultSinking());
+                    printWriter.println(gameShotStatusResponse);
+                } else {
+                    gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultHit());
                     printWriter.println(gameShotStatusResponse);
                 }
-                System.out.println(gameShotStatusResponse);
+            } else {
+                gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultMiss());
+                printWriter.println(gameShotStatusResponse);
             }
+            System.out.println(gameShotStatusResponse);
         }
     }
 

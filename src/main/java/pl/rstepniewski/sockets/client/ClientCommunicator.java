@@ -2,6 +2,8 @@ package pl.rstepniewski.sockets.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pl.rstepniewski.sockets.dto.ShotDto;
 import pl.rstepniewski.sockets.game.*;
 import pl.rstepniewski.sockets.jsonCommunication.Request;
@@ -31,6 +33,8 @@ public class ClientCommunicator {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    private static final Logger logger = LogManager.getLogger(ClientCommunicator.class);
+
     public ClientCommunicator(ClientService serverService) {
         this.serverService = serverService;
         printWriter = serverService.getPrintWriter();
@@ -46,11 +50,44 @@ public class ClientCommunicator {
 
         while (gameBoardUserController.isFleetAlive()) {
             Point shot = shoot();
-            response = getShotResutFromServer();
+            response = getShotResut();
             markShootResut(shot, response);
+
+            Request shotRequest = getShotRequest();
+            handleShotRequest(shotRequest);
         }
 
         UserInterface.printProperty("win");
+    }
+
+    private Request getShotRequest() throws IOException {
+        jsonString = bufferedReader.readLine();
+        request = objectMapper.readValue(jsonString, Request.class);
+        logger.info("The coordinates of the shot sent by user: "+ request.body().toString());
+        return request;
+    }
+
+    private void handleShotRequest(Request request) throws IOException {
+        if (request.type().equals(RequestType.SHOT.name())) {
+            ShotDto point = objectMapper.readValue(objectMapper.writeValueAsString(request.body()), ShotDto.class);
+            Point receivedShot = new Point(point.getX(), point.getY());
+            boolean isShotAccurate = gameBoardUserController.isShotHit(receivedShot);
+            String gameShotStatusResponse;
+            if (isShotAccurate) {
+                boolean isShipSinking = gameBoardUserController.markHitOnShipBoard(receivedShot);
+                if (isShipSinking) {
+                    gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultSinking());
+                    printWriter.println(gameShotStatusResponse);
+                } else {
+                    gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultHit());
+                    printWriter.println(gameShotStatusResponse);
+                }
+            } else {
+                gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultMiss());
+                printWriter.println(gameShotStatusResponse);
+            }
+            System.out.println(gameShotStatusResponse);
+        }
     }
 
     private void markShootResut(Point shot, Response response) {
@@ -69,7 +106,7 @@ public class ClientCommunicator {
         }
     }
 
-    private Response getShotResutFromServer() throws IOException {
+    private Response getShotResut() throws IOException {
         String responseJson = bufferedReader.readLine();
         return objectMapper.readValue(responseJson, Response.class);
     }

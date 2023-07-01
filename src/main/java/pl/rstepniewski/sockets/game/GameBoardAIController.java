@@ -27,18 +27,22 @@ public class GameBoardAIController {
     }
 
     public void initialiseBord(){
-        logger.info("Server initialized it's gameboards succesfully");
+
 
 /*        Fleet fleet = new Fleet(getShipCoordinatesFromUser());
 
         board.markShipPosition(fleet.getFleet());
         board.printBoard();*/
 
-        Ship ship = new Ship(Arrays.asList(new Point("C1"), new Point("C2")), 2);
-        List<Ship> list = Arrays.asList(ship);
+        //Ship ship1 = new Ship(Arrays.asList(new Point("C1"), new Point("C2")), 2);
+        Ship ship2 = new Ship(Arrays.asList(new Point("H5")), 1);
+        List<Ship> list = Arrays.asList( ship2);
         fleet = new Fleet(list);
+        logger.info("Server initialized it's gameboards succesfully");
 
         gameBoard.markShipPosition(fleet.getFleet());
+        logger.info("Server marked ships positions succesfully");
+
         gameBoard.printBoards();
     }
 
@@ -224,7 +228,7 @@ public class GameBoardAIController {
         return ship.isPresent();
     }
     
-    public void markHitOnShipBoard(Point shot) {
+    public boolean markHitOnShipBoard(Point shot) {
         Ship ship = fleet.findShip(shot).orElseThrow();
 
         Point hitPoint = ship.getPosition().stream()
@@ -236,8 +240,10 @@ public class GameBoardAIController {
 
         int index = ship.getPosition().indexOf(hitPoint);
         ship.getPosition().set(index, hitPoint);
-
+        ship.setSinking(ship.isSinking());
         int shipIndex = fleet.getFleet().indexOf(ship);
         fleet.getFleet().set(shipIndex, ship);
+
+        return ship.isSinking();
     }
 }
