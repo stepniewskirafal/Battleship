@@ -2,7 +2,6 @@ package pl.rstepniewski.sockets.game;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pl.rstepniewski.sockets.server.ServerCommunicator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,14 +16,6 @@ import java.util.Optional;
  * @project : Battleship
  */
 public class GameBoardAIController {
-    private static final int ONE_MAST_SHIP_COUNT = 4;
-    private static final int TWO_MAST_SHIP_COUNT = 3;
-    private static final int THREE_MAST_SHIP_COUNT = 2;
-    private static final int FOUR_MAST_SHIP_COUNT = 1;
-    private static final int ONE_MAST_SHIP_LENGTH = 1;
-    private static final int TWO_MAST_SHIP_LENGTH = 2;
-    private static final int THREE_MAST_SHIP_LENGTH = 3;
-    private static final int FOUR_MAST_SHIP_LENGTH = 4;
 
     private static final Logger logger = LogManager.getLogger(GameBoardAIController.class);
 
@@ -68,14 +59,14 @@ public class GameBoardAIController {
 
         UserInterface.printProperty("ship.oneMast.desc");
         gameBoard.printShipBoard();
-        while(shipCounter < ONE_MAST_SHIP_COUNT){
+        while(shipCounter < ShipType.ONE_MAST_SHIP_COUNT.getNumber()){
             UserInterface.printProperty("ship.oneMast.coordinates");
             UserInterface.printText("-one mast ship nr."+(shipCounter+1));
             Point point=new Point(UserInterface.readText());
             ArrayList<Point> newShipPoints = createListOfShipPoints(point, point);
 
-            if(validateCoordinates(shipList, newShipPoints, ONE_MAST_SHIP_LENGTH)){
-                createShipAndAddToList(shipList,newShipPoints, ONE_MAST_SHIP_LENGTH);
+            if(validateCoordinates(shipList, newShipPoints, ShipType.ONE_MAST_SHIP_LENGTH.getNumber() )){
+                createShipAndAddToList(shipList,newShipPoints, ShipType.ONE_MAST_SHIP_LENGTH.getNumber() );
                 shipCounter++;
             }
         }
@@ -88,7 +79,7 @@ public class GameBoardAIController {
 
         UserInterface.printProperty("ship.twoMast.desc");
         gameBoard.printShipBoard();
-        while(shipCounter < TWO_MAST_SHIP_COUNT){
+        while(shipCounter < ShipType.TWO_MAST_SHIP_COUNT.getNumber() ){
             UserInterface.printProperty("ship.twoMast.bow.coordinates");
             UserInterface.printText("-two mast ship nr."+(shipCounter+1));
             Point pointBow=new Point(UserInterface.readText());
@@ -97,8 +88,8 @@ public class GameBoardAIController {
             Point pointStern=new Point(UserInterface.readText());
             ArrayList<Point> newShipPoints = createListOfShipPoints(pointBow, pointStern);
 
-            if(validateCoordinates(shipList, newShipPoints, TWO_MAST_SHIP_LENGTH)){
-                createShipAndAddToList(shipList,newShipPoints, TWO_MAST_SHIP_LENGTH);
+            if(validateCoordinates(shipList, newShipPoints, ShipType.TWO_MAST_SHIP_LENGTH.getNumber() )){
+                createShipAndAddToList(shipList,newShipPoints, ShipType.TWO_MAST_SHIP_LENGTH.getNumber() );
                 shipCounter++;
             }
         }
@@ -112,7 +103,7 @@ public class GameBoardAIController {
 
         UserInterface.printProperty("ship.treeMast.desc");
         gameBoard.printShipBoard();
-        while(shipCounter < THREE_MAST_SHIP_COUNT){
+        while(shipCounter <  ShipType.THREE_MAST_SHIP_COUNT.getNumber() ){
             UserInterface.printProperty("ship.treeMast.bow.coordinates");
             UserInterface.printText("-tree mast ship nr."+(shipCounter+1));
             Point pointBow=new Point(UserInterface.readText());
@@ -121,8 +112,8 @@ public class GameBoardAIController {
             Point pointStern=new Point(UserInterface.readText());
             ArrayList<Point> newShipPoints = createListOfShipPoints(pointBow, pointStern);
 
-            if(validateCoordinates(shipList, newShipPoints, THREE_MAST_SHIP_LENGTH)){
-                createShipAndAddToList(shipList,newShipPoints, THREE_MAST_SHIP_LENGTH);
+            if(validateCoordinates(shipList, newShipPoints, ShipType.THREE_MAST_SHIP_LENGTH.getNumber() )){
+                createShipAndAddToList(shipList,newShipPoints, ShipType.THREE_MAST_SHIP_LENGTH.getNumber() );
                 shipCounter++;
             }
         }
@@ -135,7 +126,7 @@ public class GameBoardAIController {
 
         UserInterface.printProperty("ship.fourMast.desc");
         gameBoard.printShipBoard();
-        while(shipCounter < FOUR_MAST_SHIP_COUNT){
+        while(shipCounter < ShipType.FOUR_MAST_SHIP_COUNT.getNumber() ){
             UserInterface.printProperty("ship.fourMast.bow.coordinates");
             UserInterface.printText("-four mast ship nr."+(shipCounter+1));
             Point pointBow=new Point(UserInterface.readText());
@@ -144,8 +135,8 @@ public class GameBoardAIController {
             Point pointStern=new Point(UserInterface.readText());
             ArrayList<Point> newShipPoints = createListOfShipPoints(pointBow, pointStern);
 
-            if(validateCoordinates(shipList, newShipPoints, FOUR_MAST_SHIP_LENGTH)){
-                createShipAndAddToList(shipList,newShipPoints, FOUR_MAST_SHIP_LENGTH);
+            if(validateCoordinates(shipList, newShipPoints, ShipType.FOUR_MAST_SHIP_LENGTH.getNumber() )){
+                createShipAndAddToList(shipList,newShipPoints, ShipType.FOUR_MAST_SHIP_LENGTH.getNumber() );
                 shipCounter++;
             }
         }
@@ -201,20 +192,20 @@ public class GameBoardAIController {
         return filledNewShipPoints;
     }
 
-    public void markHitOnShortBoard(Point shot){
-        gameBoard.markHitOnShortBoard(shot, BoardCellStatus.HIT);
+    public void markHitOnShotBoard(Point shot){
+        gameBoard.markHitOnShotBoard(shot, BoardCellStatus.HIT);
         UserInterface.printProperty("shoot.hit");
         gameBoard.printBoards();
     }
 
-    public void markMissOnShortBoard(Point shot){
-        gameBoard.markHitOnShortBoard(shot, BoardCellStatus.MISS);
+    public void markMissOnShotBoard(Point shot){
+        gameBoard.markHitOnShotBoard(shot, BoardCellStatus.MISS);
         UserInterface.printProperty("shoot.miss");
         gameBoard.printBoards();
     }
 
-    public void markSinkingOnShortBoard(Point shot){
-        markHitOnShortBoard(shot);
+    public void markSinkingOnShotBoard(Point shot){
+        markHitOnShotBoard(shot);
         UserInterface.printProperty("shoot.sunk");
         gameBoard.printBoards();
     }
@@ -232,7 +223,7 @@ public class GameBoardAIController {
         Optional<Ship> ship = fleet.findShip(shot);
         return ship.isPresent();
     }
-
+    
     public void markHitOnShipBoard(Point shot) {
         Ship ship = fleet.findShip(shot).orElseThrow();
 

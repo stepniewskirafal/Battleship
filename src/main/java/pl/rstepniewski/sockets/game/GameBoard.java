@@ -137,7 +137,7 @@ public class GameBoard {
         });
     }
 
-    public void markHitOnShortBoard(Point shot, BoardCellStatus boardCellStatus) {
+    public void markHitOnShotBoard(Point shot, BoardCellStatus boardCellStatus) {
         boardShots.get(shot.getX()).set(shot.getY(), boardCellStatus);
     }
 

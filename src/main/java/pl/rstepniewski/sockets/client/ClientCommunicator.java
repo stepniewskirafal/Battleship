@@ -24,7 +24,7 @@ public class ClientCommunicator {
     private final ClientService serverService;
     private PrintWriter printWriter;
     private BufferedReader bufferedReader;
-    GameBoardAIController gameBoardUserController = new GameBoardAIController(new GameBoard());
+    GameBoardUserController gameBoardUserController = new GameBoardUserController(new GameBoard());
     private String jsonString;
     private Request request;
     private Response response;
@@ -59,15 +59,13 @@ public class ClientCommunicator {
         }
         switch (response.body().toString()) {
             case "HIT":
-                gameBoardUserController.markHitOnShortBoard(shot);
-                gameBoardUserController.markHitOnShipBoard(shot);
+                gameBoardUserController.markHitOnShotBoard(shot);
                 break;
             case "MISS":
-                gameBoardUserController.markMissOnShortBoard(shot);
+                gameBoardUserController.markMissOnShotBoard(shot);
                 break;
             case "SINKING":
-                gameBoardUserController.markHitOnShipBoard(shot);
-                gameBoardUserController.markSinkingOnShortBoard(shot);
+                gameBoardUserController.markSinkingOnShotBoard(shot);
         }
     }
 
