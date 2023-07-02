@@ -9,11 +9,12 @@ import pl.rstepniewski.sockets.game.*;
 import pl.rstepniewski.sockets.jsonCommunication.Request;
 import pl.rstepniewski.sockets.jsonCommunication.RequestType;
 import pl.rstepniewski.sockets.jsonCommunication.Response;
-import pl.rstepniewski.sockets.jsonCommunication.ResponseType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import static pl.rstepniewski.sockets.jsonCommunication.ResponseType.GAME_INVITATION;
 
 /**
  * Created by rafal on 09.06.2023
@@ -35,16 +36,14 @@ public class ServerCommunicator {
     private Response response;
 
     public ServerCommunicator(ServerService serverService) {
-        this.gameBoardAIController = new GameBoardAIController(new GameBoard());
-        this.serverService  = serverService;
-        this.bufferedReader      = serverService.getBufferedReader();
-        this.printWriter         = serverService.getPrintWriter();
+        this.bufferedReader         = serverService.getBufferedReader();
+        this.gameBoardAIController  = new GameBoardAIController(new GameBoard());
+        this.printWriter            = serverService.getPrintWriter();
+        this.serverService          = serverService;
     }
 
     public void handleGame() throws IOException {
-
         handleGameInvitation();
-
         gameBoardAIController.initialiseBord();
 
         while (gameBoardAIController.isFleetAlive()) {
@@ -55,6 +54,23 @@ public class ServerCommunicator {
             response = getShotResut();
             markShootResut(shot, response);
         }
+    }
+
+    private void handleGameInvitation() throws IOException {
+        jsonString = bufferedReader.readLine();
+        request = objectMapper.readValue(jsonString, Request.class);
+        logger.info("Request received from client. Request type: " + request.type());
+
+        if(!request.type().equals(GAME_INVITATION.name())) {
+            response = Response.gameInvitationNegative();
+            String gameInvitationNegativeResponse = objectMapper.writeValueAsString(response);
+            printWriter.println(gameInvitationNegativeResponse);
+            logger.info("Server decline game invitation");
+        }
+        response = Response.gameInvitationNegative();
+        String gameInvitationPositiveResponse = objectMapper.writeValueAsString(response);
+        printWriter.println(gameInvitationPositiveResponse);
+        logger.info("Server accepted game invitation");
     }
 
     private void markShootResut(Point shot, Response response) {
@@ -119,19 +135,5 @@ public class ServerCommunicator {
             }
             System.out.println(gameShotStatusResponse);
         }
-    }
-
-    private void handleGameInvitation() throws IOException {
-        jsonString = bufferedReader.readLine();
-        request = objectMapper.readValue(jsonString, Request.class);
-        logger.info("Request received from client. Request type: " + request.type());
-        if(!request.type().equals(ResponseType.GAME_INVITATION.name())) {
-            logger.info("Server decline game invitation");
-            String gameInvitationNegativeResponse = objectMapper.writeValueAsString(new Response(ResponseType.GAME_INVITATION.name(), 1, "Server is playing the other game.", null));
-            printWriter.println(gameInvitationNegativeResponse);
-        }
-        logger.info("Server accepted game invitation");
-        String gameInvitationPositiveResponse = objectMapper.writeValueAsString(new Response(ResponseType.GAME_INVITATION.name(), 0, null, null));
-        printWriter.println(gameInvitationPositiveResponse);
     }
 }

@@ -9,11 +9,9 @@ import pl.rstepniewski.sockets.game.*;
 import pl.rstepniewski.sockets.jsonCommunication.Request;
 import pl.rstepniewski.sockets.jsonCommunication.RequestType;
 import pl.rstepniewski.sockets.jsonCommunication.Response;
-import pl.rstepniewski.sockets.jsonCommunication.ResponseType;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
+
+import static pl.rstepniewski.sockets.jsonCommunication.ResponseType.GAME_INVITATION;
 
 /**
  * Created by rafal on 09.06.2023
@@ -22,45 +20,46 @@ import java.io.PrintWriter;
  * @date : 09.06.2023
  * @project : Battleship
  */
-public class ClientCommunicator {
-    private final ClientService clientService;
-    private PrintWriter printWriter;
-    private BufferedReader bufferedReader;
-    private GameBoardUserController gameBoardUserController = new GameBoardUserController(new GameBoard());
-    private String jsonString;
-    private Request request;
+public class ClientController {
+    private final ClientCommunicatorImpl communicator;
+    private final GameBoardUserController gameBoardUserController;
     private Response response;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private static final Logger logger = LogManager.getLogger(ClientCommunicator.class);
+    private static final Logger logger = LogManager.getLogger(ClientController.class);
 
-    public ClientCommunicator(ClientService clientService) {
-        this.clientService = clientService;
-        printWriter = clientService.getPrintWriter();
-        bufferedReader = clientService.getBufferedReader();
+    public ClientController(ClientCommunicatorImpl communicator) {
+        this.gameBoardUserController = new GameBoardUserController(new GameBoard());
+        this.communicator            = communicator;
     }
 
     public void playGame() throws IOException {
+        logger.info("Starting Battleship game");
         sendGameInvitation();
         handleServerInvitationResponse();
         gameBoardUserController.initializeBoard();
 
         while (gameBoardUserController.isFleetAlive()) {
             Point shot = shoot();
-            response = getShotResult();
+            response = communicator.getShotResult();
             markShotResult(shot, response);
 
-            Request shotRequest = getShotRequest();
+            Request shotRequest = communicator.getShotRequest();
             handleShotRequest(shotRequest);
         }
 
         UserInterface.printProperty("win");
     }
 
-    private Request getShotRequest() throws IOException {
-        jsonString = bufferedReader.readLine();
-        request = objectMapper.readValue(jsonString, Request.class);
-        logger.info("The coordinates of the shot sent by user: "+ request.body().toString());
-        return request;
+    public void sendGameInvitation() throws JsonProcessingException {
+        Request request = Request.gameInvitation();
+        communicator.sendMessage(objectMapper.writeValueAsString(request));
+    }
+
+    private void handleServerInvitationResponse() throws IOException {
+        Response response = communicator.getInvitationResponse();
+        if ( response.type().equals(GAME_INVITATION.name()) && response.status() != 0) {
+            UserInterface.printText(response.message());
+        }
     }
 
     private void handleShotRequest(Request request) throws IOException {
@@ -75,15 +74,15 @@ public class ClientCommunicator {
                 gameBoardUserController.markHitOnFleetBoard(receivedShot, BoardCellStatus.HIT);
                 if (isShipSinking) {
                     gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultSinking());
-                    printWriter.println(gameShotStatusResponse);
+                    communicator.sendMessage(gameShotStatusResponse);
                 } else {
                     gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultHit());
-                    printWriter.println(gameShotStatusResponse);
+                    communicator.sendMessage(gameShotStatusResponse);
                 }
             } else {
                 gameBoardUserController.markHitOnFleetBoard(receivedShot, BoardCellStatus.MISS);
                 gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultMiss());
-                printWriter.println(gameShotStatusResponse);
+                communicator.sendMessage(gameShotStatusResponse);
             }
         }
     }
@@ -104,35 +103,11 @@ public class ClientCommunicator {
         }
     }
 
-    private Response getShotResult() throws IOException {
-        String responseJson = bufferedReader.readLine();
-        return objectMapper.readValue(responseJson, Response.class);
-    }
-
     private Point shoot() throws JsonProcessingException {
         Point shot = ShotInterface.getNewUserShot();
         Request request = Request.shot( new ShotDto(shot.getX(), shot.getY()) );
         String json = objectMapper.writeValueAsString(request);
-        printWriter.println(json);
+        communicator.sendMessage(json);
         return shot;
-    }
-
-    private void handleServerInvitationResponse() throws IOException {
-        Response response = getInvitationResponse();
-        if ( response.type().equals(ResponseType.GAME_INVITATION.name()) && response.status() != 0) {
-            UserInterface.printText(response.message());
-        }
-    }
-
-    public void sendGameInvitation() throws JsonProcessingException {
-        Request request = new Request(RequestType.GAME_INVITATION.name(), null);
-        String json = objectMapper.writeValueAsString(request);
-        printWriter.println(json);
-    }
-
-    private Response getInvitationResponse() throws IOException {
-        String responseJson = bufferedReader.readLine();
-        Response response = objectMapper.readValue(responseJson, Response.class);
-        return response;
     }
 }

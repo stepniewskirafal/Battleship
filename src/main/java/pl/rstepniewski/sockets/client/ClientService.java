@@ -2,7 +2,6 @@ package pl.rstepniewski.sockets.client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pl.rstepniewski.sockets.server.Server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,15 +20,14 @@ import java.net.UnknownHostException;
 public class ClientService {
     public static final int PORT = 6767;
     public static final String LOCALHOST = "localhost";
-    private final Client client;
     private Socket socket;
     PrintWriter printWriter;
     BufferedReader bufferedReader;
     private static final Logger logger = LogManager.getLogger(ClientService.class);
 
-    public ClientService(Client client) {
-        this.client = client;
+    public ClientService() {
         startClient();
+        logger.info("Starting Battleship application");
     }
 
     private void startClient() {

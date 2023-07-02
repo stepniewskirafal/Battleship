@@ -14,11 +14,9 @@ Created by rafal on 09.06.2023
 public class Client {
     private static final Logger logger = LogManager.getLogger(Client.class);
     public static void main(String[] args) throws IOException {
-        logger.info("Starting Battleship application");
-        Client client = new Client();
-        ClientService clientService = new ClientService(client);
-        ClientCommunicator clientCommunicator = new ClientCommunicator(clientService);
-        logger.info("Starting Battleship game");
-        clientCommunicator.playGame();
+        ClientService clientService = new ClientService();
+        ClientCommunicatorImpl communicator = new ClientCommunicatorImpl(clientService);
+        ClientController clientController = new ClientController(communicator);
+        clientController.playGame();
     }
 }
