@@ -35,9 +35,11 @@ public class GameBoardAIController {
         board.printBoard();*/
 
         //Ship ship1 = new Ship(Arrays.asList(new Point("C1"), new Point("C2")), 2);
-        Ship ship2 = new Ship(Arrays.asList(new Point("H5")), 1);
+/*        Ship ship2 = new Ship(Arrays.asList(new Point("H5")), 1);
         List<Ship> list = Arrays.asList( ship2);
-        fleet = new Fleet(list);
+        fleet = new Fleet(list);*/
+
+        fleet = FleetLoader.loadRandomFleet();
         logger.info("Server initialized it's gameboards succesfully");
 
         gameBoard.markShipPosition(fleet.getFleet());
@@ -245,5 +247,21 @@ public class GameBoardAIController {
         fleet.getFleet().set(shipIndex, ship);
 
         return ship.isSinking();
+    }
+
+    public void markHitOnFleetBoard(Point receivedShot, BoardCellStatus boardCellStatus) {
+        gameBoard.markHitOnFleetBoard(receivedShot, boardCellStatus);
+    }
+
+    public Point getNewRandomShot() {
+        Point newRandomShot;
+        do {
+            newRandomShot = ShotInterface.getNewRandomShot();
+        } while (gameBoard.isShotNotAllowed(newRandomShot));
+        return newRandomShot;
+    }
+
+    public void reportReceivedShot(Point receivedShot) {
+        UserInterface.printText("The enemy shoot at "+ receivedShot.toString());
     }
 }

@@ -61,4 +61,13 @@ public class Ship {
     public int getLength() {
         return length;
     }
+
+    @Override
+    public String toString() {
+        return "Ship{" +
+                "position=" + position +
+                ", isShipSinking=" + isShipSinking +
+                ", length=" + length +
+                '}';
+    }
 }

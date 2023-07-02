@@ -21,6 +21,14 @@ public class GameBoard {
         markEmptyPosition();
     }
 
+    public boolean isShotNotAllowed(Point point){
+        BoardCellStatus boardCellStatus = boardShips.get(point.getX()).get(point.getY());
+        if(boardCellStatus.equals(BoardCellStatus.HIT) || boardCellStatus.equals(BoardCellStatus.MISS)){
+            return true;
+        }
+        return false;
+    }
+
     public void markEmptyPosition() {
         boardShips = IntStream.range(0, 10)
                 .mapToObj(i -> IntStream.range(0, 10)

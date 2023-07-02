@@ -53,4 +53,12 @@ public class Point {
     public int hashCode() {
         return Objects.hash(x, y, isPointSinking);
     }
+
+    @Override
+    public String toString() {
+        char letter = (char) ('A' + y);
+        int rowNumber = x + 1;
+
+        return letter + String.valueOf(rowNumber);
+    }
 }

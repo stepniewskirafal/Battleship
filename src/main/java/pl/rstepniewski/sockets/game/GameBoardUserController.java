@@ -226,7 +226,7 @@ public class GameBoardUserController {
         return ship.isPresent();
     }
 
-    public boolean markHitOnShipBoard(Point shot) {
+    public boolean markHitOnShip(Point shot) {
         Ship ship = fleet.findShip(shot).get();
 
         Point hitPoint = ship.getPosition().stream()
@@ -242,5 +242,13 @@ public class GameBoardUserController {
         int shipIndex = fleet.getFleet().indexOf(ship);
         fleet.getFleet().set(shipIndex, ship);
         return ship.isSinking();
+    }
+
+    public void markHitOnFleetBoard(Point receivedShot, BoardCellStatus boardCellStatus) {
+        gameBoard.markHitOnFleetBoard(receivedShot, boardCellStatus);
+    }
+
+    public void reportReceivedShot(Point receivedShot) {
+        UserInterface.printText("The enemy shoot at "+ receivedShot.toString());
     }
 }

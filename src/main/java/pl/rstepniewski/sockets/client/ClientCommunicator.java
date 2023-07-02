@@ -72,9 +72,11 @@ public class ClientCommunicator {
             ShotDto point = objectMapper.readValue(objectMapper.writeValueAsString(request.body()), ShotDto.class);
             Point receivedShot = new Point(point.getX(), point.getY());
             boolean isShotAccurate = gameBoardUserController.isShotHit(receivedShot);
+            gameBoardUserController.reportReceivedShot(receivedShot);
             String gameShotStatusResponse;
             if (isShotAccurate) {
-                boolean isShipSinking = gameBoardUserController.markHitOnShipBoard(receivedShot);
+                boolean isShipSinking = gameBoardUserController.markHitOnShip(receivedShot);
+                gameBoardUserController.markHitOnFleetBoard(receivedShot, BoardCellStatus.HIT);
                 if (isShipSinking) {
                     gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultSinking());
                     printWriter.println(gameShotStatusResponse);
@@ -83,10 +85,10 @@ public class ClientCommunicator {
                     printWriter.println(gameShotStatusResponse);
                 }
             } else {
+                gameBoardUserController.markHitOnFleetBoard(receivedShot, BoardCellStatus.MISS);
                 gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultMiss());
                 printWriter.println(gameShotStatusResponse);
             }
-            System.out.println(gameShotStatusResponse);
         }
     }
 
@@ -112,7 +114,7 @@ public class ClientCommunicator {
     }
 
     private Point shoot() throws JsonProcessingException {
-        Point shot = ShotInterface.getNewShot();
+        Point shot = ShotInterface.getNewUserShot();
         Request request = Request.shot( new ShotDto(shot.getX(), shot.getY()) );
         String json = objectMapper.writeValueAsString(request);
         printWriter.println(json);
