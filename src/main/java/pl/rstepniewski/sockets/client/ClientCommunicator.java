@@ -23,35 +23,31 @@ import java.io.PrintWriter;
  * @project : Battleship
  */
 public class ClientCommunicator {
-    private final ClientService serverService;
+    private final ClientService clientService;
     private PrintWriter printWriter;
     private BufferedReader bufferedReader;
-    GameBoardUserController gameBoardUserController = new GameBoardUserController(new GameBoard());
+    private GameBoardUserController gameBoardUserController = new GameBoardUserController(new GameBoard());
     private String jsonString;
     private Request request;
     private Response response;
-
     private final ObjectMapper objectMapper = new ObjectMapper();
-
     private static final Logger logger = LogManager.getLogger(ClientCommunicator.class);
 
-    public ClientCommunicator(ClientService serverService) {
-        this.serverService = serverService;
-        printWriter = serverService.getPrintWriter();
-        bufferedReader = serverService.getBufferedReader();
+    public ClientCommunicator(ClientService clientService) {
+        this.clientService = clientService;
+        printWriter = clientService.getPrintWriter();
+        bufferedReader = clientService.getBufferedReader();
     }
 
     public void playGame() throws IOException {
         sendGameInvitation();
-
-        handleServerInvitationResponce();
-
-        gameBoardUserController.initialiseBord();
+        handleServerInvitationResponse();
+        gameBoardUserController.initializeBoard();
 
         while (gameBoardUserController.isFleetAlive()) {
             Point shot = shoot();
-            response = getShotResut();
-            markShootResut(shot, response);
+            response = getShotResult();
+            markShotResult(shot, response);
 
             Request shotRequest = getShotRequest();
             handleShotRequest(shotRequest);
@@ -92,7 +88,7 @@ public class ClientCommunicator {
         }
     }
 
-    private void markShootResut(Point shot, Response response) {
+    private void markShotResult(Point shot, Response response) {
         if (response.status() == 2) {
             UserInterface.printText(response.message().toString());
         }
@@ -108,7 +104,7 @@ public class ClientCommunicator {
         }
     }
 
-    private Response getShotResut() throws IOException {
+    private Response getShotResult() throws IOException {
         String responseJson = bufferedReader.readLine();
         return objectMapper.readValue(responseJson, Response.class);
     }
@@ -121,7 +117,7 @@ public class ClientCommunicator {
         return shot;
     }
 
-    private void handleServerInvitationResponce() throws IOException {
+    private void handleServerInvitationResponse() throws IOException {
         Response response = getInvitationResponse();
         if ( response.type().equals(ResponseType.GAME_INVITATION.name()) && response.status() != 0) {
             UserInterface.printText(response.message());

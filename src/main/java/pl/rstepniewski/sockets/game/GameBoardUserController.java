@@ -26,7 +26,7 @@ public class GameBoardUserController {
         this.gameBoard = gameBoard;
     }
 
-    public void initialiseBord(){
+    public void initializeBoard(){
         UserInterface.printProperty("game.start");
 
 /*        Fleet fleet = new Fleet(getShipCoordinatesFromUser());

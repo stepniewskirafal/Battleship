@@ -24,20 +24,21 @@ import java.io.PrintWriter;
  */
 public class ServerCommunicator {
     private static final Logger logger = LogManager.getLogger(ServerCommunicator.class);
-    GameBoardAIController gameBoardAIController = new GameBoardAIController(new GameBoard());
+    private final GameBoardAIController gameBoardAIController;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private BufferedReader bufferedReader;
-    private PrintWriter printWriter;
+    private final BufferedReader bufferedReader;
+    private final PrintWriter printWriter;
     private final ServerService serverService;
     private String jsonString;
     private Request request;
     private Response response;
 
     public ServerCommunicator(ServerService serverService) {
+        this.gameBoardAIController = new GameBoardAIController(new GameBoard());
         this.serverService  = serverService;
-        bufferedReader      = serverService.getBufferedReader();
-        printWriter         = serverService.getPrintWriter();
+        this.bufferedReader      = serverService.getBufferedReader();
+        this.printWriter         = serverService.getPrintWriter();
     }
 
     public void handleGame() throws IOException {

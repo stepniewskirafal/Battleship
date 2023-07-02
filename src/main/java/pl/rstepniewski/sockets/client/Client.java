@@ -2,7 +2,6 @@ package pl.rstepniewski.sockets.client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pl.rstepniewski.sockets.server.Server;
 
 import java.io.IOException;
 
@@ -18,8 +17,8 @@ public class Client {
         logger.info("Starting Battleship application");
         Client client = new Client();
         ClientService clientService = new ClientService(client);
-        ClientCommunicator clientComunicator = new ClientCommunicator(clientService);
+        ClientCommunicator clientCommunicator = new ClientCommunicator(clientService);
         logger.info("Starting Battleship game");
-        clientComunicator.playGame();
+        clientCommunicator.playGame();
     }
 }
