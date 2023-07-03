@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.rstepniewski.sockets.dto.ShotDto;
 import pl.rstepniewski.sockets.game.*;
+import pl.rstepniewski.sockets.game.fleet.FleetLoader;
 import pl.rstepniewski.sockets.jsonCommunication.Request;
 import pl.rstepniewski.sockets.jsonCommunication.RequestType;
 import pl.rstepniewski.sockets.jsonCommunication.Response;
@@ -37,7 +38,7 @@ public class ServerCommunicator {
 
     public ServerCommunicator(ServerService serverService) {
         this.bufferedReader         = serverService.getBufferedReader();
-        this.gameBoardAIController  = new GameBoardAIController(new GameBoard());
+        this.gameBoardAIController  = new GameBoardAIController(new GameBoard(), new FleetLoader());
         this.printWriter            = serverService.getPrintWriter();
         this.serverService          = serverService;
     }

@@ -1,4 +1,7 @@
-package pl.rstepniewski.sockets.game;
+package pl.rstepniewski.sockets.game.fleet;
+
+import pl.rstepniewski.sockets.game.Point;
+import pl.rstepniewski.sockets.game.Ship;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +30,7 @@ public class Fleet {
                 .findAny();
     }
 
-    List<Ship> getFleet() {
+    public List<Ship> getFleet() {
         return fleet;
     }
 }

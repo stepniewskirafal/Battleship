@@ -2,6 +2,8 @@ package pl.rstepniewski.sockets.game;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import pl.rstepniewski.sockets.game.fleet.Fleet;
+import pl.rstepniewski.sockets.game.fleet.FleetLoader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,25 +23,15 @@ public class GameBoardAIController {
 
     private final GameBoard gameBoard;
     private Fleet fleet;
+    private final FleetLoader fleetLoader;
 
-    public GameBoardAIController(GameBoard gameBoard) {
+    public GameBoardAIController(GameBoard gameBoard, FleetLoader fleetLoader) {
         this.gameBoard = gameBoard;
+        this.fleetLoader = fleetLoader;
     }
 
     public void initialiseBord(){
-
-
-/*        Fleet fleet = new Fleet(getShipCoordinatesFromUser());
-
-        board.markShipPosition(fleet.getFleet());
-        board.printBoard();*/
-
-        //Ship ship1 = new Ship(Arrays.asList(new Point("C1"), new Point("C2")), 2);
-/*        Ship ship2 = new Ship(Arrays.asList(new Point("H5")), 1);
-        List<Ship> list = Arrays.asList( ship2);
-        fleet = new Fleet(list);*/
-
-        fleet = FleetLoader.loadRandomFleet();
+        fleet = fleetLoader.loadRandomFleet();
         logger.info("Server initialized it's gameboards succesfully");
 
         gameBoard.markShipPosition(fleet.getFleet());

@@ -2,6 +2,7 @@ package pl.rstepniewski.sockets.game;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import pl.rstepniewski.sockets.game.fleet.Fleet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
