@@ -1,6 +1,5 @@
 package pl.rstepniewski.sockets.game;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +11,7 @@ import java.util.Optional;
  * @project : Battleship
  */
 public class Fleet {
-    private List<Ship> fleet = new ArrayList<>();
+    private List<Ship> fleet;
 
     public Fleet(List<Ship> fleet) {
         this.fleet = fleet;
@@ -23,12 +22,9 @@ public class Fleet {
     }
     
     public Optional<Ship> findShip(Point point){
-        Optional<Ship> any = fleet.stream()
-                .filter(ship -> ship.getPosition().contains(point)
-                )
+        return fleet.stream()
+                .filter(ship -> ship.getPosition().contains(point))
                 .findAny();
-
-        return any;
     }
 
     List<Ship> getFleet() {
