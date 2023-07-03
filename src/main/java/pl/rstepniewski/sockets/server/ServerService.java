@@ -1,5 +1,8 @@
 package pl.rstepniewski.sockets.server;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,15 +19,16 @@ import java.net.Socket;
  */
 public class ServerService {
     private static final int PORT = 6767;
-    private final Server server;
     private Socket clientSocket;
     ServerSocket serverSocket;
     private PrintWriter printWriter;
     private BufferedReader bufferedReader;
+    private static final Logger logger = LogManager.getLogger(ServerService.class);
 
-    public ServerService(Server server) {
-        this.server = server;
+    public ServerService() {
+        logger.info("Starting Battleship application");
         startServer();
+        logger.info("Starting serwer");
     }
 
     private void startServer(){
