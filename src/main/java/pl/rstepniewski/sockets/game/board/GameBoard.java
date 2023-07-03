@@ -1,4 +1,7 @@
-package pl.rstepniewski.sockets.game;
+package pl.rstepniewski.sockets.game.board;
+
+import pl.rstepniewski.sockets.game.Point;
+import pl.rstepniewski.sockets.game.Ship;
 
 import java.util.ArrayList;
 import java.util.List;

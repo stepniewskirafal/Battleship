@@ -1,7 +1,11 @@
-package pl.rstepniewski.sockets.game;
+package pl.rstepniewski.sockets.game.board;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import pl.rstepniewski.sockets.game.Point;
+import pl.rstepniewski.sockets.game.Ship;
+import pl.rstepniewski.sockets.game.ShotInterface;
+import pl.rstepniewski.sockets.game.UserInterface;
 import pl.rstepniewski.sockets.game.fleet.Fleet;
 import pl.rstepniewski.sockets.game.fleet.FleetLoader;
 
