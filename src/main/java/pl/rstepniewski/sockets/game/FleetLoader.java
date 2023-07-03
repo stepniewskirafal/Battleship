@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,24 +19,27 @@ import java.util.Random;
  * @project : Battleship
  */
 public class FleetLoader {
-    //private static final String FILE_PATH = "/src/main/resources/fleet.ai";
-    private static final String FILE_PATH = "C:\\Users\\rafal\\IdeaProjects\\ZaRaczke\\Battleship\\Battleship\\src\\main\\resources\\fleet.ai";
+    private static final String FILE_PATH = "/fleet.ai";
 
     public static Fleet loadRandomFleet() {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        try {
-            List<Map<String, Object>> jsonDataList = objectMapper.readValue(new File(FILE_PATH), new TypeReference<List<Map<String, Object>>>() {});
+        try (InputStream inputStream = Fleet.class.getResourceAsStream(FILE_PATH)) {
+            if (inputStream != null) {
+                List<Map<String, Object>> jsonDataList = objectMapper.readValue(inputStream, new TypeReference<List<Map<String, Object>>>() {});
+                int randomIndex = new Random().nextInt(jsonDataList.size());
+                Map<String, Object> jsonData = jsonDataList.get(randomIndex);
 
-            int randomIndex = new Random().nextInt(jsonDataList.size());
-            Map<String, Object> jsonData = jsonDataList.get(randomIndex);
+                List<Ship> fleet = parseFleetData(jsonData);
 
-            List<Ship> fleet = parseFleetData(jsonData);
-
-            return new Fleet(fleet);
+                return new Fleet(fleet);
+            } else {
+                System.err.println("Brakuje pliku filePath");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
