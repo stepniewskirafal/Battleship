@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.rstepniewski.sockets.jsonCommunication.Request;
 import pl.rstepniewski.sockets.jsonCommunication.Response;
-import pl.rstepniewski.sockets.server.CommunicatorInterface;
 import pl.rstepniewski.sockets.server.ServerService;
 
 import java.io.BufferedReader;
