@@ -1,4 +1,4 @@
-package pl.rstepniewski.sockets.client;
+package pl.rstepniewski.sockets.communication;
 
 import java.io.IOException;
 

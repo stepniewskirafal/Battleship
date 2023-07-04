@@ -9,9 +9,7 @@ Created by rafal on 09.06.2023
 */
 public class Client {
     public static void main(String[] args) throws IOException {
-        ClientService clientService = new ClientService();
-        ClientCommunicatorImpl communicator = new ClientCommunicatorImpl(clientService);
-        ClientController clientController = new ClientController(communicator);
+        ClientController clientController = new ClientController();
         clientController.playGame();
     }
 }

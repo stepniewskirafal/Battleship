@@ -1,30 +1,32 @@
-package pl.rstepniewski.sockets.client;
+package pl.rstepniewski.sockets.communication;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.rstepniewski.sockets.jsonCommunication.Request;
 import pl.rstepniewski.sockets.jsonCommunication.Response;
+import pl.rstepniewski.sockets.server.CommunicatorInterface;
+import pl.rstepniewski.sockets.server.ServerService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+
 /**
- * Created by rafal on 02.07.2023
+ * Created by rafal on 03.07.2023
  *
  * @author : rafal
- * @date : 02.07.2023
+ * @date : 03.07.2023
  * @project : Battleship
  */
-public class ClientCommunicatorImpl implements CommunicatorInterface {
+public class ServerCommunicatorImpl implements CommunicatorInterface {
     private final PrintWriter printWriter;
     private final BufferedReader bufferedReader;
     private final ObjectMapper objectMapper;
-    private final ClientService clientService;
-
-    public ClientCommunicatorImpl(ClientService clientService) {
-        this.clientService = clientService;
-        this.printWriter = clientService.getPrintWriter();
-        this.bufferedReader = clientService.getBufferedReader();
+    private final ServerService serverService;
+    public ServerCommunicatorImpl(ServerService serverService) {
+        this.serverService = serverService;
+        this.printWriter = serverService.getPrintWriter();
+        this.bufferedReader = serverService.getBufferedReader();
         this.objectMapper = new ObjectMapper();
     }
     @Override
@@ -49,3 +51,17 @@ public class ClientCommunicatorImpl implements CommunicatorInterface {
         printWriter.println(requestJson);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

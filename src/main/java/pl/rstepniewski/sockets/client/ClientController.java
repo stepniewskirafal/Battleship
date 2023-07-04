@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import pl.rstepniewski.sockets.communication.ClientCommunicatorImpl;
 import pl.rstepniewski.sockets.dto.ShotDto;
 import pl.rstepniewski.sockets.game.*;
 import pl.rstepniewski.sockets.game.board.BoardCellStatus;
@@ -23,16 +24,15 @@ import static pl.rstepniewski.sockets.jsonCommunication.ResponseType.GAME_INVITA
  * @date : 09.06.2023
  * @project : Battleship
  */
-public class ClientController {
-    private final ClientCommunicatorImpl communicator;
+public class ClientController extends ClientCommunicatorImpl {
     private final GameBoardUserController gameBoardUserController;
     private Response response;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger logger = LogManager.getLogger(ClientController.class);
 
-    public ClientController(ClientCommunicatorImpl communicator) {
+    public ClientController() {
+        super(new ClientService());
         this.gameBoardUserController = new GameBoardUserController(new GameBoard());
-        this.communicator            = communicator;
     }
 
     public void playGame() throws IOException {
@@ -43,10 +43,10 @@ public class ClientController {
 
         while (gameBoardUserController.isFleetAlive()) {
             Point shot = shoot();
-            response = communicator.getResponse();
+            response = getResponse();
             markShotResult(shot, response);
 
-            Request shotRequest = communicator.getRequest();
+            Request shotRequest = getRequest();
             handleShotRequest(shotRequest);
         }
 
@@ -54,11 +54,11 @@ public class ClientController {
     }
 
     public void sendGameInvitation() throws JsonProcessingException {
-        communicator.sendRequest(Request.gameInvitation());
+        sendRequest(Request.gameInvitation());
     }
 
     private void handleServerInvitationResponse() throws IOException {
-        Response response = communicator.getResponse();
+        Response response = getResponse();
         if ( response.type().equals(GAME_INVITATION.name()) && response.status() != 0) {
             UserInterface.printText(response.message());
         }
@@ -74,13 +74,13 @@ public class ClientController {
                 boolean isShipSinking = gameBoardUserController.markHitOnShip(receivedShot);
                 gameBoardUserController.markHitOnFleetBoard(receivedShot, BoardCellStatus.HIT);
                 if (isShipSinking) {
-                    communicator.sendResponse(Response.shotResultSinking());
+                    sendResponse(Response.shotResultSinking());
                 } else {
-                    communicator.sendResponse(Response.shotResultHit());
+                    sendResponse(Response.shotResultHit());
                 }
             } else {
                 gameBoardUserController.markHitOnFleetBoard(receivedShot, BoardCellStatus.MISS);
-                communicator.sendResponse(Response.shotResultMiss());
+                sendResponse(Response.shotResultMiss());
             }
         }
     }
@@ -103,7 +103,7 @@ public class ClientController {
 
     private Point shoot() throws JsonProcessingException {
         Point shot = ShotInterface.getNewUserShot();
-        communicator.sendRequest(Request.shot( new ShotDto(shot.getX(), shot.getY()) ));
+        sendRequest(Request.shot( new ShotDto(shot.getX(), shot.getY()) ));
 
         return shot;
     }
