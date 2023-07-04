@@ -43,10 +43,10 @@ public class ClientController {
 
         while (gameBoardUserController.isFleetAlive()) {
             Point shot = shoot();
-            response = communicator.getShotResult();
+            response = communicator.getResponse();
             markShotResult(shot, response);
 
-            Request shotRequest = communicator.getShotRequest();
+            Request shotRequest = communicator.getRequest();
             handleShotRequest(shotRequest);
         }
 
@@ -54,12 +54,11 @@ public class ClientController {
     }
 
     public void sendGameInvitation() throws JsonProcessingException {
-        Request request = Request.gameInvitation();
-        communicator.sendMessage(objectMapper.writeValueAsString(request));
+        communicator.sendRequest(Request.gameInvitation());
     }
 
     private void handleServerInvitationResponse() throws IOException {
-        Response response = communicator.getInvitationResponse();
+        Response response = communicator.getResponse();
         if ( response.type().equals(GAME_INVITATION.name()) && response.status() != 0) {
             UserInterface.printText(response.message());
         }
@@ -71,21 +70,17 @@ public class ClientController {
             Point receivedShot = new Point(point.getX(), point.getY());
             boolean isShotAccurate = gameBoardUserController.isShotHit(receivedShot);
             gameBoardUserController.reportReceivedShot(receivedShot);
-            String gameShotStatusResponse;
             if (isShotAccurate) {
                 boolean isShipSinking = gameBoardUserController.markHitOnShip(receivedShot);
                 gameBoardUserController.markHitOnFleetBoard(receivedShot, BoardCellStatus.HIT);
                 if (isShipSinking) {
-                    gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultSinking());
-                    communicator.sendMessage(gameShotStatusResponse);
+                    communicator.sendResponse(Response.shotResultSinking());
                 } else {
-                    gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultHit());
-                    communicator.sendMessage(gameShotStatusResponse);
+                    communicator.sendResponse(Response.shotResultHit());
                 }
             } else {
                 gameBoardUserController.markHitOnFleetBoard(receivedShot, BoardCellStatus.MISS);
-                gameShotStatusResponse = objectMapper.writeValueAsString(Response.shotResultMiss());
-                communicator.sendMessage(gameShotStatusResponse);
+                communicator.sendResponse(Response.shotResultMiss());
             }
         }
     }
@@ -108,9 +103,8 @@ public class ClientController {
 
     private Point shoot() throws JsonProcessingException {
         Point shot = ShotInterface.getNewUserShot();
-        Request request = Request.shot( new ShotDto(shot.getX(), shot.getY()) );
-        String json = objectMapper.writeValueAsString(request);
-        communicator.sendMessage(json);
+        communicator.sendRequest(Request.shot( new ShotDto(shot.getX(), shot.getY()) ));
+
         return shot;
     }
 }

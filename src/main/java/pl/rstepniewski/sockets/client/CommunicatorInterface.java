@@ -1,6 +1,8 @@
 package pl.rstepniewski.sockets.client;
 
 import java.io.IOException;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import pl.rstepniewski.sockets.jsonCommunication.Request;
 import pl.rstepniewski.sockets.jsonCommunication.Response;
 
@@ -12,8 +14,8 @@ import pl.rstepniewski.sockets.jsonCommunication.Response;
  * @project : Battleship
  */
 public interface CommunicatorInterface {
-    void sendMessage(String message);
-    Response getInvitationResponse() throws IOException;
-    Request getShotRequest() throws IOException;
-    Response getShotResult() throws IOException;
+    Response getResponse() throws IOException;
+    Request getRequest() throws IOException;
+    void sendResponse(Response response) throws JsonProcessingException;
+    void sendRequest(Request request) throws JsonProcessingException;
 }

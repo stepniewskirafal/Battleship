@@ -1,5 +1,6 @@
 package pl.rstepniewski.sockets.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.rstepniewski.sockets.jsonCommunication.Request;
 import pl.rstepniewski.sockets.jsonCommunication.Response;
@@ -26,28 +27,25 @@ public class ClientCommunicatorImpl implements CommunicatorInterface {
         this.bufferedReader = clientService.getBufferedReader();
         this.objectMapper = new ObjectMapper();
     }
-
     @Override
-    public void sendMessage(String message) {
-        printWriter.println(message);
-        printWriter.flush();
-    }
-
-    @Override
-    public Response getInvitationResponse() throws IOException {
+    public Response getResponse() throws IOException {
         String responseJson = bufferedReader.readLine();
         return objectMapper.readValue(responseJson, Response.class);
     }
-
     @Override
-    public Request getShotRequest() throws IOException {
+    public Request getRequest() throws IOException {
         String jsonString = bufferedReader.readLine();
-        return objectMapper.readValue(jsonString, Request.class);
+        Request request = objectMapper.readValue(jsonString, Request.class);
+        return request;
     }
-
     @Override
-    public Response getShotResult() throws IOException {
-        String responseJson = bufferedReader.readLine();
-        return objectMapper.readValue(responseJson, Response.class);
+    public void sendResponse(Response response) throws JsonProcessingException {
+        String responseJson = objectMapper.writeValueAsString(response);
+        printWriter.println(responseJson);
+    }
+    @Override
+    public void sendRequest(Request request) throws JsonProcessingException {
+        String requestJson = objectMapper.writeValueAsString(request);
+        printWriter.println(requestJson);
     }
 }
