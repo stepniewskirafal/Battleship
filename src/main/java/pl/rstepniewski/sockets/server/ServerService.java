@@ -41,7 +41,7 @@ public class ServerService {
     }
 
     private void startSocket() throws IOException{
-        serverSocket = new ServerSocket(PORT);
+        serverSocket = new ServerSocket(PORT, 5);
         clientSocket = serverSocket.accept();
     }
 
