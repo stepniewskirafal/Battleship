@@ -11,9 +11,11 @@ import pl.rstepniewski.sockets.game.board.BoardCellStatus;
 import pl.rstepniewski.sockets.game.board.GameBoard;
 import pl.rstepniewski.sockets.game.board.GameBoardAIController;
 import pl.rstepniewski.sockets.game.fleet.FleetLoader;
-import pl.rstepniewski.sockets.jsonCommunication.Request;
+import pl.rstepniewski.sockets.jsonCommunication.MessageType;
+import pl.rstepniewski.sockets.jsonCommunication.message.Message;
+import pl.rstepniewski.sockets.jsonCommunication.message.Request;
 import pl.rstepniewski.sockets.jsonCommunication.RequestType;
-import pl.rstepniewski.sockets.jsonCommunication.Response;
+import pl.rstepniewski.sockets.jsonCommunication.message.Response;
 
 import java.io.IOException;
 
@@ -31,6 +33,7 @@ public class ServerConroller extends ServerCommunicatorImpl {
     private final GameBoardAIController gameBoardAIController;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private Response response;
+    private boolean serverGameBussy = false;
 
     public ServerConroller() {
         super(new ServerService());
@@ -38,6 +41,23 @@ public class ServerConroller extends ServerCommunicatorImpl {
     }
 
     public void handleGame() throws IOException {
+        Message clientMessage = getClientMessage();
+        MessageType messageTypeFromString = MessageType.getMessageTypeFromString(clientMessage.getType());
+        switch (messageTypeFromString){
+            case GAME_INVITATION:
+                break;
+            case RESULT:
+                break;
+            case SHOT:
+                break;
+            case SHOT_REQUEST:
+                break;
+            case UNKNOWN:
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + clientMessage.getType());
+        }
+
         handleGameInvitation();
         gameBoardAIController.initialiseBord();
 
@@ -50,12 +70,16 @@ public class ServerConroller extends ServerCommunicatorImpl {
             markShootResut(shot, response);
         }
     }
-
+    private Message getClientMessage() throws IOException {
+        String jsonString = getJsonString();
+        Message message = objectMapper.readValue(jsonString, Message.class);
+        return message;
+    };
     private void handleGameInvitation() throws IOException {
         Request request = getRequest();
-        logger.info("Request received from client. Request type: " + request.type());
+        logger.info("Request received from client. Request type: " + request.getType());
 
-        if(!request.type().equals(GAME_INVITATION.name())) {
+        if(!request.getType().equals(GAME_INVITATION.name())) {
             response = Response.gameInvitationNegative();
             sendResponse(response);
         }
@@ -64,10 +88,10 @@ public class ServerConroller extends ServerCommunicatorImpl {
     }
 
     private void markShootResut(Point shot, Response response) {
-        if (response.status() == 2) {
-            UserInterface.printText(response.message().toString());
+        if (response.getStatus() == 2) {
+            UserInterface.printText(response.getMessage().toString());
         }
-        switch (response.body().toString()) {
+        switch (response.getBody().toString()) {
             case "HIT":
                 gameBoardAIController.markHitOnShotBoard(shot);
                 break;
@@ -87,12 +111,10 @@ public class ServerConroller extends ServerCommunicatorImpl {
         return shot;
     }
 
-
-
     private void handleShotRequest(Request request) throws IOException {
-        if (request.type().equals(RequestType.SHOT.name())) {
-            ShotDto point = objectMapper.readValue(objectMapper.writeValueAsString(request.body()), ShotDto.class);
-            Point receivedShot = new Point(point.getX(), point.getY());
+        if (request.getType().equals(RequestType.SHOT.name())) {
+            ShotDto point = objectMapper.readValue(objectMapper.writeValueAsString(request.getBody()), ShotDto.class);
+            Point receivedShot = new Point(point.getRow(), point.getColumn());
             boolean isShotAccurate = gameBoardAIController.isShotHit(receivedShot);
             gameBoardAIController.reportReceivedShot(receivedShot);
 
