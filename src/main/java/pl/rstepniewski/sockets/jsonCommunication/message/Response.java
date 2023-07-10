@@ -1,20 +1,26 @@
-package pl.rstepniewski.sockets.jsonCommunication;
+package pl.rstepniewski.sockets.jsonCommunication.message;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import pl.rstepniewski.sockets.game.Point;
 import pl.rstepniewski.sockets.game.ShotType;
+import pl.rstepniewski.sockets.jsonCommunication.ResponseType;
 
-public record Response(
-        @JsonProperty("type") String type,
-        @JsonProperty("status") int status,
-        @JsonProperty("message") String message,
-        @JsonProperty("body") Object body
-) {
+public class Response extends Message{
+    private int status;
+    private String message;
+
     @JsonCreator
-    public Response {
+    public Response(
+            @JsonProperty("type") String type,
+            @JsonProperty("status") int status,
+            @JsonProperty("message") String message,
+            @JsonProperty("body") Object body
+    ) {
+        super(type, body);
+        this.status = status;
+        this.message = message;
     }
-
     public static Response gameInvitationPositive() {
         return new Response(ResponseType.GAME_INVITATION.name(), 0, null, null);
     }
@@ -50,5 +56,19 @@ public record Response(
     public static Response serverStatus(int errorNumber) {
         return new Response(ResponseType.UNNOWN.name(), errorNumber, null, null);
     }
+    public int getStatus() {
+        return status;
+    }
 
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

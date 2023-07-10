@@ -1,19 +1,21 @@
-package pl.rstepniewski.sockets.jsonCommunication;
+package pl.rstepniewski.sockets.jsonCommunication.message;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import pl.rstepniewski.sockets.dto.ShotDto;
 import pl.rstepniewski.sockets.game.Ship;
 import pl.rstepniewski.sockets.game.ShotType;
+import pl.rstepniewski.sockets.jsonCommunication.RequestType;
 
 import java.util.List;
 
-public record Request(
-        @JsonProperty("type") String type,
-        @JsonProperty("body") Object body
-) {
+public class Request extends Message{
     @JsonCreator
-    public Request {
+    public Request(
+            @JsonProperty("type") String type,
+            @JsonProperty("body") Object body
+    ) {
+        super(type, body);
     }
 
     public static Request gameInvitation() {
