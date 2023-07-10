@@ -4,22 +4,22 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ShotDto {
-    private final int x;
-    private final int y;
+    private final int row;
+    private final int column;
 
     @JsonCreator
-    public ShotDto(@JsonProperty("x") int x, @JsonProperty("y") int y) {
-        this.x = x;
-        this.y = y;
+    public ShotDto(@JsonProperty("x") int row, @JsonProperty("y") int column) {
+        this.row = row;
+        this.column = column;
     }
 
     @JsonProperty("x")
-    public int getX() {
-        return x;
+    public int getRow() {
+        return row;
     }
 
     @JsonProperty("y")
-    public int getY() {
-        return y;
+    public int getColumn() {
+        return column;
     }
 }
