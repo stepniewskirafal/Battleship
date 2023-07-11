@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @date : 10.07.2023
  * @project : Battleship
  */
-public abstract class Message {
+public class Message {
     private String type;
     private Object body;
 
