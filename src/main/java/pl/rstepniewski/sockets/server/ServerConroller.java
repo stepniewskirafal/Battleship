@@ -41,50 +41,48 @@ public class ServerConroller extends ServerCommunicatorImpl {
     }
 
     public void handleGame() throws IOException {
-        Message clientMessage = getClientMessage();
-        MessageType messageTypeFromString = MessageType.getMessageTypeFromString(clientMessage.getType());
-        switch (messageTypeFromString){
-            case GAME_INVITATION:
-                break;
-            case RESULT:
-                break;
-            case SHOT:
-                break;
-            case SHOT_REQUEST:
-                break;
-            case UNKNOWN:
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + clientMessage.getType());
+
+        while (true) {
+            Message clientMessage = getClientMessage();
+            MessageType messageTypeFromString = MessageType.getMessageTypeFromString(clientMessage.getType());
+            switch (messageTypeFromString) {
+                case GAME_INVITATION:
+                    handleGameInvitation(messageTypeFromString.name());
+                    break;
+                case RESULT:
+                    break;
+                case SHOT:
+                    break;
+                case SHOT_REQUEST:
+                    break;
+                case UNKNOWN:
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + clientMessage.getType());
+            }
         }
 
-        handleGameInvitation();
-        gameBoardAIController.initialiseBord();
-
-        while (gameBoardAIController.isFleetAlive()) {
+/*        while (gameBoardAIController.isFleetAlive()) {
             Request shotRequest = getRequest();
             handleShotRequest(shotRequest);
 
             Point shot = shoot();
             response = getResponse();
             markShootResut(shot, response);
-        }
+        }*/
     }
-    private Message getClientMessage() throws IOException {
-        String jsonString = getJsonString();
-        Message message = objectMapper.readValue(jsonString, Message.class);
-        return message;
-    };
-    private void handleGameInvitation() throws IOException {
-        Request request = getRequest();
-        logger.info("Request received from client. Request type: " + request.getType());
 
-        if(!request.getType().equals(GAME_INVITATION.name())) {
+    private void handleGameInvitation(String requestType) throws IOException {
+        logger.info("Request received from client. Request type: " + requestType);
+        if(! serverGameBussy ) {
+            serverGameBussy=!serverGameBussy;
+            response = Response.gameInvitationNegative();
+            sendResponse(response);
+            gameBoardAIController.initialiseBord();
+        }else {
             response = Response.gameInvitationNegative();
             sendResponse(response);
         }
-        response = Response.gameInvitationNegative();
-        sendResponse(response);
     }
 
     private void markShootResut(Point shot, Response response) {

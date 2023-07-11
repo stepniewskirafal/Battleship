@@ -2,6 +2,7 @@ package pl.rstepniewski.sockets.communication;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import pl.rstepniewski.sockets.jsonCommunication.message.Message;
 import pl.rstepniewski.sockets.jsonCommunication.message.Request;
 import pl.rstepniewski.sockets.jsonCommunication.message.Response;
 import pl.rstepniewski.sockets.server.ServerService;
@@ -29,9 +30,24 @@ public class ServerCommunicatorImpl implements CommunicatorInterface {
         this.objectMapper = new ObjectMapper();
     }
     @Override
+    public Message getClientMessage() throws IOException {
+        String jsonString = getJsonString();
+        Message message = objectMapper.readValue(jsonString, Message.class);
+        return message;
+    }
+    @Override
     public String getJsonString() throws IOException {
         String responseJson = bufferedReader.readLine();
         return responseJson;
+    }
+    @Override
+    public Response getResponse(String jsonString) throws IOException {
+        return objectMapper.readValue(jsonString, Response.class);
+    }
+    @Override
+    public Request getRequest(String jsonString) throws JsonProcessingException {
+        Request request = objectMapper.readValue(jsonString, Request.class);
+        return request;
     }
     @Override
     public Response getResponse() throws IOException {
