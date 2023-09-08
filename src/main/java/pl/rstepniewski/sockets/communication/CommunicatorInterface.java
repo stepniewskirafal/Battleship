@@ -3,7 +3,6 @@ package pl.rstepniewski.sockets.communication;
 import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import pl.rstepniewski.sockets.jsonCommunication.message.Message;
 import pl.rstepniewski.sockets.jsonCommunication.message.Request;
 import pl.rstepniewski.sockets.jsonCommunication.message.Response;
 
@@ -16,7 +15,7 @@ import pl.rstepniewski.sockets.jsonCommunication.message.Response;
  */
 public interface CommunicatorInterface {
     String getJsonString() throws IOException;
-    Message getClientMessage() throws IOException;
+    String getClientMessage() throws IOException;
     Response getResponse(String jsonString) throws IOException;
     Request getRequest(String jsonString) throws IOException;
     Response getResponse() throws IOException;

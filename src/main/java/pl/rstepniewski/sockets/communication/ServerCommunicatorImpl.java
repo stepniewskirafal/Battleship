@@ -1,6 +1,8 @@
 package pl.rstepniewski.sockets.communication;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.rstepniewski.sockets.jsonCommunication.message.Message;
 import pl.rstepniewski.sockets.jsonCommunication.message.Request;
@@ -10,6 +12,7 @@ import pl.rstepniewski.sockets.server.ServerService;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 
 /**
  * Created by rafal on 03.07.2023
@@ -30,10 +33,14 @@ public class ServerCommunicatorImpl implements CommunicatorInterface {
         this.objectMapper = new ObjectMapper();
     }
     @Override
-    public Message getClientMessage() throws IOException {
+    public String getClientMessage() throws IOException {
         String jsonString = getJsonString();
-        Message message = objectMapper.readValue(jsonString, Message.class);
-        return message;
+        JsonNode jsonNode = objectMapper.readTree(jsonString);
+        if(jsonNode.get("type").asText().equals("SHOT") && jsonNode.has("status")){
+            jsonString = jsonString.replace("\"type\":\"SHOT\"", "\"type\":\"SHOT_STATUS\"");
+        }
+
+        return jsonString;
     }
     @Override
     public String getJsonString() throws IOException {

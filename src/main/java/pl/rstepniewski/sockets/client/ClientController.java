@@ -45,7 +45,7 @@ public class ClientController extends ClientCommunicatorImpl {
             Point shot = shoot();
             response = getResponse();
             markShotResult(shot, response);
-
+            sendRequest(Request.shotRequest());
             Request shotRequest = getRequest();
             handleShotRequest(shotRequest);
         }

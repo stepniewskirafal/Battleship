@@ -1,6 +1,7 @@
 package pl.rstepniewski.sockets.communication;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.rstepniewski.sockets.client.ClientService;
 import pl.rstepniewski.sockets.jsonCommunication.message.Message;
@@ -17,7 +18,7 @@ import java.io.PrintWriter;
  * @date : 02.07.2023
  * @project : Battleship
  */
-public class ClientCommunicatorImpl implements CommunicatorInterface {
+public class ClientCommunicatorImpl implements CommunicatorInterface{
     private final PrintWriter printWriter;
     private final BufferedReader bufferedReader;
     private final ObjectMapper objectMapper;
@@ -30,11 +31,7 @@ public class ClientCommunicatorImpl implements CommunicatorInterface {
         this.objectMapper = new ObjectMapper();
     }
     @Override
-    public Message getClientMessage() throws IOException {
-        String jsonString = getJsonString();
-        Message message = objectMapper.readValue(jsonString, Message.class);
-        return message;
-    }
+    public String getClientMessage() throws IOException { return ""; }
     @Override
     public String getJsonString() throws IOException {
         String responseJson = bufferedReader.readLine();
