@@ -1,4 +1,4 @@
-package pl.rstepniewski.sockets.client;
+package pl.rstepniewski.sockets.controller.client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

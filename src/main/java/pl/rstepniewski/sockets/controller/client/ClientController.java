@@ -1,4 +1,4 @@
-package pl.rstepniewski.sockets.client;
+package pl.rstepniewski.sockets.controller.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,10 +10,11 @@ import pl.rstepniewski.sockets.game.*;
 import pl.rstepniewski.sockets.game.board.BoardCellStatus;
 import pl.rstepniewski.sockets.game.board.GameBoard;
 import pl.rstepniewski.sockets.game.board.GameBoardUserController;
+import pl.rstepniewski.sockets.jsonCommunication.MessageType;
 import pl.rstepniewski.sockets.jsonCommunication.message.Request;
-import pl.rstepniewski.sockets.jsonCommunication.RequestType;
 import pl.rstepniewski.sockets.jsonCommunication.message.Response;
 import java.io.IOException;
+import java.util.Objects;
 
 import static pl.rstepniewski.sockets.jsonCommunication.ResponseType.GAME_INVITATION;
 
@@ -29,6 +30,7 @@ public class ClientController extends ClientCommunicatorImpl {
     private Response response;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger logger = LogManager.getLogger(ClientController.class);
+    private boolean isOpponendDefeated = false;
 
     public ClientController() {
         super(new ClientService());
@@ -46,11 +48,18 @@ public class ClientController extends ClientCommunicatorImpl {
             response = getResponse();
             markShotResult(shot, response);
             sendRequest(Request.shotRequest());
-            Request shotRequest = getRequest();
-            handleShotRequest(shotRequest);
-        }
+            Response shotResponse = getResponse();
 
-        UserInterface.printProperty("win");
+            if(MessageType.getMessageTypeFromString(shotResponse.getType()) == MessageType.SHOT){
+                if(Objects.isNull(shotResponse.getBody())){
+                    UserInterface.printProperty("win");
+                    return;
+                }
+            }
+            handleShotResponse(shotResponse);
+        }
+        UserInterface.printProperty("loose");
+
     }
 
     public void sendGameInvitation() throws JsonProcessingException {
@@ -64,25 +73,27 @@ public class ClientController extends ClientCommunicatorImpl {
         }
     }
 
-    private void handleShotRequest(Request request) throws IOException {
-        if (request.getType().equals(RequestType.SHOT.name())) {
-            ShotDto point = objectMapper.readValue(objectMapper.writeValueAsString(request.getBody()), ShotDto.class);
-            Point receivedShot = new Point(point.getRow(), point.getColumn());
-            boolean isShotAccurate = gameBoardUserController.isShotHit(receivedShot);
-            gameBoardUserController.reportReceivedShot(receivedShot);
-            if (isShotAccurate) {
-                boolean isShipSinking = gameBoardUserController.markHitOnShip(receivedShot);
-                gameBoardUserController.markHitOnFleetBoard(receivedShot, BoardCellStatus.HIT);
-                if (isShipSinking) {
-                    sendResponse(Response.shotResultSinking());
-                } else {
-                    sendResponse(Response.shotResultHit());
-                }
+    private void handleShotResponse(Response response) throws IOException {
+        Request requestResult= null;
+        ShotDto point = objectMapper.readValue(objectMapper.writeValueAsString(response.getBody()), ShotDto.class);
+
+        Point receivedShot = new Point(point.getRow(), point.getColumn());
+        boolean isShotAccurate = gameBoardUserController.isShotHit(receivedShot);
+        gameBoardUserController.reportReceivedShot(receivedShot);
+        if (isShotAccurate) {
+            boolean isShipSinking = gameBoardUserController.markHitOnShip(receivedShot);
+            gameBoardUserController.markHitOnFleetBoard(receivedShot, BoardCellStatus.HIT);
+            if (isShipSinking) {
+                requestResult = Request.shotResultSinking();
+
             } else {
-                gameBoardUserController.markHitOnFleetBoard(receivedShot, BoardCellStatus.MISS);
-                sendResponse(Response.shotResultMiss());
+                requestResult = Request.shotResultHit();
             }
+        } else {
+            gameBoardUserController.markHitOnFleetBoard(receivedShot, BoardCellStatus.MISS);
+            requestResult = Request.shotResultMiss();
         }
+        sendRequest(requestResult);
     }
 
     private void markShotResult(Point shot, Response response) {

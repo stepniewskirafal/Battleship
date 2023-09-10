@@ -30,15 +30,15 @@ public class Request extends Message{
         return new Request(RequestType.SHOT_REQUEST.name(), null);
     }
 
-    public static Request shotResultHit(ShotType shotType) {
+    public static Request shotResultHit() {
         return new Request(RequestType.RESULT.name(), ShotType.HIT.name());
     }
 
-    public static Request shotResultMiss(ShotType shotType) {
+    public static Request shotResultMiss() {
         return new Request(RequestType.RESULT.name(), ShotType.MISS.name());
     }
 
-    public static Request shotResultSinking(ShotType shotType) {
+    public static Request shotResultSinking() {
         return new Request(RequestType.RESULT.name(), ShotType.SINKING.name());
     }
 

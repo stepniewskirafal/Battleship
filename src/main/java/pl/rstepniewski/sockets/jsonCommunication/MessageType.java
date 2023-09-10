@@ -26,4 +26,5 @@ public enum MessageType {
                 return MessageType.UNKNOWN;
         }
     }
+
 }

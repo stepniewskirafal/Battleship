@@ -25,6 +25,11 @@ public interface UserInterface {
     static String readText() {
         return scanner.nextLine();
     }
+    static int readInt() {
+        int result = scanner.nextInt();
+        scanner.nextLine();
+        return result;
+    }
 
     static String printAndReadText(String string) {
         printText(string);

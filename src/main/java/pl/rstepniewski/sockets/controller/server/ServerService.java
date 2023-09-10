@@ -1,4 +1,4 @@
-package pl.rstepniewski.sockets.server;
+package pl.rstepniewski.sockets.controller.server;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,7 +28,7 @@ public class ServerService {
     public ServerService() {
         logger.info("Starting Battleship application");
         startServer();
-        logger.info("Starting serwer");
+        logger.info("Starting server");
     }
 
     private void startServer(){

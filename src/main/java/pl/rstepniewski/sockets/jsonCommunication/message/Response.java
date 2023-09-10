@@ -2,7 +2,7 @@ package pl.rstepniewski.sockets.jsonCommunication.message;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import pl.rstepniewski.sockets.game.Point;
+import pl.rstepniewski.sockets.dto.ShotDto;
 import pl.rstepniewski.sockets.game.ShotType;
 import pl.rstepniewski.sockets.jsonCommunication.ResponseType;
 
@@ -37,15 +37,19 @@ public class Response extends Message{
         return new Response(ResponseType.SHOT.name(), 0, null, ShotType.MISS.name());
     }
 
-    public static Response shotResultSinking() {
+    public static Response shotResultShipSinking() {
         return new Response(ResponseType.SHOT.name(), 0, null, ShotType.SINKING.name());
+    }
+
+    public static Response shotResultFleetSinking() {
+        return new Response(ResponseType.SHOT.name(), 0, null, null);
     }
 
     public static Response shotResultUnknown(ShotType shotType) {
         return new Response(ResponseType.SHOT.name(), 0, "The shot is not within the boundaries of the board.", null);
     }
 
-    public static Response shot(Point shot) {
+    public static Response shot(ShotDto shot) {
         return new Response(ResponseType.SHOT_REQUEST.name(), 0, null, shot);
     }
 
@@ -56,6 +60,7 @@ public class Response extends Message{
     public static Response serverStatus(int errorNumber) {
         return new Response(ResponseType.UNNOWN.name(), errorNumber, null, null);
     }
+
     public int getStatus() {
         return status;
     }
