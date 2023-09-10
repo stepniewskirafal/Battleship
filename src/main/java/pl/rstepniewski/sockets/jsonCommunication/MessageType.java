@@ -1,6 +1,7 @@
 package pl.rstepniewski.sockets.jsonCommunication;
 
 public enum MessageType {
+    BOARD,
     GAME_INVITATION,
     RESULT,
     SHOT,
@@ -10,6 +11,8 @@ public enum MessageType {
 
     public static MessageType getMessageTypeFromString(String value) {
         switch (value) {
+            case "BOARD":
+                return MessageType.BOARD;
             case "GAME_INVITATION":
                 return MessageType.GAME_INVITATION;
             case "RESULT":
@@ -20,8 +23,6 @@ public enum MessageType {
                 return MessageType.SHOT_REQUEST;
             case "SHOT_STATUS":
                 return MessageType.SHOT_STATUS;
-            case "UNKNOWN":
-                return MessageType.UNKNOWN;
             default:
                 return MessageType.UNKNOWN;
         }

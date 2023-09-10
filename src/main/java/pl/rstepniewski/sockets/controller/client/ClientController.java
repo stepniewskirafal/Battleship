@@ -16,7 +16,7 @@ import pl.rstepniewski.sockets.jsonCommunication.message.Response;
 import java.io.IOException;
 import java.util.Objects;
 
-import static pl.rstepniewski.sockets.jsonCommunication.ResponseType.GAME_INVITATION;
+import static pl.rstepniewski.sockets.jsonCommunication.MessageType.GAME_INVITATION;
 
 /**
  * Created by rafal on 09.06.2023
