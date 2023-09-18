@@ -2,6 +2,7 @@ package pl.rstepniewski.sockets.game.board;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import pl.rstepniewski.sockets.dto.PointDto;
 import pl.rstepniewski.sockets.dto.ShipDto;
 import pl.rstepniewski.sockets.dto.ShotDto;
 import pl.rstepniewski.sockets.game.Point;
@@ -238,11 +239,11 @@ public class GameBoardUserController {
     }
 
     private ShipDto mapShipToShipDto(Ship ship) {
-        List<ShotDto> shotDtos = ship.getPosition().stream()
-                .map(point -> new ShotDto(point.getX(), point.getY()))
+        List<PointDto> pointDto = ship.getPosition().stream()
+                .map(point -> new PointDto(point.getX(), point.getY(), point.isPointSinking()) )
                 .collect(Collectors.toList());
 
-        return new ShipDto(shotDtos);
+        return new ShipDto(pointDto, ship.isSinking());
     }
 
     public boolean isShipSinking(Point point){

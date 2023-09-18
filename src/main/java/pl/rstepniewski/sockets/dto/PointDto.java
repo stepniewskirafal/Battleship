@@ -1,5 +1,6 @@
 package pl.rstepniewski.sockets.dto;
 
+import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -13,19 +14,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @project : Battleship
  */
 public class PointDto {
-    private int x;
-    private int y;
-    private boolean isPointSinking;
+    private final int x;
+    private final int y;
+    private boolean pointSinking;
 
-    public PointDto(int x, int y) {
+    @JsonCreator
+    public PointDto(@JsonProperty("x") int x, @JsonProperty("y")int y, @JsonProperty("pointSinking") boolean pointSinking) {
         this.x = x;
         this.y = y;
-        this.isPointSinking = false;
-    }
-
-    public PointDto(String positionOnBoard) {
-        this(Integer.parseInt(positionOnBoard.substring(1)) - 1, positionOnBoard.toUpperCase().charAt(0) - 'A');
-        this.isPointSinking = false;
+        this.pointSinking = pointSinking;
     }
 
     public int getX() {
@@ -36,32 +33,8 @@ public class PointDto {
         return y;
     }
 
-    public boolean isPointSinking() {
-        return isPointSinking;
+    public boolean pointSinking() {
+        return pointSinking;
     }
 
-    public void setPointSinking(boolean pointSinking) {
-        isPointSinking = pointSinking;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PointDto point = (PointDto) o;
-        return x == point.x && y == point.y && isPointSinking == point.isPointSinking;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y, isPointSinking);
-    }
-
-    @Override
-    public String toString() {
-        char letter = (char) ('A' + y);
-        int rowNumber = x + 1;
-
-        return letter + String.valueOf(rowNumber);
-    }
 }
