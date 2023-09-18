@@ -60,8 +60,7 @@ public class ClientController extends ClientCommunicatorImpl {
         }
 
         printGameResult(amITheWinner);
-        sendRequest(Request.shipsArrangement(gameBoardUserController.getFleet()));
-        //sendRequest(Request.shipsArrangement(gameBoardUserController.getFleetAsShipDtoList()));
+        sendRequest(Request.shipsArrangement(gameBoardUserController.getFleetAsShipDtoList()));
     }
 
     private static void printGameResult(boolean amITheWinner) {

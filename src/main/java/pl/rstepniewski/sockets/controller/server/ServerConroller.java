@@ -76,9 +76,7 @@ public class ServerConroller extends ServerCommunicatorImpl {
     private void handleOpponentFleetSetting(String clientMessage) throws JsonProcessingException {
         JsonNode jsonNode = objectMapper.readTree(clientMessage);
         final String clientMessageBody = String.valueOf(jsonNode.get("body"));
-        List<Ship> OpponentFleetSetting = objectMapper.readValue(clientMessageBody, new TypeReference<List<Ship>>() {});
-
-//        List<ShipDto> OpponentFleetSetting = objectMapper.readValue(clientMessageBody, new TypeReference<List<ShipDto>>() {});
+        List<ShipDto> OpponentFleetSetting = objectMapper.readValue(clientMessageBody, new TypeReference<List<ShipDto>>() {});
 
     }
 
