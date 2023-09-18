@@ -41,8 +41,8 @@ public class Response extends Message{
         return new Response(MessageType.SHOT.name(), 0, null, ShotType.SINKING.name());
     }
 
-    public static Response shotResultFleetSinking() {
-        return new Response(MessageType.SHOT.name(), 0, null, null);
+    public static Response shotResultShotNotInBoundaries() {
+        return new Response(MessageType.SHOT.name(), 2, "The shot is not within the boundaries of the board.", null);
     }
 
     public static Response shotResultUnknown(ShotType shotType) {
@@ -56,6 +56,10 @@ public class Response extends Message{
     public static Response acceptShotResult() {
         return new Response(MessageType.RESULT.name(), 0, null, null);
     }
+    public static Response acceptOpponentFleetSetting() {
+        return new Response(MessageType.BOARD.name(), 0, null, null);
+    }
+
 
     public static Response serverStatus(int errorNumber) {
         return new Response(MessageType.UNKNOWN.name(), errorNumber, null, null);

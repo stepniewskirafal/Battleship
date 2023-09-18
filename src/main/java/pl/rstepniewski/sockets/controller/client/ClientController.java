@@ -10,11 +10,9 @@ import pl.rstepniewski.sockets.game.*;
 import pl.rstepniewski.sockets.game.board.BoardCellStatus;
 import pl.rstepniewski.sockets.game.board.GameBoard;
 import pl.rstepniewski.sockets.game.board.GameBoardUserController;
-import pl.rstepniewski.sockets.jsonCommunication.MessageType;
 import pl.rstepniewski.sockets.jsonCommunication.message.Request;
 import pl.rstepniewski.sockets.jsonCommunication.message.Response;
 import java.io.IOException;
-import java.util.Objects;
 
 import static pl.rstepniewski.sockets.jsonCommunication.MessageType.GAME_INVITATION;
 
@@ -27,10 +25,9 @@ import static pl.rstepniewski.sockets.jsonCommunication.MessageType.GAME_INVITAT
  */
 public class ClientController extends ClientCommunicatorImpl {
     private final GameBoardUserController gameBoardUserController;
-    private Response response;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger logger = LogManager.getLogger(ClientController.class);
-    private boolean isOpponendDefeated = false;
+    private int hitCounter = 0;
 
     public ClientController() {
         super(new ClientService());
@@ -38,28 +35,49 @@ public class ClientController extends ClientCommunicatorImpl {
     }
 
     public void playGame() throws IOException {
+        Response response;
+        boolean isShotPositive;
+        boolean amITheWinner = false;
         logger.info("Starting Battleship game");
         sendGameInvitation();
         handleServerInvitationResponse();
         gameBoardUserController.initializeBoard();
 
-        while (gameBoardUserController.isFleetAlive()) {
-            Point shot = shoot();
-            response = getResponse();
-            markShotResult(shot, response);
-            sendRequest(Request.shotRequest());
-            Response shotResponse = getResponse();
+        while (gameBoardUserController.isFleetAlive() && (!amITheWinner) ) {
+            do{
+                Point shot = shootOpponentsFleet();
+                response = getResponse();
+                isShotPositive = markShotResult(shot, response);
+            }while (!isShotPositive);
 
-            if(MessageType.getMessageTypeFromString(shotResponse.getType()) == MessageType.SHOT){
-                if(Objects.isNull(shotResponse.getBody())){
-                    UserInterface.printProperty("win");
-                    return;
-                }
+            amITheWinner = amITheWinner(response);
+            if(!amITheWinner){
+                sendRequest(Request.shotRequest());
+                response = getResponse();
+                handleShotResponse(response);
+                response = getResponse();
             }
-            handleShotResponse(shotResponse);
         }
-        UserInterface.printProperty("loose");
 
+        printGameResult(amITheWinner);
+        sendRequest(Request.shipsArrangement(gameBoardUserController.getFleet()));
+        //sendRequest(Request.shipsArrangement(gameBoardUserController.getFleetAsShipDtoList()));
+    }
+
+    private static void printGameResult(boolean amITheWinner) {
+        if(!amITheWinner) {
+            UserInterface.printProperty("loose");
+        }else {
+            UserInterface.printProperty("win");
+        }
+    }
+
+    private boolean amITheWinner(Response response) {
+        final String responseBodyString = response.getBody().toString();
+        if (responseBodyString.equals("HIT") || responseBodyString.equals("SINKING")) {
+            hitCounter++;
+        }
+        return hitCounter >= 1; //20
     }
 
     public void sendGameInvitation() throws JsonProcessingException {
@@ -96,23 +114,28 @@ public class ClientController extends ClientCommunicatorImpl {
         sendRequest(requestResult);
     }
 
-    private void markShotResult(Point shot, Response response) {
+    private boolean markShotResult(Point shot, Response response) {
+        boolean result = false;
         if (response.getStatus() == 2) {
             UserInterface.printText(response.getMessage().toString());
+            result = false;
+        } else{
+            switch (response.getBody().toString()) {
+                case "HIT":
+                    gameBoardUserController.markHitOnShotBoard(shot);
+                    break;
+                case "MISS":
+                    gameBoardUserController.markMissOnShotBoard(shot);
+                    break;
+                case "SINKING":
+                    gameBoardUserController.markSinkingOnShotBoard(shot);
+            }
+            result = true;
         }
-        switch (response.getBody().toString()) {
-            case "HIT":
-                gameBoardUserController.markHitOnShotBoard(shot);
-                break;
-            case "MISS":
-                gameBoardUserController.markMissOnShotBoard(shot);
-                break;
-            case "SINKING":
-                gameBoardUserController.markSinkingOnShotBoard(shot);
-        }
+        return result;
     }
 
-    private Point shoot() throws JsonProcessingException {
+    private Point shootOpponentsFleet() throws JsonProcessingException {
         Point shot = ShotInterface.getNewUserShot();
         sendRequest(Request.shot( new ShotDto(shot.getX(), shot.getY()) ));
 

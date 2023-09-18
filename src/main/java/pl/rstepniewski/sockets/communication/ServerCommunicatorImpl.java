@@ -31,13 +31,7 @@ public class ServerCommunicatorImpl implements CommunicatorInterface {
     }
     @Override
     public String getClientMessage() throws IOException {
-        String jsonString = getJsonString();
-        JsonNode jsonNode = objectMapper.readTree(jsonString);
-        if(jsonNode.get("type").asText().equals("SHOT") && jsonNode.has("status")){
-            jsonString = jsonString.replace("\"type\":\"SHOT\"", "\"type\":\"SHOT_STATUS\"");
-        }
-
-        return jsonString;
+        return getJsonString();
     }
     @Override
     public String getJsonString() throws IOException {

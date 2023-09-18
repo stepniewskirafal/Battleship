@@ -20,8 +20,8 @@ public class Fleet {
         this.fleet = fleet;
     }
 
-    public boolean isFleetSunk(){
-        return fleet.stream().allMatch(Ship::isSinking);
+    public List<Ship> getFleet() {
+        return fleet;
     }
     
     public Optional<Ship> findShip(Point point){
@@ -30,7 +30,7 @@ public class Fleet {
                 .findAny();
     }
 
-    public List<Ship> getFleet() {
-        return fleet;
+    public boolean isFleetSunk(){
+        return fleet.stream().allMatch(Ship::isSinking);
     }
 }

@@ -72,7 +72,11 @@ public class GameBoardAIController {
         Optional<Ship> ship = fleet.findShip(shot);
         return ship.isPresent();
     }
-    
+
+    public boolean isShotInBoundaries(Point shot){
+        return shot.getX()>=0 && shot.getX()<=9 && shot.getY()>=0 && shot.getY()<=9;
+    }
+
     public boolean markHitOnShipBoard(Point shot) {
         Ship ship = fleet.findShip(shot).orElseThrow();
 
@@ -105,6 +109,8 @@ public class GameBoardAIController {
     }
 
     public void reportReceivedShot(Point receivedShot) {
-        UserInterface.printText("The enemy shoot at "+ receivedShot.toString());
+        UserInterface.printText("The enemy shoot at "+ receivedShot.toString()
+                + ", X:" + receivedShot.getX()
+                + " Y:" + receivedShot.getY());
     }
 }

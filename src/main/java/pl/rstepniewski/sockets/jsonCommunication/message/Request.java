@@ -2,6 +2,7 @@ package pl.rstepniewski.sockets.jsonCommunication.message;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import pl.rstepniewski.sockets.dto.ShipDto;
 import pl.rstepniewski.sockets.dto.ShotDto;
 import pl.rstepniewski.sockets.game.Ship;
 import pl.rstepniewski.sockets.game.ShotType;
@@ -38,9 +39,12 @@ public class Request extends Message{
         return new Request(MessageType.RESULT.name(), ShotType.MISS.name());
     }
 
-    public static Request shotResultSinking() {
-        return new Request(MessageType.RESULT.name(), ShotType.SINKING.name());
+    public static Request shotResultSinking() { return new Request(MessageType.RESULT.name(), ShotType.SINKING.name());
     }
+
+/*    public static Request shipsArrangement(List<ShipDto> shipPosition) {
+        return new Request(MessageType.BOARD.name(), shipPosition);
+    }*/
 
     public static Request shipsArrangement(List<Ship> shipPosition) {
         return new Request(MessageType.BOARD.name(), shipPosition);

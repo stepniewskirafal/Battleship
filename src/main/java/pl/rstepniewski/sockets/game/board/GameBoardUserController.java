@@ -2,6 +2,8 @@ package pl.rstepniewski.sockets.game.board;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import pl.rstepniewski.sockets.dto.ShipDto;
+import pl.rstepniewski.sockets.dto.ShotDto;
 import pl.rstepniewski.sockets.game.Point;
 import pl.rstepniewski.sockets.game.Ship;
 import pl.rstepniewski.sockets.game.ShipType;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by rafal on 16.06.2023
@@ -217,8 +220,29 @@ public class GameBoardUserController {
         gameBoard.printBoards();
     }
 
+    public boolean isShotInBoundaries(Point shot){
+        return shot.getX()>=0 && shot.getX()<=9 && shot.getY()>=0 && shot.getY()<=9;
+    }
+
     public boolean isFleetAlive(){
         return !fleet.isFleetSunk();
+    }
+    public List<Ship> getFleet(){
+        return fleet.getFleet();
+    }
+
+    public List<ShipDto> getFleetAsShipDtoList() {
+        return fleet.getFleet().stream()
+                .map(this::mapShipToShipDto)
+                .collect(Collectors.toList());
+    }
+
+    private ShipDto mapShipToShipDto(Ship ship) {
+        List<ShotDto> shotDtos = ship.getPosition().stream()
+                .map(point -> new ShotDto(point.getX(), point.getY()))
+                .collect(Collectors.toList());
+
+        return new ShipDto(shotDtos);
     }
 
     public boolean isShipSinking(Point point){
