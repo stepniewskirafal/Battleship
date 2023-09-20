@@ -2,9 +2,12 @@ package pl.rstepniewski.sockets.game.board;
 
 import pl.rstepniewski.sockets.game.Point;
 import pl.rstepniewski.sockets.game.Ship;
+import pl.rstepniewski.sockets.game.UserInterface;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -16,9 +19,19 @@ import java.util.stream.IntStream;
  * @date : 13.06.2023
  * @project : Battleship
  */
-public class GameBoard {
+public class GameBoard implements UserInterface {
     private List<List<BoardCellStatus>> boardShips = new ArrayList<>();
     private List<List<BoardCellStatus>> boardShots = new ArrayList<>();
+
+    private Map<Byte, List<List<BoardCellStatus>>> boardShipsHistory = new HashMap<>();
+    private Map<Byte, List<List<BoardCellStatus>>> boardShotsHistory = new HashMap<>();
+
+    public void addToBoardShipsHistory(List<List<BoardCellStatus>> boardShips){
+        boardShipsHistory.put((byte) (boardShipsHistory.size() + 1), boardShips);
+    }
+    public void addToBoardShotsHistory(List<List<BoardCellStatus>> boardShots){
+        boardShipsHistory.put((byte) (boardShipsHistory.size() + 1), boardShips);
+    }
 
     public GameBoard(){
         markEmptyPosition();
@@ -38,16 +51,18 @@ public class GameBoard {
                         .mapToObj(j -> BoardCellStatus.EMPTY)
                         .collect(Collectors.toList()))
                 .collect(Collectors.toList());
+        addToBoardShipsHistory(boardShips);
 
         boardShots = IntStream.range(0, 10)
                 .mapToObj(i -> IntStream.range(0, 10)
                         .mapToObj(j -> BoardCellStatus.EMPTY)
                         .collect(Collectors.toList()))
                 .collect(Collectors.toList());
+        addToBoardShotsHistory(boardShots);
     }
 
     public void printShipBoard() {
-        System.out.println("   A B C D E F G H I J");
+        UserInterface.printText("   A B C D E F G H I J");
         AtomicInteger rowNumber = new AtomicInteger(1);
         List<String> output = boardShips.stream()
                 .map(rowList -> {
@@ -76,17 +91,37 @@ public class GameBoard {
         output.forEach(System.out::println);
     }
 
-    //public void printBoards(List<List<BoardCellStatus>> board1, List<List<BoardCellStatus>> board2) {
+
+    public void printBoardsHistory() throws InterruptedException {
+        for(int i=0; i<=boardShips.size(); i++){
+            UserInterface.printText("   You're fleet           You're shots                                               legend:");
+            UserInterface.printText("   A B C D E F G H I J    A B C D E F G H I J                                        O: Ship    X: Hit    M: Missed Shot");
+            AtomicInteger counter = new AtomicInteger(1);
+            List<String> output = getBoardOutput(counter, boardShipsHistory.get(i), boardShotsHistory.get(i));
+            output.forEach(System.out::println);
+            UserInterface.printText("");
+            UserInterface.printText("");
+            Thread.sleep(3000);
+        }
+    }
+
     public void printBoards() {
-        System.out.println("   You're fleet           You're shots                                               legend:");
-        System.out.println("   A B C D E F G H I J    A B C D E F G H I J                                        O: Ship    X: Hit    M: Missed Shot");
+        UserInterface.printText("   You're fleet           You're shots                                               legend:");
+        UserInterface.printText("   A B C D E F G H I J    A B C D E F G H I J                                        O: Ship    X: Hit    M: Missed Shot");
         AtomicInteger counter = new AtomicInteger(1);
-        List<String> output = IntStream.range(0, boardShips.size())
+        List<String> output = getBoardOutput(counter, boardShips, boardShots);
+        output.forEach(System.out::println);
+        UserInterface.printText("");
+        UserInterface.printText("");
+    }
+
+    private List<String> getBoardOutput(AtomicInteger counter, List<List<BoardCellStatus>> boardShips, List<List<BoardCellStatus>> boardShots) {
+        return IntStream.range(0, this.boardShips.size())
                 .mapToObj(index -> {
                     StringBuilder rowNumber = (counter.get() < 10) ? new StringBuilder(counter.getAndIncrement() + "  ") : new StringBuilder(counter.getAndIncrement() + " ");
                     StringBuilder builder = new StringBuilder(rowNumber);
-                    List<BoardCellStatus> rowList1 = boardShips.get(index);
-                    List<BoardCellStatus> rowList2 = boardShots.get(index);
+                    List<BoardCellStatus> rowList1 = this.boardShips.get(index);
+                    List<BoardCellStatus> rowList2 = this.boardShots.get(index);
 
                     StringBuilder rowShips = new StringBuilder();
                     StringBuilder rowShots = new StringBuilder();
@@ -138,8 +173,6 @@ public class GameBoard {
 
                 })
                 .collect(Collectors.toList());
-        output.forEach(System.out::println);
-        System.out.println("");
     }
 
     public void markShipPosition(List<Ship> shipPosition) {
@@ -147,18 +180,26 @@ public class GameBoard {
             ship.getPosition()
                     .forEach(point -> boardShips.get(point.getX()).set(point.getY(), BoardCellStatus.SHIP));
         });
+        addToBoardShipsHistory(boardShips);
+        addToBoardShotsHistory(boardShots);
     }
 
     public void markHitOnShotBoard(Point shot, BoardCellStatus boardCellStatus) {
         boardShots.get(shot.getX()).set(shot.getY(), boardCellStatus);
+        addToBoardShipsHistory(boardShips); 
+        addToBoardShotsHistory(boardShots);
     }
 
     public void markHitOnFleetBoard(Point shot, BoardCellStatus boardCellStatus) {
         boardShips.get(shot.getX()).set(shot.getY(), boardCellStatus);
+        addToBoardShipsHistory(boardShips);
+        addToBoardShotsHistory(boardShots);
     }
 
     public void markShotShooted(Point shot, BoardCellStatus boardCellStatus) {
         boardShips.get(shot.getX()).set(shot.getY(), boardCellStatus);
+        addToBoardShipsHistory(boardShips);
+        addToBoardShotsHistory(boardShots);
     }
 
 }

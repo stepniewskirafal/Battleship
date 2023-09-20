@@ -281,4 +281,12 @@ public class GameBoardUserController {
     public void reportReceivedShot(Point receivedShot) {
         UserInterface.printText("The enemy shoot at "+ receivedShot.toString());
     }
+
+    public void printBoardsHistory(){
+        try {
+            gameBoard.printBoardsHistory();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -113,4 +113,11 @@ public class GameBoardAIController {
                 + ", X:" + receivedShot.getX()
                 + " Y:" + receivedShot.getY());
     }
+    public void printBoardsHistory(){
+        try {
+            gameBoard.printBoardsHistory();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
