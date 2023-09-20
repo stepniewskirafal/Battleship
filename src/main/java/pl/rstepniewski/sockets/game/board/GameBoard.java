@@ -30,7 +30,7 @@ public class GameBoard implements UserInterface {
         boardShipsHistory.put((byte) (boardShipsHistory.size() + 1), boardShips);
     }
     public void addToBoardShotsHistory(List<List<BoardCellStatus>> boardShots){
-        boardShipsHistory.put((byte) (boardShipsHistory.size() + 1), boardShips);
+        boardShotsHistory.put((byte) (boardShotsHistory.size() + 1), boardShots);
     }
 
     public GameBoard(){
@@ -93,7 +93,7 @@ public class GameBoard implements UserInterface {
 
 
     public void printBoardsHistory() throws InterruptedException {
-        for(int i=0; i<=boardShips.size(); i++){
+        for(int i=0; i<=boardShipsHistory.size(); i++){
             UserInterface.printText("   You're fleet           You're shots                                               legend:");
             UserInterface.printText("   A B C D E F G H I J    A B C D E F G H I J                                        O: Ship    X: Hit    M: Missed Shot");
             AtomicInteger counter = new AtomicInteger(1);
@@ -180,26 +180,20 @@ public class GameBoard implements UserInterface {
             ship.getPosition()
                     .forEach(point -> boardShips.get(point.getX()).set(point.getY(), BoardCellStatus.SHIP));
         });
-        addToBoardShipsHistory(boardShips);
-        addToBoardShotsHistory(boardShots);
     }
 
     public void markHitOnShotBoard(Point shot, BoardCellStatus boardCellStatus) {
         boardShots.get(shot.getX()).set(shot.getY(), boardCellStatus);
-        addToBoardShipsHistory(boardShips); 
         addToBoardShotsHistory(boardShots);
     }
 
     public void markHitOnFleetBoard(Point shot, BoardCellStatus boardCellStatus) {
         boardShips.get(shot.getX()).set(shot.getY(), boardCellStatus);
         addToBoardShipsHistory(boardShips);
-        addToBoardShotsHistory(boardShots);
     }
 
     public void markShotShooted(Point shot, BoardCellStatus boardCellStatus) {
         boardShips.get(shot.getX()).set(shot.getY(), boardCellStatus);
-        addToBoardShipsHistory(boardShips);
-        addToBoardShotsHistory(boardShots);
     }
 
 }
