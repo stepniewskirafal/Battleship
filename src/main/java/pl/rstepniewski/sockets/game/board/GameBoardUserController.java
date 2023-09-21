@@ -276,6 +276,7 @@ public class GameBoardUserController {
 
     public void markHitOnFleetBoard(Point receivedShot, BoardCellStatus boardCellStatus) {
         gameBoard.markHitOnFleetBoard(receivedShot, boardCellStatus);
+        gameBoard.printBoards();
     }
 
     public void reportReceivedShot(Point receivedShot) {

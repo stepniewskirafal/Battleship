@@ -51,6 +51,16 @@ public class ServerConroller extends ServerCommunicatorImpl {
                 case BOARD:
                     handleOpponentFleetSetting(clientMessage);
                     acceptOpponentFleetSetting();
+
+                    System.out.println("");
+                    System.out.println("");
+                    System.out.println("");
+                    System.out.println("Oto wyniki");
+                    System.out.println("");
+                    System.out.println("");
+                    System.out.println("");
+                    gameBoardAIController.printBoardsHistory();
+
                     break;
                 case GAME_INVITATION:
                     handleGameInvitation();

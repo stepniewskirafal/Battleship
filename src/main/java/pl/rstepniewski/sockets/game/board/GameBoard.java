@@ -45,14 +45,12 @@ public class GameBoard implements UserInterface {
                         .mapToObj(j -> BoardCellStatus.EMPTY)
                         .collect(Collectors.toList()))
                 .collect(Collectors.toList());
-        gameBoardHistory.addToBoardHistory(boardShipsHistory, boardShips);
 
         boardShots = IntStream.range(0, 10)
                 .mapToObj(i -> IntStream.range(0, 10)
                         .mapToObj(j -> BoardCellStatus.EMPTY)
                         .collect(Collectors.toList()))
                 .collect(Collectors.toList());
-        gameBoardHistory.addToBoardHistory(boardShotsHistory, boardShots);
     }
 
     public void printShipBoard() {
@@ -99,6 +97,7 @@ public class GameBoard implements UserInterface {
             List<List<BoardCellStatus>> boardShipsToDraw = boardShipsHistory.get(i <= boardShipsHistorySize ? i : boardShipsHistorySize );
             List<List<BoardCellStatus>> boardShotsToDraw = boardShotsHistory.get(i <= boardShotsHistorySize ? i : boardShotsHistorySize );
 
+            UserInterface.printText("   ROUND : "+i);
             UserInterface.printText("   You're fleet           You're shots                                               legend:");
             UserInterface.printText("   A B C D E F G H I J    A B C D E F G H I J                                        O: Ship    X: Hit    M: Missed Shot");
 
