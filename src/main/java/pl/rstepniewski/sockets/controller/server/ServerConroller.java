@@ -51,16 +51,9 @@ public class ServerConroller extends ServerCommunicatorImpl {
                 case BOARD:
                     handleOpponentFleetSetting(clientMessage);
                     acceptOpponentFleetSetting();
-
-                    System.out.println("");
-                    System.out.println("");
-                    System.out.println("");
-                    System.out.println("Oto wyniki");
-                    System.out.println("");
-                    System.out.println("");
-                    System.out.println("");
-                    gameBoardAIController.printBoardsHistory();
-
+                    break;
+                case BOARD_HISTORY:
+                    sendServerGameHistory();
                     break;
                 case GAME_INVITATION:
                     handleGameInvitation();
@@ -81,6 +74,10 @@ public class ServerConroller extends ServerCommunicatorImpl {
                     throw new IllegalStateException("Unexpected value: " + messageTypeFromString);
             }
         }
+    }
+
+    private void sendServerGameHistory() throws JsonProcessingException {
+        sendResponse(Response.gameHistory(gameBoardAIController.getBoardsHistory()));
     }
 
     private void handleOpponentFleetSetting(String clientMessage) throws JsonProcessingException {

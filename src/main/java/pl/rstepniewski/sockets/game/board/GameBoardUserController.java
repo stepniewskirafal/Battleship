@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.rstepniewski.sockets.dto.PointDto;
 import pl.rstepniewski.sockets.dto.ShipDto;
-import pl.rstepniewski.sockets.dto.ShotDto;
 import pl.rstepniewski.sockets.game.Point;
 import pl.rstepniewski.sockets.game.Ship;
 import pl.rstepniewski.sockets.game.ShipType;
@@ -283,9 +282,9 @@ public class GameBoardUserController {
         UserInterface.printText("The enemy shoot at "+ receivedShot.toString());
     }
 
-    public void printBoardsHistory(){
+    public void printBoardsHistory(int sleeptime){
         try {
-            gameBoard.printBoardsHistory();
+            gameBoard.printBoardsHistory(sleeptime);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

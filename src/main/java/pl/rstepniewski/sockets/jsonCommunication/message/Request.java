@@ -39,10 +39,9 @@ public class Request extends Message{
         return new Request(MessageType.RESULT.name(), ShotType.MISS.name());
     }
 
-    public static Request shotResultSinking() { return new Request(MessageType.RESULT.name(), ShotType.SINKING.name());
-    }
+    public static Request shotResultSinking() { return new Request(MessageType.RESULT.name(), ShotType.SINKING.name()); }
 
-    public static Request shipsArrangement(List<ShipDto> shipPosition) {
-        return new Request(MessageType.BOARD.name(), shipPosition);
-    }
+    public static Request shipsArrangement(List<ShipDto> shipPosition) { return new Request(MessageType.BOARD.name(), shipPosition); }
+
+    public static Request getGameHistory(){ return new Request(MessageType.BOARD_HISTORY.name(), null); }
 }

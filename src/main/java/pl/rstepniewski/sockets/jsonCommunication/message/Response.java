@@ -4,7 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import pl.rstepniewski.sockets.dto.ShotDto;
 import pl.rstepniewski.sockets.game.ShotType;
+import pl.rstepniewski.sockets.game.board.BoardCellStatus;
 import pl.rstepniewski.sockets.jsonCommunication.MessageType;
+
+import java.util.List;
+import java.util.Map;
 
 public class Response extends Message{
     private int status;
@@ -60,6 +64,9 @@ public class Response extends Message{
         return new Response(MessageType.BOARD.name(), 0, null, null);
     }
 
+    public static Response gameHistory(Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> gameHistoryBoards){
+        return new Response( MessageType.BOARD_HISTORY.name(), 0, null, gameHistoryBoards );
+    }
 
     public static Response serverStatus(int errorNumber) {
         return new Response(MessageType.UNKNOWN.name(), errorNumber, null, null);

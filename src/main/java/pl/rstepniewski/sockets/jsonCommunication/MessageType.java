@@ -2,6 +2,7 @@ package pl.rstepniewski.sockets.jsonCommunication;
 
 public enum MessageType {
     BOARD,
+    BOARD_HISTORY,
     GAME_INVITATION,
     RESULT,
     SHOT,
@@ -12,6 +13,8 @@ public enum MessageType {
         switch (value) {
             case "BOARD":
                 return MessageType.BOARD;
+            case "BOARD_HISTORY":
+                return MessageType.BOARD_HISTORY;
             case "GAME_INVITATION":
                 return MessageType.GAME_INVITATION;
             case "RESULT":

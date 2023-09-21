@@ -9,6 +9,9 @@ import pl.rstepniewski.sockets.game.UserInterface;
 import pl.rstepniewski.sockets.game.fleet.Fleet;
 import pl.rstepniewski.sockets.game.fleet.FleetLoader;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -113,11 +116,18 @@ public class GameBoardAIController {
                 + ", X:" + receivedShot.getX()
                 + " Y:" + receivedShot.getY());
     }
-    public void printBoardsHistory(){
+    public void printBoardsHistory(int sleeptime){
         try {
-            gameBoard.printBoardsHistory();
+            gameBoard.printBoardsHistory(sleeptime);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> getBoardsHistory(){
+        Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> boardsHistory = new HashMap<>();
+        boardsHistory.put(0, gameBoard.getBoardShipsHistory());
+        boardsHistory.put(1, gameBoard.getBoardShotsHistory());
+        return boardsHistory;
     }
 }

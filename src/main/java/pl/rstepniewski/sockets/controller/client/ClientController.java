@@ -61,20 +61,9 @@ public class ClientController extends ClientCommunicatorImpl {
 
         printGameResult(amITheWinner);
         sendRequest(Request.shipsArrangement(gameBoardUserController.getFleetAsShipDtoList()));
-
-        showGameHistory();
     }
 
-    private void showGameHistory() {
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-        System.out.println("Oto wyniki");
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-        gameBoardUserController.printBoardsHistory();
-    }
+
 
     private static void printGameResult(boolean amITheWinner) {
         if(!amITheWinner) {
@@ -152,5 +141,18 @@ public class ClientController extends ClientCommunicatorImpl {
         sendRequest(Request.shot( new ShotDto(shot.getX(), shot.getY()) ));
 
         return shot;
+    }
+
+    public void viewGameHistory(int sleeptime) throws JsonProcessingException {
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+        System.out.println("Oto wyniki");
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+        sendRequest(Request.getGameHistory());
+
+        gameBoardUserController.printBoardsHistory(sleeptime);
     }
 }

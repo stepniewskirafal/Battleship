@@ -31,6 +31,14 @@ public class GameBoard implements UserInterface {
         markEmptyPosition();
     }
 
+    public Map<Integer, List<List<BoardCellStatus>>> getBoardShipsHistory() {
+        return gameBoardHistory.getBoardShipsHistory();
+    }
+
+    public Map<Integer, List<List<BoardCellStatus>>> getBoardShotsHistory() {
+        return gameBoardHistory.getBoardShotsHistory();
+    }
+
     public boolean isShotNotAllowed(Point point){
         BoardCellStatus boardCellStatus = boardShips.get(point.getX()).get(point.getY());
         if(boardCellStatus.equals(BoardCellStatus.HIT) || boardCellStatus.equals(BoardCellStatus.MISS)){
@@ -84,7 +92,7 @@ public class GameBoard implements UserInterface {
     }
 
 
-    public void printBoardsHistory() throws InterruptedException {
+    public void printBoardsHistory(int sleeptime) throws InterruptedException {
         Map<Integer, List<List<BoardCellStatus>>> boardShipsHistory = gameBoardHistory.getBoardShipsHistory();
         Map<Integer, List<List<BoardCellStatus>>> boardShotsHistory = gameBoardHistory.getBoardShotsHistory();
 
@@ -105,7 +113,7 @@ public class GameBoard implements UserInterface {
             output.forEach(System.out::println);
             UserInterface.printText("");
             UserInterface.printText("");
-            Thread.sleep(1500);
+            Thread.sleep(sleeptime);
         }
     }
 
