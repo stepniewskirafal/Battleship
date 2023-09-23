@@ -92,6 +92,41 @@ public class GameBoard implements UserInterface {
     }
 
 
+    public void printBoardsHistory(int sleeptime, Map<Integer, List<List<BoardCellStatus>>> serverBoardShipsHistory, Map<Integer, List<List<BoardCellStatus>>> serverBoardShotsHistory) throws InterruptedException {
+        Map<Integer, List<List<BoardCellStatus>>> boardShipsHistory = gameBoardHistory.getBoardShipsHistory();
+        Map<Integer, List<List<BoardCellStatus>>> boardShotsHistory = gameBoardHistory.getBoardShotsHistory();
+
+        int boardShipsHistorySize = boardShipsHistory.size();
+        int boardShotsHistorySize = boardShotsHistory.size();
+
+        int serverBoardShipsHistorySize = serverBoardShipsHistory.size();
+        int serverBoardShotsHistorySize = serverBoardShotsHistory.size();
+
+        int maxHistorySize = Math.max(boardShipsHistorySize, boardShotsHistorySize);
+
+        for (int i = 1; i <= maxHistorySize; i++) {
+            List<List<BoardCellStatus>> boardShipsToDraw = boardShipsHistory.get(i <= boardShipsHistorySize ? i : boardShipsHistorySize );
+            List<List<BoardCellStatus>> boardShotsToDraw = boardShotsHistory.get(i <= boardShotsHistorySize ? i : boardShotsHistorySize );
+            List<String> outputToDraw;
+            UserInterface.printText("   ROUND : "+i);
+            UserInterface.printText("   Your fleet             Your shots                                                 legend:");
+            UserInterface.printText("   A B C D E F G H I J    A B C D E F G H I J                                        O: Ship    X: Hit    M: Missed Shot");
+            outputToDraw  = getBoardOutput(boardShipsToDraw, boardShotsToDraw);
+            outputToDraw.forEach(System.out::println);
+
+            List<List<BoardCellStatus>> serverBoardShipsToDraw = boardShipsHistory.get(i <= serverBoardShipsHistorySize ? i : serverBoardShipsHistorySize );
+            List<List<BoardCellStatus>> serverBoardShotsToDraw = boardShotsHistory.get(i <= serverBoardShotsHistorySize ? i : serverBoardShotsHistorySize );
+            UserInterface.printText("   Opponent fleet         Opponent shots                                             legend:");
+            UserInterface.printText("   A B C D E F G H I J    A B C D E F G H I J                                        O: Ship    X: Hit    M: Missed Shot");
+            outputToDraw = getBoardOutput(serverBoardShipsToDraw, serverBoardShotsToDraw);
+            outputToDraw.forEach(System.out::println);
+            UserInterface.printText("");
+            UserInterface.printText("");
+            UserInterface.printText("");
+            Thread.sleep(sleeptime);
+        }
+    }
+
     public void printBoardsHistory(int sleeptime) throws InterruptedException {
         Map<Integer, List<List<BoardCellStatus>>> boardShipsHistory = gameBoardHistory.getBoardShipsHistory();
         Map<Integer, List<List<BoardCellStatus>>> boardShotsHistory = gameBoardHistory.getBoardShotsHistory();

@@ -20,6 +20,7 @@ import pl.rstepniewski.sockets.jsonCommunication.message.Response;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by rafal on 09.06.2023
@@ -77,14 +78,16 @@ public class ServerConroller extends ServerCommunicatorImpl {
     }
 
     private void sendServerGameHistory() throws JsonProcessingException {
-        sendResponse(Response.gameHistory(gameBoardAIController.getBoardsHistory()));
+        Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> boardsHistory = gameBoardAIController.getBoardsHistory();
+        String boardsHistoryToJson = gameBoardAIController.convertBoardsHistoryToJson(boardsHistory);
+
+        sendResponse(Response.gameHistory(boardsHistoryToJson));
     }
 
     private void handleOpponentFleetSetting(String clientMessage) throws JsonProcessingException {
         JsonNode jsonNode = objectMapper.readTree(clientMessage);
         final String clientMessageBody = String.valueOf(jsonNode.get("body"));
         List<ShipDto> OpponentFleetSetting = objectMapper.readValue(clientMessageBody, new TypeReference<List<ShipDto>>() {});
-        OpponentFleetSetting.size();
     }
 
     private void acceptOpponentFleetSetting() throws JsonProcessingException {

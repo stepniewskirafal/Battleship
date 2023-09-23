@@ -1,5 +1,11 @@
 package pl.rstepniewski.sockets.game.board;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.type.MapType;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.rstepniewski.sockets.game.Point;
@@ -129,5 +135,14 @@ public class GameBoardAIController {
         boardsHistory.put(0, gameBoard.getBoardShipsHistory());
         boardsHistory.put(1, gameBoard.getBoardShotsHistory());
         return boardsHistory;
+    }
+
+    public String convertBoardsHistoryToJson(Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> boardsHistory) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+        String json = objectMapper.writeValueAsString(boardsHistory);
+
+        return json;
     }
 }

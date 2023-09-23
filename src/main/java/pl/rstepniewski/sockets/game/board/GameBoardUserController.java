@@ -10,10 +10,7 @@ import pl.rstepniewski.sockets.game.ShipType;
 import pl.rstepniewski.sockets.game.UserInterface;
 import pl.rstepniewski.sockets.game.fleet.Fleet;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -282,9 +279,9 @@ public class GameBoardUserController {
         UserInterface.printText("The enemy shoot at "+ receivedShot.toString());
     }
 
-    public void printBoardsHistory(int sleeptime){
+    public void printBoardsHistory(int sleeptime, Map<Integer, List<List<BoardCellStatus>>> serverBoardShipsHistory, Map<Integer, List<List<BoardCellStatus>>> serverBoardShotsHistory){
         try {
-            gameBoard.printBoardsHistory(sleeptime);
+            gameBoard.printBoardsHistory(sleeptime, serverBoardShipsHistory, serverBoardShotsHistory);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

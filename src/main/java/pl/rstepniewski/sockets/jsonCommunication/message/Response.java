@@ -64,7 +64,7 @@ public class Response extends Message{
         return new Response(MessageType.BOARD.name(), 0, null, null);
     }
 
-    public static Response gameHistory(Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> gameHistoryBoards){
+    public static Response gameHistory(String gameHistoryBoards){
         return new Response( MessageType.BOARD_HISTORY.name(), 0, null, gameHistoryBoards );
     }
 

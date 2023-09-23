@@ -1,10 +1,13 @@
 package pl.rstepniewski.sockets.controller.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.rstepniewski.sockets.communication.ClientCommunicatorImpl;
+import pl.rstepniewski.sockets.dto.ShipDto;
 import pl.rstepniewski.sockets.dto.ShotDto;
 import pl.rstepniewski.sockets.game.*;
 import pl.rstepniewski.sockets.game.board.BoardCellStatus;
@@ -13,6 +16,8 @@ import pl.rstepniewski.sockets.game.board.GameBoardUserController;
 import pl.rstepniewski.sockets.jsonCommunication.message.Request;
 import pl.rstepniewski.sockets.jsonCommunication.message.Response;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import static pl.rstepniewski.sockets.jsonCommunication.MessageType.GAME_INVITATION;
 
@@ -61,6 +66,7 @@ public class ClientController extends ClientCommunicatorImpl {
 
         printGameResult(amITheWinner);
         sendRequest(Request.shipsArrangement(gameBoardUserController.getFleetAsShipDtoList()));
+        response = getResponse();
     }
 
 
@@ -143,7 +149,7 @@ public class ClientController extends ClientCommunicatorImpl {
         return shot;
     }
 
-    public void viewGameHistory(int sleeptime) throws JsonProcessingException {
+    public void viewGameHistory(int sleeptime) throws IOException  {
         System.out.println("");
         System.out.println("");
         System.out.println("");
@@ -151,8 +157,20 @@ public class ClientController extends ClientCommunicatorImpl {
         System.out.println("");
         System.out.println("");
         System.out.println("");
-        sendRequest(Request.getGameHistory());
+        Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> serverGameHistory = getServerGameHistory();
+        Map<Integer, List<List<BoardCellStatus>>> serverBoardShipsHistory = serverGameHistory.get(0);
+        Map<Integer, List<List<BoardCellStatus>>> serverBoardShotsHistory = serverGameHistory.get(1);
 
-        gameBoardUserController.printBoardsHistory(sleeptime);
+        gameBoardUserController.printBoardsHistory(sleeptime,serverBoardShipsHistory, serverBoardShotsHistory);
+    }
+
+    public Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> getServerGameHistory() throws IOException  {
+        sendRequest(Request.getGameHistory());
+        Response response = getResponse();
+        String body = response.getBody().toString();
+        TypeReference<Map<Integer, Map<Integer, List<List<BoardCellStatus>>>>> typeReference = new TypeReference<Map<Integer, Map<Integer, List<List<BoardCellStatus>>>>>() {};
+        Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> serverGameHistory = objectMapper.readValue(body, typeReference);
+
+        return serverGameHistory;
     }
 }
