@@ -114,10 +114,10 @@ public class GameBoard implements UserInterface {
             outputToDraw  = getBoardOutput(boardShipsToDraw, boardShotsToDraw);
             outputToDraw.forEach(System.out::println);
 
-            List<List<BoardCellStatus>> serverBoardShipsToDraw = boardShipsHistory.get(i <= serverBoardShipsHistorySize ? i : serverBoardShipsHistorySize );
-            List<List<BoardCellStatus>> serverBoardShotsToDraw = boardShotsHistory.get(i <= serverBoardShotsHistorySize ? i : serverBoardShotsHistorySize );
-            UserInterface.printText("   Opponent fleet         Opponent shots                                             legend:");
-            UserInterface.printText("   A B C D E F G H I J    A B C D E F G H I J                                        O: Ship    X: Hit    M: Missed Shot");
+            List<List<BoardCellStatus>> serverBoardShipsToDraw = serverBoardShipsHistory.get(i <= serverBoardShipsHistorySize ? i : serverBoardShipsHistorySize );
+            List<List<BoardCellStatus>> serverBoardShotsToDraw = serverBoardShotsHistory.get(i <= serverBoardShotsHistorySize ? i : serverBoardShotsHistorySize );
+            UserInterface.printText("   Opponent fleet         Opponent shots         ");
+            UserInterface.printText("   A B C D E F G H I J    A B C D E F G H I J    ");
             outputToDraw = getBoardOutput(serverBoardShipsToDraw, serverBoardShotsToDraw);
             outputToDraw.forEach(System.out::println);
             UserInterface.printText("");
