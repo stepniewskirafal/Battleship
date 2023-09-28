@@ -1,16 +1,13 @@
 package pl.rstepniewski.sockets.game.board;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.type.MapType;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.rstepniewski.sockets.game.Point;
 import pl.rstepniewski.sockets.game.Ship;
-import pl.rstepniewski.sockets.game.ShotInterface;
+import pl.rstepniewski.sockets.game.GetPointInterface;
 import pl.rstepniewski.sockets.game.UserInterface;
 import pl.rstepniewski.sockets.game.fleet.Fleet;
 import pl.rstepniewski.sockets.game.fleet.FleetLoader;
@@ -112,7 +109,7 @@ public class GameBoardAIController {
     public Point getNewRandomShot() {
         Point newRandomShot;
         do {
-            newRandomShot = ShotInterface.getNewRandomShot();
+            newRandomShot = GetPointInterface.getNewRandomPoint();
         } while (gameBoard.isShotNotAllowed(newRandomShot));
         return newRandomShot;
     }

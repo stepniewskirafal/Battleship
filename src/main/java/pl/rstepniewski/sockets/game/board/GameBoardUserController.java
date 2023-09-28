@@ -4,10 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.rstepniewski.sockets.dto.PointDto;
 import pl.rstepniewski.sockets.dto.ShipDto;
-import pl.rstepniewski.sockets.game.Point;
-import pl.rstepniewski.sockets.game.Ship;
-import pl.rstepniewski.sockets.game.ShipType;
-import pl.rstepniewski.sockets.game.UserInterface;
+import pl.rstepniewski.sockets.game.*;
 import pl.rstepniewski.sockets.game.fleet.Fleet;
 
 import java.util.*;
@@ -34,25 +31,29 @@ public class GameBoardUserController {
     public void initializeBoard(){
         UserInterface.printProperty("game.start");
 
-/*        Fleet fleet = new Fleet(getShipCoordinatesFromUser());
+        fleet = new Fleet(getShipCoordinatesFromUser());
+        logger.info("Client initialized it's gameboards succesfully");
 
-        board.markShipPosition(fleet.getFleet());
-        board.printBoard();*/
+        gameBoard.markShipPosition(fleet.getFleet());
+        logger.info("Client marked ships positions succesfully");
 
-        Ship ship = new Ship(Arrays.asList(new Point("B3"), new Point("B4")), 2);
+        gameBoard.printBoards();
+
+/*        Ship ship = new Ship(Arrays.asList(new Point("B3"), new Point("B4")), 2);
         List<Ship> list = Arrays.asList(ship);
         fleet = new Fleet(list);
         logger.info("Client initialized it's gameboards succesfully");
 
         gameBoard.markShipPosition(fleet.getFleet());
         logger.info("Client marked ships positions succesfully");
-        gameBoard.printBoards();
+        gameBoard.printBoards();*/
     }
 
     private List<Ship> getShipCoordinatesFromUser(){
         List<Ship> allShipsFromUser = new ArrayList<>();
+        Fleet temporaryFleet = null;
 
-        allShipsFromUser.addAll(getCoordinatesForOneMastShips());
+        allShipsFromUser.addAll(getCoordinatesForOneMastShips(temporaryFleet));
         allShipsFromUser.addAll(getCoordinatesForTwoMastShips());
         allShipsFromUser.addAll(getCoordinatesForThreeMastShips());
         allShipsFromUser.addAll(getCoordinatesForFourMastShips());
@@ -60,16 +61,16 @@ public class GameBoardUserController {
         return allShipsFromUser;
     }
 
-    private List<Ship> getCoordinatesForOneMastShips(){
+    private List<Ship> getCoordinatesForOneMastShips(Fleet temporaryFleet){
         List<Ship> shipList = new ArrayList<>();
         int shipCounter = 0;
 
         UserInterface.printProperty("ship.oneMast.desc");
-        gameBoard.printShipBoard();
+
         while(shipCounter < ShipType.ONE_MAST_SHIP_COUNT.getNumber() ){
             UserInterface.printProperty("ship.oneMast.coordinates");
             UserInterface.printText("-one mast ship nr."+(shipCounter+1));
-            Point point=new Point(UserInterface.readText());
+            Point point = GetPointInterface.getNewUserPoint();
             ArrayList<Point> newShipPoints = createListOfShipPoints(point, point);
 
             if(validateCoordinates(shipList, newShipPoints, ShipType.ONE_MAST_SHIP_LENGTH.getNumber())){
@@ -77,6 +78,10 @@ public class GameBoardUserController {
                 shipCounter++;
             }
         }
+
+        temporaryFleet = new Fleet(shipList);
+
+        gameBoard.printShipBoard();
         return shipList;
     }
 
@@ -85,14 +90,13 @@ public class GameBoardUserController {
         int shipCounter = 0;
 
         UserInterface.printProperty("ship.twoMast.desc");
-        gameBoard.printShipBoard();
         while(shipCounter < ShipType.TWO_MAST_SHIP_COUNT.getNumber() ){
             UserInterface.printProperty("ship.twoMast.bow.coordinates");
             UserInterface.printText("-two mast ship nr."+(shipCounter+1));
-            Point pointBow=new Point(UserInterface.readText());
+            Point pointBow = GetPointInterface.getNewUserPoint();
             UserInterface.printProperty("ship.twoMast.stern.coordinates");
             UserInterface.printText("-two mast ship nr."+(shipCounter+1));
-            Point pointStern=new Point(UserInterface.readText());
+            Point pointStern = GetPointInterface.getNewUserPoint();
             ArrayList<Point> newShipPoints = createListOfShipPoints(pointBow, pointStern);
 
             if(validateCoordinates(shipList, newShipPoints, ShipType.TWO_MAST_SHIP_LENGTH.getNumber() )){
@@ -109,14 +113,14 @@ public class GameBoardUserController {
         int shipCounter = 0;
 
         UserInterface.printProperty("ship.treeMast.desc");
-        gameBoard.printShipBoard();
+
         while(shipCounter < ShipType.THREE_MAST_SHIP_COUNT.getNumber() ){
             UserInterface.printProperty("ship.treeMast.bow.coordinates");
             UserInterface.printText("-tree mast ship nr."+(shipCounter+1));
-            Point pointBow=new Point(UserInterface.readText());
+            Point pointBow = GetPointInterface.getNewUserPoint();
             UserInterface.printProperty("ship.treeMast.stern.coordinates");
             UserInterface.printText("-tree mast ship nr."+(shipCounter+1));
-            Point pointStern=new Point(UserInterface.readText());
+            Point pointStern = GetPointInterface.getNewUserPoint();
             ArrayList<Point> newShipPoints = createListOfShipPoints(pointBow, pointStern);
 
             if(validateCoordinates(shipList, newShipPoints, ShipType.THREE_MAST_SHIP_LENGTH.getNumber() )){
@@ -132,14 +136,14 @@ public class GameBoardUserController {
         int shipCounter = 0;
 
         UserInterface.printProperty("ship.fourMast.desc");
-        gameBoard.printShipBoard();
+
         while(shipCounter < ShipType.FOUR_MAST_SHIP_COUNT.getNumber() ){
             UserInterface.printProperty("ship.fourMast.bow.coordinates");
             UserInterface.printText("-four mast ship nr."+(shipCounter+1));
-            Point pointBow=new Point(UserInterface.readText());
+            Point pointBow = GetPointInterface.getNewUserPoint();
             UserInterface.printProperty("ship.fourMast.stern.coordinates");
             UserInterface.printText("-four mast ship nr."+(shipCounter+1));
-            Point pointStern=new Point(UserInterface.readText());
+            Point pointStern = GetPointInterface.getNewUserPoint();
             ArrayList<Point> newShipPoints = createListOfShipPoints(pointBow, pointStern);
 
             if(validateCoordinates(shipList, newShipPoints, ShipType.FOUR_MAST_SHIP_LENGTH.getNumber() )){

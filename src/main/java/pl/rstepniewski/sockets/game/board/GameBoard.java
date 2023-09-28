@@ -61,7 +61,7 @@ public class GameBoard implements UserInterface {
                 .collect(Collectors.toList());
     }
 
-    public void printShipBoard() {
+    public void printShipBoard2() {
         UserInterface.printText("   A B C D E F G H I J");
         AtomicInteger rowNumber = new AtomicInteger(1);
         List<String> output = boardShips.stream()
@@ -91,6 +91,35 @@ public class GameBoard implements UserInterface {
         output.forEach(System.out::println);
     }
 
+    public void printShipBoard() {
+        UserInterface.printText("   A B C D E F G H I J");
+        AtomicInteger rowNumber = new AtomicInteger(1);
+        List<String> output = boardShips.stream()
+                .map(rowList -> {
+                    StringBuilder rowBegin = (rowNumber.get() < 10) ? new StringBuilder(rowNumber.getAndIncrement() + "  ") : new StringBuilder(rowNumber.getAndIncrement() + " ");
+                    StringBuilder builder = new StringBuilder( rowBegin );
+                    return builder.append(
+                            rowList.stream()
+                                    .map(cell -> {
+                                        switch (cell) {
+                                            case EMPTY:
+                                                return "~ ";
+                                            case SHIP:
+                                                return "O ";
+                                            case HIT:
+                                                return "X ";
+                                            case MISS:
+                                                return "M ";
+                                            default:
+                                                return "";
+                                        }
+                                    })
+                                    .collect(Collectors.joining())
+                    ).toString();
+                })
+                .collect(Collectors.toList());
+        output.forEach(System.out::println);
+    }
 
     public void printBoardsHistory(int sleeptime, Map<Integer, List<List<BoardCellStatus>>> serverBoardShipsHistory, Map<Integer, List<List<BoardCellStatus>>> serverBoardShotsHistory) throws InterruptedException {
         Map<Integer, List<List<BoardCellStatus>>> boardShipsHistory = gameBoardHistory.getBoardShipsHistory();
@@ -227,6 +256,14 @@ public class GameBoard implements UserInterface {
         shipPosition.forEach(ship -> {
             ship.getPosition()
                     .forEach(point -> boardShips.get(point.getX()).set(point.getY(), BoardCellStatus.SHIP));
+        });
+    }
+
+    public void showTemporaryShipPosition(List<Ship> shipPosition) {
+        List<List<BoardCellStatus>> tempBoardShips = new ArrayList<>();
+        shipPosition.forEach(ship -> {
+            ship.getPosition()
+                    .forEach(point -> tempBoardShips.get(point.getX()).set(point.getY(), BoardCellStatus.SHIP));
         });
     }
 

@@ -2,12 +2,10 @@ package pl.rstepniewski.sockets.controller.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.rstepniewski.sockets.communication.ClientCommunicatorImpl;
-import pl.rstepniewski.sockets.dto.ShipDto;
 import pl.rstepniewski.sockets.dto.ShotDto;
 import pl.rstepniewski.sockets.game.*;
 import pl.rstepniewski.sockets.game.board.BoardCellStatus;
@@ -84,7 +82,7 @@ public class ClientController extends ClientCommunicatorImpl {
         if (responseBodyString.equals("HIT") || responseBodyString.equals("SINKING")) {
             hitCounter++;
         }
-        return hitCounter >= 1; //20
+        return hitCounter >= 20;
     }
 
     public void sendGameInvitation() throws JsonProcessingException {
@@ -143,7 +141,8 @@ public class ClientController extends ClientCommunicatorImpl {
     }
 
     private Point shootOpponentsFleet() throws JsonProcessingException {
-        Point shot = ShotInterface.getNewUserShot();
+        UserInterface.printProperty("shoot.prompt");
+        Point shot = GetPointInterface.getNewUserPoint();
         sendRequest(Request.shot( new ShotDto(shot.getX(), shot.getY()) ));
 
         return shot;

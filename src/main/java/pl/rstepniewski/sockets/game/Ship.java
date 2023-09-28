@@ -14,8 +14,9 @@ public class Ship {
     private boolean isShipSinking;
     private int length;
 
-    public Ship(List<Point> pozycja, int length) {
-        this.position = pozycja;
+    public Ship(List<Point> position, int length) {
+        this.position = position;
+        this.length = length;
         this.isShipSinking = false;
     }
 
