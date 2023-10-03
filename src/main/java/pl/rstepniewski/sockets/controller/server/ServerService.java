@@ -34,7 +34,8 @@ public class ServerService {
     private void startServer(){
         try{
             startSocket();
-            startBufferedStreams();
+            //startBufferedStreams();
+            handleClient();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -45,9 +46,37 @@ public class ServerService {
         clientSocket = serverSocket.accept();
     }
 
+    private void handleClient() {
+        try {
+            startBufferedStreams();
+        } catch (IOException e) {
+            logger.error("Client connection closed unexpectedly: " + e.getMessage());
+            closeConnection();
+        }
+    }
+
     private void startBufferedStreams() throws IOException {
         bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         printWriter = new PrintWriter(clientSocket.getOutputStream(), true);
+    }
+
+    public void closeConnection() {
+        try {
+            if (clientSocket != null && !clientSocket.isClosed()) {
+                clientSocket.close();
+            }
+            if (serverSocket != null && !serverSocket.isClosed()) {
+                serverSocket.close();
+            }
+            if (bufferedReader != null) {
+                bufferedReader.close();
+            }
+            if (printWriter != null) {
+                printWriter.close();
+            }
+        } catch (IOException e) {
+            logger.error("Error while closing the connection: " + e.getMessage());
+        }
     }
 
     public PrintWriter getPrintWriter() {
@@ -57,4 +86,5 @@ public class ServerService {
     public BufferedReader getBufferedReader() {
         return bufferedReader;
     }
+
 }

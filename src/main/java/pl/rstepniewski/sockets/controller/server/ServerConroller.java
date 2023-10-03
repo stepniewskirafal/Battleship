@@ -42,11 +42,17 @@ public class ServerConroller extends ServerCommunicatorImpl {
 
     public void handleGame() throws IOException {
         Point point = null;
+        String clientMessage;
+        boolean isGameGoing = true;
+        MessageType messageTypeFromString;
 
-        while (true) {
-            final String clientMessage = getClientMessage();
-
-            MessageType messageTypeFromString = getMessageType(clientMessage);
+        do {
+            clientMessage = getClientMessage();
+            if(clientMessage == null){
+                messageTypeFromString = MessageType.RESET;
+            }else{
+                messageTypeFromString = getMessageType(clientMessage);
+            }
 
             switch (messageTypeFromString) {
                 case BOARD:
@@ -58,6 +64,9 @@ public class ServerConroller extends ServerCommunicatorImpl {
                     break;
                 case GAME_INVITATION:
                     handleGameInvitation();
+                    break;
+                case RESET:
+                    isGameGoing = false;
                     break;
                 case RESULT:
                     markShootResut(point, objectMapper.readValue(clientMessage, Response.class));
@@ -74,7 +83,7 @@ public class ServerConroller extends ServerCommunicatorImpl {
                 default:
                     throw new IllegalStateException("Unexpected value: " + messageTypeFromString);
             }
-        }
+        }while(isGameGoing);
     }
 
     private void sendServerGameHistory() throws JsonProcessingException {
@@ -174,4 +183,9 @@ public class ServerConroller extends ServerCommunicatorImpl {
 
         sendResponse(responseShotResult);
     }
+
+    public void endGame() throws IOException {
+        stopCommunicator();
+    }
+
 }

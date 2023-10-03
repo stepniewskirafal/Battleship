@@ -28,6 +28,7 @@ public class ClientCommunicatorImpl implements CommunicatorInterface{
         this.bufferedReader = clientService.getBufferedReader();
         this.objectMapper = new ObjectMapper();
     }
+    public void stopCommunicator() { clientService.disconnectFromServer(); }
     @Override
     public String getClientMessage() throws IOException { return ""; }
     @Override

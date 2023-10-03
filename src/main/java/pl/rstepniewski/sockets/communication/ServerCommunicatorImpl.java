@@ -29,13 +29,20 @@ public class ServerCommunicatorImpl implements CommunicatorInterface {
         this.bufferedReader = serverService.getBufferedReader();
         this.objectMapper = new ObjectMapper();
     }
+    public void stopCommunicator() { serverService.closeConnection(); }
     @Override
     public String getClientMessage() throws IOException {
         return getJsonString();
     }
     @Override
     public String getJsonString() throws IOException {
-        String responseJson = bufferedReader.readLine();
+        String responseJson;
+        try {
+            responseJson = bufferedReader.readLine();
+        } catch (IOException e) {
+            responseJson = null;
+        }
+
         return responseJson;
     }
     @Override

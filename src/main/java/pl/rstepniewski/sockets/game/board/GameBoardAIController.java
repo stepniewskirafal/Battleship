@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import pl.rstepniewski.sockets.dto.PointDto;
+import pl.rstepniewski.sockets.dto.ShipDto;
 import pl.rstepniewski.sockets.game.Point;
 import pl.rstepniewski.sockets.game.Ship;
 import pl.rstepniewski.sockets.game.GetPointInterface;
@@ -16,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by rafal on 16.06.2023
@@ -141,5 +144,19 @@ public class GameBoardAIController {
         String json = objectMapper.writeValueAsString(boardsHistory);
 
         return json;
+    }
+
+    public List<ShipDto> getFleetAsShipDtoList() {
+        return fleet.getFleet().stream()
+                .map(this::mapShipToShipDto)
+                .collect(Collectors.toList());
+    }
+
+    private ShipDto mapShipToShipDto(Ship ship) {
+        List<PointDto> pointDto = ship.getPosition().stream()
+                .map(point -> new PointDto(point.getX(), point.getY(), point.isPointSinking()) )
+                .collect(Collectors.toList());
+
+        return new ShipDto(pointDto, ship.isSinking());
     }
 }

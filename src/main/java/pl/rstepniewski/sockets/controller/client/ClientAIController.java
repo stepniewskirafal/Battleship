@@ -7,13 +7,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.rstepniewski.sockets.communication.ClientCommunicatorImpl;
 import pl.rstepniewski.sockets.dto.ShotDto;
-import pl.rstepniewski.sockets.game.*;
+import pl.rstepniewski.sockets.game.GetPointInterface;
+import pl.rstepniewski.sockets.game.Point;
+import pl.rstepniewski.sockets.game.UserInterface;
 import pl.rstepniewski.sockets.game.board.BoardCellStatus;
 import pl.rstepniewski.sockets.game.board.GameBoard;
+import pl.rstepniewski.sockets.game.board.GameBoardAIController;
 import pl.rstepniewski.sockets.game.board.GameBoardUserController;
+import pl.rstepniewski.sockets.game.fleet.FleetLoader;
 import pl.rstepniewski.sockets.jsonCommunication.message.Request;
 import pl.rstepniewski.sockets.jsonCommunication.message.Response;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,15 +32,17 @@ import static pl.rstepniewski.sockets.jsonCommunication.MessageType.GAME_INVITAT
  * @date : 09.06.2023
  * @project : Battleship
  */
-public class ClientController extends ClientCommunicatorImpl {
-    private final GameBoardUserController gameBoardUserController;
+public class ClientAIController extends ClientCommunicatorImpl {
+    private final GameBoardAIController gameBoardAIController;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private static final Logger logger = LogManager.getLogger(ClientController.class);
+    private static final Logger logger = LogManager.getLogger(ClientAIController.class);
     private int hitCounter = 0;
 
-    public ClientController() {
+    ArrayList<Point> shotsHistory = new ArrayList<>();
+
+    public ClientAIController() {
         super(new ClientService());
-        this.gameBoardUserController = new GameBoardUserController(new GameBoard());
+        this.gameBoardAIController = new GameBoardAIController(new GameBoard(), new FleetLoader());
     }
 
     public void playGame() throws IOException {
@@ -44,9 +52,9 @@ public class ClientController extends ClientCommunicatorImpl {
         logger.info("Starting Battleship game");
         sendGameInvitation();
         handleServerInvitationResponse();
-        gameBoardUserController.initializeBoard();
+        gameBoardAIController.initialiseBord();
 
-        while (gameBoardUserController.isFleetAlive() && (!amITheWinner) ) {
+        while (gameBoardAIController.isFleetAlive() && (!amITheWinner) ) {
             do{
                 Point shot = shootOpponentsFleet();
                 response = getResponse();
@@ -63,7 +71,7 @@ public class ClientController extends ClientCommunicatorImpl {
         }
 
         printGameResult(amITheWinner);
-        sendRequest(Request.shipsArrangement(gameBoardUserController.getFleetAsShipDtoList()));
+        sendRequest(Request.shipsArrangement(gameBoardAIController.getFleetAsShipDtoList()));
         response = getResponse();
     }
 
@@ -103,11 +111,11 @@ public class ClientController extends ClientCommunicatorImpl {
         ShotDto point = objectMapper.readValue(objectMapper.writeValueAsString(response.getBody()), ShotDto.class);
 
         Point receivedShot = new Point(point.getRow(), point.getColumn());
-        boolean isShotAccurate = gameBoardUserController.isShotHit(receivedShot);
-        gameBoardUserController.reportReceivedShot(receivedShot);
+        boolean isShotAccurate = gameBoardAIController.isShotHit(receivedShot);
+        gameBoardAIController.reportReceivedShot(receivedShot);
         if (isShotAccurate) {
-            boolean isShipSinking = gameBoardUserController.markHitOnShipBoard(receivedShot);
-            gameBoardUserController.markHitOnFleetBoard(receivedShot, BoardCellStatus.HIT);
+            boolean isShipSinking = gameBoardAIController.markHitOnShipBoard(receivedShot);
+            gameBoardAIController.markHitOnFleetBoard(receivedShot, BoardCellStatus.HIT);
             if (isShipSinking) {
                 requestResult = Request.shotResultSinking();
 
@@ -115,7 +123,7 @@ public class ClientController extends ClientCommunicatorImpl {
                 requestResult = Request.shotResultHit();
             }
         } else {
-            gameBoardUserController.markHitOnFleetBoard(receivedShot, BoardCellStatus.MISS);
+            gameBoardAIController.markHitOnFleetBoard(receivedShot, BoardCellStatus.MISS);
             requestResult = Request.shotResultMiss();
         }
         sendRequest(requestResult);
@@ -129,13 +137,13 @@ public class ClientController extends ClientCommunicatorImpl {
         } else{
             switch (response.getBody().toString()) {
                 case "HIT":
-                    gameBoardUserController.markHitOnShotBoard(shot);
+                    gameBoardAIController.markHitOnShotBoard(shot);
                     break;
                 case "MISS":
-                    gameBoardUserController.markMissOnShotBoard(shot);
+                    gameBoardAIController.markMissOnShotBoard(shot);
                     break;
                 case "SINKING":
-                    gameBoardUserController.markSinkingOnShotBoard(shot);
+                    gameBoardAIController.markSinkingOnShotBoard(shot);
             }
             result = true;
         }
@@ -144,34 +152,23 @@ public class ClientController extends ClientCommunicatorImpl {
 
     private Point shootOpponentsFleet() throws JsonProcessingException {
         UserInterface.printProperty("shoot.prompt");
-        Point shot = GetPointInterface.getNewUserPoint();
-        sendRequest(Request.shot( new ShotDto(shot.getX(), shot.getY()) ));
+        boolean isPointReady = false;
+        Point shot = null;
+        do{
+            final Point finalShotRandom = GetPointInterface.getNewRandomPoint();
 
+            boolean pointFound = shotsHistory.stream()
+                    .anyMatch(point -> point.equals(finalShotRandom));
+
+            if (!pointFound) {
+                shotsHistory.add(finalShotRandom);
+                shot = finalShotRandom;
+                isPointReady = true;
+            }
+        }while (!isPointReady);
+
+        sendRequest(Request.shot( new ShotDto(shot.getX(), shot.getY()) ));
         return shot;
     }
 
-    public void viewGameHistory(int sleeptime) throws IOException  {
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-        System.out.println("Oto wyniki");
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-        Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> serverGameHistory = getServerGameHistory();
-        Map<Integer, List<List<BoardCellStatus>>> serverBoardShipsHistory = serverGameHistory.get(0);
-        Map<Integer, List<List<BoardCellStatus>>> serverBoardShotsHistory = serverGameHistory.get(1);
-
-        gameBoardUserController.printBoardsHistory(sleeptime,serverBoardShipsHistory, serverBoardShotsHistory);
-    }
-
-    public Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> getServerGameHistory() throws IOException  {
-        sendRequest(Request.getGameHistory());
-        Response response = getResponse();
-        String body = response.getBody().toString();
-        TypeReference<Map<Integer, Map<Integer, List<List<BoardCellStatus>>>>> typeReference = new TypeReference<Map<Integer, Map<Integer, List<List<BoardCellStatus>>>>>() {};
-        Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> serverGameHistory = objectMapper.readValue(body, typeReference);
-
-        return serverGameHistory;
-    }
 }

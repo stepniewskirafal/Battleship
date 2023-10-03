@@ -256,7 +256,7 @@ public class GameBoardUserController {
         return ship.isPresent();
     }
 
-    public boolean markHitOnShip(Point shot) {
+    public boolean markHitOnShipBoard(Point shot) {
         Ship ship = fleet.findShip(shot).get();
 
         Point hitPoint = ship.getPosition().stream()

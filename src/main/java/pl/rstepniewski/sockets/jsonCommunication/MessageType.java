@@ -4,6 +4,7 @@ public enum MessageType {
     BOARD,
     BOARD_HISTORY,
     GAME_INVITATION,
+    RESET,
     RESULT,
     SHOT,
     SHOT_REQUEST,

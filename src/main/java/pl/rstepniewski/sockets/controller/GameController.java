@@ -1,11 +1,11 @@
 package pl.rstepniewski.sockets.controller;
 
+import pl.rstepniewski.sockets.controller.client.ClientAIController;
 import pl.rstepniewski.sockets.controller.client.ClientController;
 import pl.rstepniewski.sockets.controller.server.ServerConroller;
 import pl.rstepniewski.sockets.game.UserInterface;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 public class GameController implements UserInterface {
 
@@ -27,12 +27,17 @@ public class GameController implements UserInterface {
                         chose = UserInterface.readInt();
                         clientController.viewGameHistory(chose*1000);
                     }
+                    clientController.endGame();
                     break;
                 case 2:
+                    ClientAIController clientAIController = new ClientAIController();
+                    clientAIController.playGame();
+                    clientAIController.endGame();
                     break;
                 case 3:
                     ServerConroller serverConroller = new ServerConroller();
                     serverConroller.handleGame();
+                    serverConroller.endGame();
                     break;
                 default:
                     UserInterface.printText("Wybierz jeszcze raz");
@@ -40,23 +45,3 @@ public class GameController implements UserInterface {
         }while(chose != 0);
     }
 }
-
-
-/*
-*       System.out.println("*******************************************");
-        System.out.println("*     WITAJ KAPITANIE W GRZE STATKI!     *");
-        System.out.println("*******************************************");
-        System.out.println("*    Przygotuj się na wielką bitwę na    *");
-        System.out.println("*            pełnym morzu chaosu!        *");
-        System.out.println("*******************************************");
-        System.out.println("*      Twoim celem jest zatopienie        *");
-        System.out.println("*      wszystkich wrogich statków,        *");
-        System.out.println("*          zanim oni zatopią Ciebie!      *");
-        System.out.println("*******************************************");
-        System.out.println("*   Rozpocznij bitwę i pokaż, kto jest    *");
-        System.out.println("*        prawdziwym panem mórz!           *");
-        System.out.println("*******************************************");
-*
-*
-*
-* */

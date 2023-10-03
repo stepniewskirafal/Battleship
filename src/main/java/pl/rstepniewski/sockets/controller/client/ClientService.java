@@ -59,6 +59,25 @@ public class ClientService {
         return socket;
     }
 
+    public void disconnectFromServer() {
+        try {
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+                logger.info("Disconnected from the server");
+            }
+
+            if (printWriter != null) {
+                printWriter.close();
+            }
+
+            if (bufferedReader != null) {
+                bufferedReader.close();
+            }
+        } catch (IOException e) {
+            logger.error("Error while disconnecting from the server: " + e.getMessage());
+        }
+    }
+
     public PrintWriter getPrintWriter() {
         return printWriter;
     }
