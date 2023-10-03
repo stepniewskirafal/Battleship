@@ -30,7 +30,7 @@ public class ClientController extends ClientCommunicatorImpl {
     private final GameBoardUserController gameBoardUserController;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger logger = LogManager.getLogger(ClientController.class);
-    private int hitCounter = 0;
+    private int hitCounter;
 
     public ClientController() {
         super(new ClientService());
@@ -124,7 +124,7 @@ public class ClientController extends ClientCommunicatorImpl {
     private boolean markShotResult(Point shot, Response response) {
         boolean result = false;
         if (response.getStatus() == 2) {
-            UserInterface.printText(response.getMessage().toString());
+            UserInterface.printText(response.getMessage());
             result = false;
         } else{
             switch (response.getBody().toString()) {

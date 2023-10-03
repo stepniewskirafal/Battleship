@@ -41,10 +41,7 @@ public class GameBoard implements UserInterface {
 
     public boolean isShotNotAllowed(Point point){
         BoardCellStatus boardCellStatus = boardShips.get(point.getX()).get(point.getY());
-        if(boardCellStatus.equals(BoardCellStatus.HIT) || boardCellStatus.equals(BoardCellStatus.MISS)){
-            return true;
-        }
-        return false;
+        return boardCellStatus.equals(BoardCellStatus.HIT) || boardCellStatus.equals(BoardCellStatus.MISS);
     }
 
     public void markEmptyPosition() {
@@ -61,40 +58,24 @@ public class GameBoard implements UserInterface {
                 .collect(Collectors.toList());
     }
 
-    public void printShipBoard2() {
-        UserInterface.printText("   A B C D E F G H I J");
-        AtomicInteger rowNumber = new AtomicInteger(1);
-        List<String> output = boardShips.stream()
-                .map(rowList -> {
-                    StringBuilder rowBegin = (rowNumber.get() < 10) ? new StringBuilder(rowNumber.getAndIncrement() + "  ") : new StringBuilder(rowNumber.getAndIncrement() + " ");
-                    StringBuilder builder = new StringBuilder( rowBegin );
-                    return builder.append(
-                            rowList.stream()
-                                    .map(cell -> {
-                                        switch (cell) {
-                                            case EMPTY:
-                                                return "~ ";
-                                            case SHIP:
-                                                return "O ";
-                                            case HIT:
-                                                return "X ";
-                                            case MISS:
-                                                return "M ";
-                                            default:
-                                                return "";
-                                        }
-                                    })
-                                    .collect(Collectors.joining())
-                    ).toString();
-                })
-                .collect(Collectors.toList());
-        output.forEach(System.out::println);
-    }
 
-    public void printShipBoard() {
+    public void printCurrentShipBoard(List<Ship> allShipsFromUser) {
+        UserInterface.printText("   Your fleet");
         UserInterface.printText("   A B C D E F G H I J");
         AtomicInteger rowNumber = new AtomicInteger(1);
-        List<String> output = boardShips.stream()
+
+        final List<List<BoardCellStatus>> localBoardShips = IntStream.range(0, 10)
+                .mapToObj(i -> IntStream.range(0, 10)
+                        .mapToObj(j -> BoardCellStatus.EMPTY)
+                        .collect(Collectors.toList()))
+                .collect(Collectors.toList());
+
+        allShipsFromUser.forEach(ship -> {
+            ship.getPosition()
+                    .forEach(point -> localBoardShips.get(point.getX()).set(point.getY(), BoardCellStatus.SHIP));
+        });
+
+        List<String> output = localBoardShips.stream()
                 .map(rowList -> {
                     StringBuilder rowBegin = (rowNumber.get() < 10) ? new StringBuilder(rowNumber.getAndIncrement() + "  ") : new StringBuilder(rowNumber.getAndIncrement() + " ");
                     StringBuilder builder = new StringBuilder( rowBegin );

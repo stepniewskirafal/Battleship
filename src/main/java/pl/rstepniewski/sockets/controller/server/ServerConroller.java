@@ -33,7 +33,7 @@ public class ServerConroller extends ServerCommunicatorImpl {
     private static final Logger logger = LogManager.getLogger(ServerConroller.class);
     private final GameBoardAIController gameBoardAIController;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private boolean serverGameBussy = false;
+    private boolean serverGameBussy;
 
     public ServerConroller() {
         super(new ServerService());

@@ -36,7 +36,7 @@ public class ClientAIController extends ClientCommunicatorImpl {
     private final GameBoardAIController gameBoardAIController;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger logger = LogManager.getLogger(ClientAIController.class);
-    private int hitCounter = 0;
+    private int hitCounter;
 
     ArrayList<Point> shotsHistory = new ArrayList<>();
 
@@ -132,7 +132,7 @@ public class ClientAIController extends ClientCommunicatorImpl {
     private boolean markShotResult(Point shot, Response response) {
         boolean result = false;
         if (response.getStatus() == 2) {
-            UserInterface.printText(response.getMessage().toString());
+            UserInterface.printText(response.getMessage());
             result = false;
         } else{
             switch (response.getBody().toString()) {

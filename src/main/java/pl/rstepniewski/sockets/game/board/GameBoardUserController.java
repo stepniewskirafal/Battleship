@@ -51,17 +51,23 @@ public class GameBoardUserController {
 
     private List<Ship> getShipCoordinatesFromUser(){
         List<Ship> allShipsFromUser = new ArrayList<>();
-        Fleet temporaryFleet = null;
 
-        allShipsFromUser.addAll(getCoordinatesForOneMastShips(temporaryFleet));
+        allShipsFromUser.addAll(getCoordinatesForOneMastShips());
+        gameBoard.printCurrentShipBoard(allShipsFromUser);
+
         allShipsFromUser.addAll(getCoordinatesForTwoMastShips());
+        gameBoard.printCurrentShipBoard(allShipsFromUser);
+
         allShipsFromUser.addAll(getCoordinatesForThreeMastShips());
+        gameBoard.printCurrentShipBoard(allShipsFromUser);
+
         allShipsFromUser.addAll(getCoordinatesForFourMastShips());
+        gameBoard.printCurrentShipBoard(allShipsFromUser);
 
         return allShipsFromUser;
     }
 
-    private List<Ship> getCoordinatesForOneMastShips(Fleet temporaryFleet){
+    private List<Ship> getCoordinatesForOneMastShips(){
         List<Ship> shipList = new ArrayList<>();
         int shipCounter = 0;
 
@@ -78,10 +84,6 @@ public class GameBoardUserController {
                 shipCounter++;
             }
         }
-
-        temporaryFleet = new Fleet(shipList);
-
-        gameBoard.printShipBoard();
         return shipList;
     }
 
