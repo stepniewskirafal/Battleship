@@ -14,12 +14,9 @@ import pl.rstepniewski.sockets.jsonCommunication.message.Response;
  * @project : Battleship
  */
 public interface CommunicatorInterface {
-    String getJsonString() throws IOException;
     String getClientMessage() throws IOException;
-    Response getResponse(String jsonString) throws IOException;
-    Request getRequest(String jsonString) throws IOException;
+    String getJsonString() throws IOException;
     Response getResponse() throws IOException;
-    Request getRequest() throws IOException;
     void sendResponse(Response response) throws JsonProcessingException;
     void sendRequest(Request request) throws JsonProcessingException;
 }

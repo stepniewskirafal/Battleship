@@ -2,9 +2,9 @@ package pl.rstepniewski.sockets.communication;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import pl.rstepniewski.sockets.controller.client.ClientService;
 import pl.rstepniewski.sockets.jsonCommunication.message.Request;
 import pl.rstepniewski.sockets.jsonCommunication.message.Response;
+import pl.rstepniewski.sockets.controller.client.ClientService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,30 +37,12 @@ public class ClientCommunicatorImpl implements CommunicatorInterface{
         return responseJson;
     }
     @Override
-    public Response getResponse(String jsonString) throws IOException {
-        return objectMapper.readValue(jsonString, Response.class);
-    }
-    @Override
-    public Request getRequest(String jsonString) throws JsonProcessingException {
-        Request request = objectMapper.readValue(jsonString, Request.class);
-        return request;
-    }
-    @Override
     public Response getResponse() throws IOException {
         String responseJson = bufferedReader.readLine();
         return objectMapper.readValue(responseJson, Response.class);
     }
     @Override
-    public Request getRequest() throws IOException {
-        String jsonString = bufferedReader.readLine();
-        Request request = objectMapper.readValue(jsonString, Request.class);
-        return request;
-    }
-    @Override
-    public void sendResponse(Response response) throws JsonProcessingException {
-/*        String responseJson = objectMapper.writeValueAsString(response);
-        printWriter.println(responseJson);*/
-    }
+    public void sendResponse(Response response) {}
     @Override
     public void sendRequest(Request request) throws JsonProcessingException {
         String requestJson = objectMapper.writeValueAsString(request);
