@@ -6,7 +6,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.rstepniewski.sockets.communication.ClientCommunicatorImpl;
 import pl.rstepniewski.sockets.dto.ShotDto;
-import pl.rstepniewski.sockets.game.GetPointInterface;
 import pl.rstepniewski.sockets.game.Point;
 import pl.rstepniewski.sockets.game.ShotType;
 import pl.rstepniewski.sockets.game.UserInterface;
@@ -36,7 +35,6 @@ public class ClientAIController extends ClientCommunicatorImpl {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger LOGGER = LogManager.getLogger(ClientAIController.class);
     private int hitCounter;
-
     List<Point> shotsHistory = new ArrayList<>();
 
     public ClientAIController() {
@@ -157,7 +155,7 @@ public class ClientAIController extends ClientCommunicatorImpl {
         boolean isPointReady = false;
         Point shot = null;
         do {
-            final Point finalShotRandom = GetPointInterface.getNewRandomPoint();
+            final Point finalShotRandom = gameBoardAIController.getNewRandomShot();
 
             boolean pointFound = shotsHistory.stream()
                     .anyMatch(point -> point.equals(finalShotRandom));
