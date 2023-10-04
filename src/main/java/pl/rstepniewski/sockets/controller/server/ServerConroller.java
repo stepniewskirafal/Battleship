@@ -144,14 +144,15 @@ public class ServerConroller extends ServerCommunicatorImpl {
     }
 
     private void markShootResut(Point shot, Response response) {
-        switch (response.getBody().toString()) {
-            case "HIT":
+        ShotType shotType = ShotType.valueOf(response.getBody().toString());
+        switch (shotType) {
+            case HIT:
                 gameBoardAIController.markHitOnShotBoard(shot);
                 break;
-            case "MISS":
+            case MISS:
                 gameBoardAIController.markMissOnShotBoard(shot);
                 break;
-            case "SINKING":
+            case SINKING:
                 gameBoardAIController.markSinkingOnShotBoard(shot);
                 break;
             default:

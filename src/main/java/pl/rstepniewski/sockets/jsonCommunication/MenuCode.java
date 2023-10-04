@@ -32,7 +32,6 @@ public enum MenuCode {
             default:
                 throw new IllegalStateException("Unexpected value: " + menuNumberCode);
         }
-
     }
 
 }

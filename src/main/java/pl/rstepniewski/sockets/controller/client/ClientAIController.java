@@ -86,7 +86,7 @@ public class ClientAIController extends ClientCommunicatorImpl {
 
     private boolean amITheWinner(Response response) {
         final String responseBodyString = response.getBody().toString();
-        if (ShotType.HIT.getShotType().equals(responseBodyString) || ShotType.SINKING.getShotType().equals(responseBodyString)) {
+        if (ShotType.HIT.toString().equals(responseBodyString) || ShotType.SINKING.toString().equals(responseBodyString)) {
             hitCounter++;
         }
         return hitCounter >= 20;
@@ -132,14 +132,15 @@ public class ClientAIController extends ClientCommunicatorImpl {
             UserInterface.printText(response.getMessage());
             result = false;
         } else {
-            switch (response.getBody().toString()) {
-                case "HIT":
+            ShotType shotType = ShotType.valueOf(response.getBody().toString());
+            switch (shotType) {
+                case HIT:
                     gameBoardAIController.markHitOnShotBoard(shot);
                     break;
-                case "MISS":
+                case MISS:
                     gameBoardAIController.markMissOnShotBoard(shot);
                     break;
-                case "SINKING":
+                case SINKING:
                     gameBoardAIController.markSinkingOnShotBoard(shot);
                     break;
                 default:
