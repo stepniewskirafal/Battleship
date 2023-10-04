@@ -11,17 +11,13 @@ import java.util.List;
  */
 public class Ship {
     private final List<Point> position;
-    private boolean isShipSinking;
     private final int length;
+    private boolean isShipSinking;
 
     public Ship(List<Point> position, int length) {
         this.position = position;
         this.length = length;
         this.isShipSinking = false;
-    }
-
-    public List<Point> getPosition() {
-        return position;
     }
 
     public static int getLength(List<Point> newShipPoints) {
@@ -32,6 +28,10 @@ public class Ship {
         double dy = p2.getY() - p1.getY();
 
         return (int) (Math.sqrt(dx * dx + dy * dy) + 1);
+    }
+
+    public List<Point> getPosition() {
+        return position;
     }
 
     public boolean isNeighbour(List<Point> newShipPosition) {

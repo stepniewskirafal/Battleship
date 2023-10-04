@@ -28,6 +28,10 @@ public class GameBoardUserController {
         this.gameBoard = gameBoard;
     }
 
+    private static void createShipAndAddToList(List<Ship> shipList, List<Point> points, int lenght) {
+        shipList.add(new Ship(points, lenght));
+    }
+
     public void initializeBoard() {
         UserInterface.printProperty("game.start");
 
@@ -165,10 +169,6 @@ public class GameBoardUserController {
     private boolean checkIfCoordinatesCorrect(List<Ship> shipList, List<Point> newShipPoints) {
         return shipList.stream()
                 .anyMatch(ship -> ship.isNeighbour(newShipPoints));
-    }
-
-    private static void createShipAndAddToList(List<Ship> shipList, List<Point> points, int lenght) {
-        shipList.add(new Ship(points, lenght));
     }
 
     private List<Point> createListOfShipPoints(Point pointBow, Point pointStern) {

@@ -19,11 +19,11 @@ import java.net.Socket;
  */
 public class ServerService {
     private static final int PORT = 6767;
-    private Socket clientSocket;
+    private static final Logger LOGGER = LogManager.getLogger(ServerService.class);
     ServerSocket serverSocket;
+    private Socket clientSocket;
     private PrintWriter printWriter;
     private BufferedReader bufferedReader;
-    private static final Logger LOGGER = LogManager.getLogger(ServerService.class);
 
     public ServerService() {
         LOGGER.info("Starting Battleship application");

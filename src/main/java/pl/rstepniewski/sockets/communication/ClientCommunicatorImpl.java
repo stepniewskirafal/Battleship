@@ -2,9 +2,9 @@ package pl.rstepniewski.sockets.communication;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import pl.rstepniewski.sockets.controller.client.ClientService;
 import pl.rstepniewski.sockets.jsonCommunication.message.Request;
 import pl.rstepniewski.sockets.jsonCommunication.message.Response;
-import pl.rstepniewski.sockets.controller.client.ClientService;
 
 import java.io.BufferedReader;
 import java.io.IOException;

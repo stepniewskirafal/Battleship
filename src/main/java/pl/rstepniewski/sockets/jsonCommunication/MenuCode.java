@@ -9,15 +9,11 @@ public enum MenuCode {
 
     final int menuNumberCode;
 
-    public int getMenuNumberCode() {
-        return menuNumberCode;
-    }
-
     MenuCode(int menuNumberCode) {
         this.menuNumberCode = menuNumberCode;
     }
 
-    public static MenuCode buildMenuCodeFromInt(int menuNumberCode){
+    public static MenuCode buildMenuCodeFromInt(int menuNumberCode) {
         switch (menuNumberCode) {
             case 1:
                 return CLIENT_CONSOLE;
@@ -32,6 +28,10 @@ public enum MenuCode {
             default:
                 throw new IllegalStateException("Unexpected value: " + menuNumberCode);
         }
+    }
+
+    public int getMenuNumberCode() {
+        return menuNumberCode;
     }
 
 }

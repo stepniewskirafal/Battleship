@@ -20,14 +20,27 @@ import java.net.UnknownHostException;
 public class ClientService {
     public static final int PORT = 6767;
     public static final String LOCALHOST = "localhost";
-    private Socket socket;
+    private static final Logger LOGGER = LogManager.getLogger(ClientService.class);
     PrintWriter printWriter;
     BufferedReader bufferedReader;
-    private static final Logger LOGGER = LogManager.getLogger(ClientService.class);
+    private Socket socket;
 
     public ClientService() {
         startClient();
         LOGGER.info("Starting Battleship application");
+    }
+
+    private static Socket connectToServer() {
+        Socket socket;
+        try {
+            socket = new Socket(LOCALHOST, PORT);
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        LOGGER.info("Client connected to the server");
+        return socket;
     }
 
     private void startClient() {
@@ -44,19 +57,6 @@ public class ClientService {
         bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         printWriter = new PrintWriter(socket.getOutputStream(), true);
         LOGGER.info("bufferedReader and printWriter created");
-    }
-
-    private static Socket connectToServer() {
-        Socket socket;
-        try {
-            socket = new Socket(LOCALHOST, PORT);
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        LOGGER.info("Client connected to the server");
-        return socket;
     }
 
     public void disconnectFromServer() {

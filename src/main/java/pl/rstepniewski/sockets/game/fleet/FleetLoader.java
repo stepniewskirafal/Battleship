@@ -21,8 +21,8 @@ import java.util.Random;
  * @project : Battleship
  */
 public class FleetLoader {
-    private static final Logger LOGGER = LogManager.getLogger(GameBoardUserController.class);
     static final String FILE_PATH = "/fleet.ai";
+    private static final Logger LOGGER = LogManager.getLogger(GameBoardUserController.class);
 
     public Fleet loadRandomFleet() {
         try {

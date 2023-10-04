@@ -1,10 +1,10 @@
 package pl.rstepniewski.sockets.communication;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import pl.rstepniewski.sockets.jsonCommunication.message.Request;
 import pl.rstepniewski.sockets.jsonCommunication.message.Response;
+
+import java.io.IOException;
 
 /**
  * Created by rafal on 03.07.2023

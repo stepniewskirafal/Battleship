@@ -4,7 +4,9 @@ import pl.rstepniewski.sockets.game.Point;
 import pl.rstepniewski.sockets.game.Ship;
 import pl.rstepniewski.sockets.game.UserInterface;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -18,11 +20,10 @@ import java.util.stream.IntStream;
  */
 public class GameBoard implements UserInterface {
     private final GameBoardHistory gameBoardHistory;
-    private List<List<BoardCellStatus>> boardShips = new ArrayList<>();
-    private List<List<BoardCellStatus>> boardShots = new ArrayList<>();
-
     private final Map<Integer, List<List<BoardCellStatus>>> boardShipsHistory;
     private final Map<Integer, List<List<BoardCellStatus>>> boardShotsHistory;
+    private List<List<BoardCellStatus>> boardShips = new ArrayList<>();
+    private List<List<BoardCellStatus>> boardShots = new ArrayList<>();
 
     public GameBoard() {
         gameBoardHistory = new GameBoardHistory();
@@ -78,8 +79,7 @@ public class GameBoard implements UserInterface {
         List<String> output = localBoardShips.stream()
                 .map(rowList -> {
                     StringBuilder rowBegin = (rowNumber.get() < 10) ? new StringBuilder(rowNumber.getAndIncrement() + "  ") : new StringBuilder(rowNumber.getAndIncrement() + " ");
-                    StringBuilder builder = new StringBuilder( rowBegin );
-                    return builder.append(
+                    String builder = rowBegin +
                             rowList.stream()
                                     .map(cell -> {
                                         switch (cell) {
@@ -95,8 +95,8 @@ public class GameBoard implements UserInterface {
                                                 return "";
                                         }
                                     })
-                                    .collect(Collectors.joining())
-                    ).toString();
+                                    .collect(Collectors.joining());
+                    return builder;
                 })
                 .collect(Collectors.toList());
         output.forEach(System.out::println);

@@ -31,15 +31,23 @@ import static pl.rstepniewski.sockets.jsonCommunication.MessageType.GAME_INVITAT
  * @project : Battleship
  */
 public class ClientAIController extends ClientCommunicatorImpl {
+    private static final Logger LOGGER = LogManager.getLogger(ClientAIController.class);
     private final GameBoardAIController gameBoardAIController;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private static final Logger LOGGER = LogManager.getLogger(ClientAIController.class);
-    private int hitCounter;
     List<Point> shotsHistory = new ArrayList<>();
+    private int hitCounter;
 
     public ClientAIController() {
         super(new ClientService());
         this.gameBoardAIController = new GameBoardAIController(new GameBoard(), new FleetLoader());
+    }
+
+    private static void printGameResult(boolean amITheWinner) {
+        if (!amITheWinner) {
+            UserInterface.printProperty("loose");
+        } else {
+            UserInterface.printProperty("win");
+        }
     }
 
     public void playGame() throws IOException {
@@ -74,14 +82,6 @@ public class ClientAIController extends ClientCommunicatorImpl {
 
     public void endGame() throws IOException {
         stopCommunicator();
-    }
-
-    private static void printGameResult(boolean amITheWinner) {
-        if (!amITheWinner) {
-            UserInterface.printProperty("loose");
-        } else {
-            UserInterface.printProperty("win");
-        }
     }
 
     private boolean amITheWinner(Response response) {

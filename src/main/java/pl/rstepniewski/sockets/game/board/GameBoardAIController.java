@@ -26,13 +26,28 @@ import java.util.stream.Collectors;
 public class GameBoardAIController {
     private static final Logger LOGGER = LogManager.getLogger(GameBoardAIController.class);
     private final GameBoard gameBoard;
-    private Fleet fleet;
     private final FleetLoader fleetLoader;
     Queue<String> possibleShots = new LinkedList<>();
+    private Fleet fleet;
 
     public GameBoardAIController(GameBoard gameBoard, FleetLoader fleetLoader) {
         this.gameBoard = gameBoard;
         this.fleetLoader = fleetLoader;
+    }
+
+    public static void main(String[] args) {
+        List<String> combinations = new ArrayList<>();
+        for (char letter = 'A'; letter <= 'J'; letter++) {
+            for (int number = 1; number <= 10; number++) {
+                combinations.add(letter + Integer.toString(number));
+            }
+        }
+        Collections.shuffle(combinations);
+
+        Queue<String> shuffledCombinations = new LinkedList<>(combinations);
+        String element = shuffledCombinations.poll();
+
+        System.out.println(shuffledCombinations.size());
     }
 
     public void initialiseBord() {
@@ -109,14 +124,14 @@ public class GameBoardAIController {
     }
 
     public Point getNewRandomShot() {
-        return new Point( possibleShots.poll() );
+        return new Point(possibleShots.poll());
     }
 
     public Queue<String> initialisePossibleShotsList() {
-        List<String>  combinations = new ArrayList<>();
-        for(char letter = 'A'; letter <= 'J'; letter++){
-            for(int number = 1; number <=10; number ++){
-                combinations.add( letter + Integer.toString(number) );
+        List<String> combinations = new ArrayList<>();
+        for (char letter = 'A'; letter <= 'J'; letter++) {
+            for (int number = 1; number <= 10; number++) {
+                combinations.add(letter + Integer.toString(number));
             }
         }
         Collections.shuffle(combinations);
@@ -124,21 +139,6 @@ public class GameBoardAIController {
         Queue<String> shuffledCombinations = new LinkedList<>(combinations);
 
         return shuffledCombinations;
-    }
-
-    public static void main(String[] args) {
-        List<String>  combinations = new ArrayList<>();
-        for(char letter = 'A'; letter <= 'J'; letter++){
-            for(int number = 1; number <=10; number ++){
-                combinations.add( letter + Integer.toString(number) );
-            }
-        }
-        Collections.shuffle(combinations);
-
-        Queue<String> shuffledCombinations = new LinkedList<>(combinations);
-        String element = shuffledCombinations.poll();
-
-        System.out.println(shuffledCombinations.size());
     }
 
     public void reportReceivedShot(Point receivedShot) {

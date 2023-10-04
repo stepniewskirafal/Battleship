@@ -9,15 +9,15 @@ import java.util.Properties;
 public final class PropertiesUtil {
     private static final Properties PROPERTIES = new Properties();
 
-    private PropertiesUtil() {
-    }
-
     static {
         try {
             loadProperties();
         } catch (FileNotFoundException e) {
             UserInterface.printText("FileNotFoundException while PropertiesUtil initialisation");
         }
+    }
+
+    private PropertiesUtil() {
     }
 
     private static void loadProperties() throws FileNotFoundException {

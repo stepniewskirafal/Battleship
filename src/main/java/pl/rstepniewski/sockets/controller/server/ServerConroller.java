@@ -9,7 +9,8 @@ import org.apache.logging.log4j.Logger;
 import pl.rstepniewski.sockets.communication.ServerCommunicatorImpl;
 import pl.rstepniewski.sockets.dto.ShipDto;
 import pl.rstepniewski.sockets.dto.ShotDto;
-import pl.rstepniewski.sockets.game.*;
+import pl.rstepniewski.sockets.game.Point;
+import pl.rstepniewski.sockets.game.ShotType;
 import pl.rstepniewski.sockets.game.board.BoardCellStatus;
 import pl.rstepniewski.sockets.game.board.GameBoard;
 import pl.rstepniewski.sockets.game.board.GameBoardAIController;
@@ -35,8 +36,8 @@ public class ServerConroller extends ServerCommunicatorImpl {
     private static final Logger LOGGER = LogManager.getLogger(ServerConroller.class);
     private final GameBoardAIController gameBoardAIController;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private boolean serverGameBussy;
     List<Point> shotsHistory = new ArrayList<>();
+    private boolean serverGameBussy;
 
     public ServerConroller() {
         super(new ServerService());

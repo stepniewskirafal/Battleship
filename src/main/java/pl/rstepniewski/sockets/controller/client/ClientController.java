@@ -7,7 +7,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.rstepniewski.sockets.communication.ClientCommunicatorImpl;
 import pl.rstepniewski.sockets.dto.ShotDto;
-import pl.rstepniewski.sockets.game.*;
+import pl.rstepniewski.sockets.game.GetPointInterface;
+import pl.rstepniewski.sockets.game.Point;
+import pl.rstepniewski.sockets.game.ShotType;
+import pl.rstepniewski.sockets.game.UserInterface;
 import pl.rstepniewski.sockets.game.board.BoardCellStatus;
 import pl.rstepniewski.sockets.game.board.GameBoard;
 import pl.rstepniewski.sockets.game.board.GameBoardUserController;
@@ -29,14 +32,22 @@ import static pl.rstepniewski.sockets.jsonCommunication.MessageType.GAME_INVITAT
  * @project : Battleship
  */
 public class ClientController extends ClientCommunicatorImpl {
+    private static final Logger LOGGER = LogManager.getLogger(ClientController.class);
     private final GameBoardUserController gameBoardUserController;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private static final Logger LOGGER = LogManager.getLogger(ClientController.class);
     private int hitCounter;
 
     public ClientController() {
         super(new ClientService());
         this.gameBoardUserController = new GameBoardUserController(new GameBoard());
+    }
+
+    private static void printGameResult(boolean amITheWinner) {
+        if (!amITheWinner) {
+            UserInterface.printProperty("loose");
+        } else {
+            UserInterface.printProperty("win");
+        }
     }
 
     public void playGame() throws IOException {
@@ -71,14 +82,6 @@ public class ClientController extends ClientCommunicatorImpl {
 
     public void endGame() throws IOException {
         stopCommunicator();
-    }
-
-    private static void printGameResult(boolean amITheWinner) {
-        if (!amITheWinner) {
-            UserInterface.printProperty("loose");
-        } else {
-            UserInterface.printProperty("win");
-        }
     }
 
     private boolean amITheWinner(Response response) {
