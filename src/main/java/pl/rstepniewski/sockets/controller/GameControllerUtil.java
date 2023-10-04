@@ -41,7 +41,7 @@ public class GameControllerUtil implements UserInterface {
     }
 
     private static MenuCode getMenuChoice() {
-        return MenuCode.valueOf(UserInterface.readText());
+        return MenuCode.buildMenuCodeFromInt(UserInterface.readInt());
     }
 
     private static void handleClientConsole() throws IOException {

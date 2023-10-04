@@ -22,10 +22,4 @@ public interface GetPointInterface {
         return (letterChar >= 'A' && letterChar <= 'J' || letterChar >= 'a' && letterChar <= 'j')
                 && firstNumberChar >= '0' && firstNumberChar <= '9' && secondNumberChar == '0';
     }
-
-    static Point getNewRandomPoint() {
-        int row = random.nextInt(10);
-        int column = random.nextInt(10);
-        return new Point(row, column);
-    }
 }

@@ -9,15 +9,11 @@ import pl.rstepniewski.sockets.dto.PointDto;
 import pl.rstepniewski.sockets.dto.ShipDto;
 import pl.rstepniewski.sockets.game.Point;
 import pl.rstepniewski.sockets.game.Ship;
-import pl.rstepniewski.sockets.game.GetPointInterface;
 import pl.rstepniewski.sockets.game.UserInterface;
 import pl.rstepniewski.sockets.game.fleet.Fleet;
 import pl.rstepniewski.sockets.game.fleet.FleetLoader;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -28,12 +24,11 @@ import java.util.stream.Collectors;
  * @project : Battleship
  */
 public class GameBoardAIController {
-
     private static final Logger LOGGER = LogManager.getLogger(GameBoardAIController.class);
-
     private final GameBoard gameBoard;
     private Fleet fleet;
     private final FleetLoader fleetLoader;
+    Queue<String> possibleShots = new LinkedList<>();
 
     public GameBoardAIController(GameBoard gameBoard, FleetLoader fleetLoader) {
         this.gameBoard = gameBoard;
@@ -48,6 +43,10 @@ public class GameBoardAIController {
         LOGGER.info("Server marked ships positions succesfully");
 
         gameBoard.printBoards();
+        LOGGER.info("Boards printed succesfully");
+
+        possibleShots = initialisePossibleShotsList();
+        LOGGER.info("List with possible shots initialised");
     }
 
     public void markHitOnShotBoard(Point shot) {
@@ -110,11 +109,36 @@ public class GameBoardAIController {
     }
 
     public Point getNewRandomShot() {
-        Point newRandomShot;
-        do {
-            newRandomShot = GetPointInterface.getNewRandomPoint();
-        } while (gameBoard.isShotNotAllowed(newRandomShot));
-        return newRandomShot;
+        return new Point( possibleShots.poll() );
+    }
+
+    public Queue<String> initialisePossibleShotsList() {
+        List<String>  combinations = new ArrayList<>();
+        for(char letter = 'A'; letter <= 'J'; letter++){
+            for(int number = 1; number <=10; number ++){
+                combinations.add( letter + Integer.toString(number) );
+            }
+        }
+        Collections.shuffle(combinations);
+
+        Queue<String> shuffledCombinations = new LinkedList<>(combinations);
+
+        return shuffledCombinations;
+    }
+
+    public static void main(String[] args) {
+        List<String>  combinations = new ArrayList<>();
+        for(char letter = 'A'; letter <= 'J'; letter++){
+            for(int number = 1; number <=10; number ++){
+                combinations.add( letter + Integer.toString(number) );
+            }
+        }
+        Collections.shuffle(combinations);
+
+        Queue<String> shuffledCombinations = new LinkedList<>(combinations);
+        String element = shuffledCombinations.poll();
+
+        System.out.println(shuffledCombinations.size());
     }
 
     public void reportReceivedShot(Point receivedShot) {
