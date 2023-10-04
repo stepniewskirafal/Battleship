@@ -9,6 +9,7 @@ import pl.rstepniewski.sockets.controller.client.ClientService;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+
 /**
  * Created by rafal on 02.07.2023
  *
@@ -16,7 +17,7 @@ import java.io.PrintWriter;
  * @date : 02.07.2023
  * @project : Battleship
  */
-public class ClientCommunicatorImpl implements CommunicatorInterface{
+public class ClientCommunicatorImpl implements CommunicatorInterface {
     private final PrintWriter printWriter;
     private final BufferedReader bufferedReader;
     private final ObjectMapper objectMapper;
@@ -28,21 +29,31 @@ public class ClientCommunicatorImpl implements CommunicatorInterface{
         this.bufferedReader = clientService.getBufferedReader();
         this.objectMapper = new ObjectMapper();
     }
-    public void stopCommunicator() { clientService.disconnectFromServer(); }
+
+    public void stopCommunicator() {
+        clientService.disconnectFromServer();
+    }
+
     @Override
-    public String getClientMessage() throws IOException { return ""; }
+    public String getClientMessage() throws IOException {
+        return "";
+    }
+
     @Override
     public String getJsonString() throws IOException {
-        String responseJson = bufferedReader.readLine();
-        return responseJson;
+        return bufferedReader.readLine();
     }
+
     @Override
     public Response getResponse() throws IOException {
         String responseJson = bufferedReader.readLine();
         return objectMapper.readValue(responseJson, Response.class);
     }
+
     @Override
-    public void sendResponse(Response response) {}
+    public void sendResponse(Response response) {
+    }
+
     @Override
     public void sendRequest(Request request) throws JsonProcessingException {
         String requestJson = objectMapper.writeValueAsString(request);

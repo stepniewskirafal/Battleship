@@ -14,6 +14,7 @@ import pl.rstepniewski.sockets.game.board.BoardCellStatus;
 import pl.rstepniewski.sockets.game.board.GameBoard;
 import pl.rstepniewski.sockets.game.board.GameBoardAIController;
 import pl.rstepniewski.sockets.game.fleet.FleetLoader;
+import pl.rstepniewski.sockets.jsonCommunication.ErrorCode;
 import pl.rstepniewski.sockets.jsonCommunication.MessageType;
 import pl.rstepniewski.sockets.jsonCommunication.message.Request;
 import pl.rstepniewski.sockets.jsonCommunication.message.Response;
@@ -30,14 +31,14 @@ import java.util.Map;
  * @project : Battleship
  */
 public class ServerConroller extends ServerCommunicatorImpl {
-    private static final Logger logger = LogManager.getLogger(ServerConroller.class);
+    private static final Logger LOGGER = LogManager.getLogger(ServerConroller.class);
     private final GameBoardAIController gameBoardAIController;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private boolean serverGameBussy;
 
     public ServerConroller() {
         super(new ServerService());
-        this.gameBoardAIController  = new GameBoardAIController(new GameBoard(), new FleetLoader());
+        this.gameBoardAIController = new GameBoardAIController(new GameBoard(), new FleetLoader());
     }
 
     public void handleGame() throws IOException {
@@ -48,9 +49,9 @@ public class ServerConroller extends ServerCommunicatorImpl {
 
         do {
             clientMessage = getClientMessage();
-            if(clientMessage == null){
+            if (clientMessage == null) {
                 messageTypeFromString = MessageType.RESET;
-            }else{
+            } else {
                 messageTypeFromString = getMessageType(clientMessage);
             }
 
@@ -73,17 +74,22 @@ public class ServerConroller extends ServerCommunicatorImpl {
                     acceptShotResult();
                     break;
                 case SHOT:
-                     handleOpponentShoot( objectMapper.readValue(clientMessage, Request.class) );
+                    handleOpponentShoot(objectMapper.readValue(clientMessage, Request.class));
                     break;
                 case SHOT_REQUEST:
                     point = handleAShootRequest();
                     break;
                 case UNKNOWN:
+                    sendBadRequestResponse();
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + messageTypeFromString);
             }
-        }while(isGameGoing);
+        } while (isGameGoing);
+    }
+
+    private void sendBadRequestResponse() throws JsonProcessingException {
+        sendResponse(Response.serverStatusBadRequest(ErrorCode.BAD_REQUEST.getErrorNumberCode()));
     }
 
     private void sendServerGameHistory() throws JsonProcessingException {
@@ -96,7 +102,8 @@ public class ServerConroller extends ServerCommunicatorImpl {
     private void handleOpponentFleetSetting(String clientMessage) throws JsonProcessingException {
         JsonNode jsonNode = objectMapper.readTree(clientMessage);
         final String clientMessageBody = String.valueOf(jsonNode.get("body"));
-        List<ShipDto> OpponentFleetSetting = objectMapper.readValue(clientMessageBody, new TypeReference<List<ShipDto>>() {});
+        List<ShipDto> opponentFleetSetting = objectMapper.readValue(clientMessageBody, new TypeReference<List<ShipDto>>() {
+        });
     }
 
     private void acceptOpponentFleetSetting() throws JsonProcessingException {
@@ -107,23 +114,28 @@ public class ServerConroller extends ServerCommunicatorImpl {
         sendResponse(Response.acceptShotResult());
     }
 
-    private MessageType getMessageType(String clientMessage) throws JsonProcessingException {
-        JsonNode jsonNode = objectMapper.readTree(clientMessage);
-        final String clientMessageType = jsonNode.get("type").asText();
+    private MessageType getMessageType(String clientMessage) {
+        String clientMessageType;
+        try {
+            JsonNode jsonNode = objectMapper.readTree(clientMessage);
+            clientMessageType = jsonNode.get("type").asText();
+        } catch (JsonProcessingException e) {
+            clientMessageType = "UNKNOWN";
+        }
 
         return MessageType.getMessageTypeFromString(clientMessageType);
     }
 
     private void handleGameInvitation() throws IOException {
-        logger.info("Request received from client. Request type: GameInvitation");
+        LOGGER.info("Request received from client. Request type: GameInvitation");
         Response response;
 
-        if(! serverGameBussy ) {
-            serverGameBussy=!serverGameBussy;
+        if (!serverGameBussy) {
+            serverGameBussy = !serverGameBussy;
             response = Response.gameInvitationPositive();
             sendResponse(response);
             gameBoardAIController.initialiseBord();
-        }else {
+        } else {
             response = Response.gameInvitationNegative();
             sendResponse(response);
         }
@@ -139,6 +151,9 @@ public class ServerConroller extends ServerCommunicatorImpl {
                 break;
             case "SINKING":
                 gameBoardAIController.markSinkingOnShotBoard(shot);
+                break;
+            default:
+                LOGGER.error("Unexpected value: " + response.getBody().toString());
         }
     }
 
@@ -146,7 +161,7 @@ public class ServerConroller extends ServerCommunicatorImpl {
         Point shot = null;
         Response responseShotRequestResult = null;
         shot = gameBoardAIController.getNewRandomShot();
-        logger.info("The coordinates of the shot generated by server are x:" + shot.getX() + " y:" + shot.getY());
+        LOGGER.info("The coordinates of the shot generated by server are x:" + shot.getX() + " y:" + shot.getY());
 
         responseShotRequestResult = Response.shot(new ShotDto(shot.getX(), shot.getY()));
 
@@ -161,9 +176,9 @@ public class ServerConroller extends ServerCommunicatorImpl {
         final ShotDto point = objectMapper.readValue(objectMapper.writeValueAsString(request.getBody()), ShotDto.class);
         final Point receivedShot = new Point(point.getRow(), point.getColumn());
 
-        if(! gameBoardAIController.isShotInBoundaries(receivedShot) ){
+        if (!gameBoardAIController.isShotInBoundaries(receivedShot)) {
             responseShotResult = Response.shotResultShotNotInBoundaries();
-        }else {
+        } else {
             final boolean isShotAccurate = gameBoardAIController.isShotHit(receivedShot);
             gameBoardAIController.reportReceivedShot(receivedShot);
 

@@ -9,6 +9,7 @@ import pl.rstepniewski.sockets.controller.server.ServerService;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+
 /**
  * Created by rafal on 03.07.2023
  *
@@ -28,11 +29,16 @@ public class ServerCommunicatorImpl implements CommunicatorInterface {
         this.bufferedReader = serverService.getBufferedReader();
         this.objectMapper = new ObjectMapper();
     }
-    public void stopCommunicator() { serverService.closeConnection(); }
+
+    public void stopCommunicator() {
+        serverService.closeConnection();
+    }
+
     @Override
     public String getClientMessage() throws IOException {
         return getJsonString();
     }
+
     @Override
     public String getJsonString() throws IOException {
         String responseJson;
@@ -44,18 +50,22 @@ public class ServerCommunicatorImpl implements CommunicatorInterface {
 
         return responseJson;
     }
+
     @Override
     public Response getResponse() throws IOException {
         String responseJson = bufferedReader.readLine();
         return objectMapper.readValue(responseJson, Response.class);
     }
+
     @Override
     public void sendResponse(Response response) throws JsonProcessingException {
         String responseJson = objectMapper.writeValueAsString(response);
         printWriter.println(responseJson);
     }
+
     @Override
-    public void sendRequest(Request request) {}
+    public void sendRequest(Request request) {
+    }
 }
 
 

@@ -14,7 +14,7 @@ import java.util.Optional;
  * @project : Battleship
  */
 public class Fleet {
-    private List<Ship> fleet;
+    private final List<Ship> fleet;
 
     public Fleet(List<Ship> fleet) {
         this.fleet = fleet;
@@ -23,14 +23,14 @@ public class Fleet {
     public List<Ship> getFleet() {
         return fleet;
     }
-    
-    public Optional<Ship> findShip(Point point){
+
+    public Optional<Ship> findShip(Point point) {
         return fleet.stream()
                 .filter(ship -> ship.getPosition().contains(point))
                 .findAny();
     }
 
-    public boolean isFleetSunk(){
+    public boolean isFleetSunk() {
         return fleet.stream().allMatch(Ship::isSinking);
     }
 }

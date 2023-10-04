@@ -10,8 +10,8 @@ import java.util.Objects;
  * @project : Battleship
  */
 public class Point {
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
     private boolean isPointSinking;
 
     public Point(int x, int y) {

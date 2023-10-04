@@ -11,8 +11,10 @@ import pl.rstepniewski.sockets.game.*;
 import pl.rstepniewski.sockets.game.board.BoardCellStatus;
 import pl.rstepniewski.sockets.game.board.GameBoard;
 import pl.rstepniewski.sockets.game.board.GameBoardUserController;
+import pl.rstepniewski.sockets.jsonCommunication.ErrorCode;
 import pl.rstepniewski.sockets.jsonCommunication.message.Request;
 import pl.rstepniewski.sockets.jsonCommunication.message.Response;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +31,7 @@ import static pl.rstepniewski.sockets.jsonCommunication.MessageType.GAME_INVITAT
 public class ClientController extends ClientCommunicatorImpl {
     private final GameBoardUserController gameBoardUserController;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private static final Logger logger = LogManager.getLogger(ClientController.class);
+    private static final Logger LOGGER = LogManager.getLogger(ClientController.class);
     private int hitCounter;
 
     public ClientController() {
@@ -41,20 +43,20 @@ public class ClientController extends ClientCommunicatorImpl {
         Response response;
         boolean isShotPositive;
         boolean amITheWinner = false;
-        logger.info("Starting Battleship game");
+        LOGGER.info("Starting Battleship game");
         sendGameInvitation();
         handleServerInvitationResponse();
         gameBoardUserController.initializeBoard();
 
-        while (gameBoardUserController.isFleetAlive() && (!amITheWinner) ) {
-            do{
+        while (gameBoardUserController.isFleetAlive() && !amITheWinner) {
+            do {
                 Point shot = shootOpponentsFleet();
                 response = getResponse();
                 isShotPositive = markShotResult(shot, response);
-            }while (!isShotPositive);
+            } while (!isShotPositive);
 
             amITheWinner = amITheWinner(response);
-            if(!amITheWinner){
+            if (!amITheWinner) {
                 sendRequest(Request.shotRequest());
                 response = getResponse();
                 handleShotResponse(response);
@@ -72,16 +74,16 @@ public class ClientController extends ClientCommunicatorImpl {
     }
 
     private static void printGameResult(boolean amITheWinner) {
-        if(!amITheWinner) {
+        if (!amITheWinner) {
             UserInterface.printProperty("loose");
-        }else {
+        } else {
             UserInterface.printProperty("win");
         }
     }
 
     private boolean amITheWinner(Response response) {
         final String responseBodyString = response.getBody().toString();
-        if (responseBodyString.equals("HIT") || responseBodyString.equals("SINKING")) {
+        if (ShotType.HIT.getShotType().equals(responseBodyString) || ShotType.SINKING.getShotType().equals(responseBodyString)) {
             hitCounter++;
         }
         return hitCounter >= 20;
@@ -93,13 +95,13 @@ public class ClientController extends ClientCommunicatorImpl {
 
     private void handleServerInvitationResponse() throws IOException {
         Response response = getResponse();
-        if ( response.getType().equals(GAME_INVITATION.name()) && response.getStatus() != 0) {
+        if (response.getType().equals(GAME_INVITATION.name()) && response.getStatus() != 0) {
             UserInterface.printText(response.getMessage());
         }
     }
 
     private void handleShotResponse(Response response) throws IOException {
-        Request requestResult= null;
+        Request requestResult;
         ShotDto point = objectMapper.readValue(objectMapper.writeValueAsString(response.getBody()), ShotDto.class);
 
         Point receivedShot = new Point(point.getRow(), point.getColumn());
@@ -122,11 +124,11 @@ public class ClientController extends ClientCommunicatorImpl {
     }
 
     private boolean markShotResult(Point shot, Response response) {
-        boolean result = false;
-        if (response.getStatus() == 2) {
+        boolean result;
+        if (response.getStatus() == ErrorCode.ILLEGAL_ARGUMENTS.getErrorNumberCode()) {
             UserInterface.printText(response.getMessage());
             result = false;
-        } else{
+        } else {
             switch (response.getBody().toString()) {
                 case "HIT":
                     gameBoardUserController.markHitOnShotBoard(shot);
@@ -136,6 +138,9 @@ public class ClientController extends ClientCommunicatorImpl {
                     break;
                 case "SINKING":
                     gameBoardUserController.markSinkingOnShotBoard(shot);
+                    break;
+                default:
+                    LOGGER.error("Unexpected value: " + response.getBody().toString());
             }
             result = true;
         }
@@ -145,31 +150,28 @@ public class ClientController extends ClientCommunicatorImpl {
     private Point shootOpponentsFleet() throws JsonProcessingException {
         UserInterface.printProperty("shoot.prompt");
         Point shot = GetPointInterface.getNewUserPoint();
-        sendRequest(Request.shot( new ShotDto(shot.getX(), shot.getY()) ));
+        sendRequest(Request.shot(new ShotDto(shot.getX(), shot.getY())));
 
         return shot;
     }
 
-    public void viewGameHistory(int sleeptime) throws IOException  {
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-        System.out.println("Oto wyniki");
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+    public void viewGameHistory(int sleeptime) throws IOException {
+        UserInterface.printEnter(3);
+        UserInterface.printProperty("results");
+        UserInterface.printEnter(3);
         Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> serverGameHistory = getServerGameHistory();
         Map<Integer, List<List<BoardCellStatus>>> serverBoardShipsHistory = serverGameHistory.get(0);
         Map<Integer, List<List<BoardCellStatus>>> serverBoardShotsHistory = serverGameHistory.get(1);
 
-        gameBoardUserController.printBoardsHistory(sleeptime,serverBoardShipsHistory, serverBoardShotsHistory);
+        gameBoardUserController.printBoardsHistory(sleeptime, serverBoardShipsHistory, serverBoardShotsHistory);
     }
 
-    public Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> getServerGameHistory() throws IOException  {
+    public Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> getServerGameHistory() throws IOException {
         sendRequest(Request.getGameHistory());
         Response response = getResponse();
         String body = response.getBody().toString();
-        TypeReference<Map<Integer, Map<Integer, List<List<BoardCellStatus>>>>> typeReference = new TypeReference<Map<Integer, Map<Integer, List<List<BoardCellStatus>>>>>() {};
+        TypeReference<Map<Integer, Map<Integer, List<List<BoardCellStatus>>>>> typeReference = new TypeReference<Map<Integer, Map<Integer, List<List<BoardCellStatus>>>>>() {
+        };
         Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> serverGameHistory = objectMapper.readValue(body, typeReference);
 
         return serverGameHistory;

@@ -1,7 +1,7 @@
 package pl.rstepniewski.sockets.game;
 
-import java.util.ArrayList;
 import java.util.List;
+
 /**
  * Created by rafal on 16.06.2023
  *
@@ -10,9 +10,9 @@ import java.util.List;
  * @project : Battleship
  */
 public class Ship {
-    private List<Point> position;
+    private final List<Point> position;
     private boolean isShipSinking;
-    private int length;
+    private final int length;
 
     public Ship(List<Point> position, int length) {
         this.position = position;
@@ -24,7 +24,7 @@ public class Ship {
         return position;
     }
 
-    public static int getLength(ArrayList<Point> newShipPoints) {
+    public static int getLength(List<Point> newShipPoints) {
         Point p1 = newShipPoints.get(0);
         Point p2 = newShipPoints.get(1);
 
@@ -34,16 +34,16 @@ public class Ship {
         return (int) (Math.sqrt(dx * dx + dy * dy) + 1);
     }
 
-    public boolean isNeighbour(List<Point> newShipPosition){
-        for(int i=0; i<newShipPosition.size(); i++){
-            for(int j=0; j<position.size(); j++){
-                if(     position.get(j).getX() == newShipPosition.get(i).getX() && position.get(j).getY() == newShipPosition.get(i).getY()    ||
-                        position.get(j).getX() == newShipPosition.get(i).getX() && position.get(j).getY() == newShipPosition.get(i).getY() -1 ||
-                        position.get(j).getX() == newShipPosition.get(i).getX() && position.get(j).getY() == newShipPosition.get(i).getY() +1 ||
+    public boolean isNeighbour(List<Point> newShipPosition) {
+        for (int i = 0; i < newShipPosition.size(); i++) {
+            for (int j = 0; j < position.size(); j++) {
+                if (position.get(j).getX() == newShipPosition.get(i).getX() && position.get(j).getY() == newShipPosition.get(i).getY() ||
+                        position.get(j).getX() == newShipPosition.get(i).getX() && position.get(j).getY() == newShipPosition.get(i).getY() - 1 ||
+                        position.get(j).getX() == newShipPosition.get(i).getX() && position.get(j).getY() == newShipPosition.get(i).getY() + 1 ||
 
-                        position.get(j).getY() == newShipPosition.get(i).getY() && position.get(j).getX() == newShipPosition.get(i).getX()    ||
-                        position.get(j).getY() == newShipPosition.get(i).getY() && position.get(j).getX() == newShipPosition.get(i).getX() -1 ||
-                        position.get(j).getY() == newShipPosition.get(i).getY() && position.get(j).getX() == newShipPosition.get(i).getX() +1 ){
+                        position.get(j).getY() == newShipPosition.get(i).getY() && position.get(j).getX() == newShipPosition.get(i).getX() ||
+                        position.get(j).getY() == newShipPosition.get(i).getY() && position.get(j).getX() == newShipPosition.get(i).getX() - 1 ||
+                        position.get(j).getY() == newShipPosition.get(i).getY() && position.get(j).getX() == newShipPosition.get(i).getX() + 1) {
                     return true;
                 }
             }

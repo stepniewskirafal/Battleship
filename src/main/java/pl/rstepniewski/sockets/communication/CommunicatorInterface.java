@@ -15,8 +15,12 @@ import pl.rstepniewski.sockets.jsonCommunication.message.Response;
  */
 public interface CommunicatorInterface {
     String getClientMessage() throws IOException;
+
     String getJsonString() throws IOException;
+
     Response getResponse() throws IOException;
+
     void sendResponse(Response response) throws JsonProcessingException;
+
     void sendRequest(Request request) throws JsonProcessingException;
 }

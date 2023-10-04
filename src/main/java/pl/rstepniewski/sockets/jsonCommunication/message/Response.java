@@ -4,13 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import pl.rstepniewski.sockets.dto.ShotDto;
 import pl.rstepniewski.sockets.game.ShotType;
-import pl.rstepniewski.sockets.game.board.BoardCellStatus;
+import pl.rstepniewski.sockets.jsonCommunication.ErrorCode;
 import pl.rstepniewski.sockets.jsonCommunication.MessageType;
 
-import java.util.List;
-import java.util.Map;
-
-public class Response extends Message{
+public class Response extends Message {
     private int status;
     private String message;
 
@@ -25,6 +22,7 @@ public class Response extends Message{
         this.status = status;
         this.message = message;
     }
+
     public static Response gameInvitationPositive() {
         return new Response(MessageType.GAME_INVITATION.name(), 0, null, null);
     }
@@ -46,7 +44,7 @@ public class Response extends Message{
     }
 
     public static Response shotResultShotNotInBoundaries() {
-        return new Response(MessageType.SHOT.name(), 2, "The shot is not within the boundaries of the board.", null);
+        return new Response(MessageType.SHOT.name(), ErrorCode.ILLEGAL_ARGUMENTS.getErrorNumberCode(), "The shot is not within the boundaries of the board.", null);
     }
 
     public static Response shotResultUnknown(ShotType shotType) {
@@ -60,15 +58,16 @@ public class Response extends Message{
     public static Response acceptShotResult() {
         return new Response(MessageType.RESULT.name(), 0, null, null);
     }
+
     public static Response acceptOpponentFleetSetting() {
         return new Response(MessageType.BOARD.name(), 0, null, null);
     }
 
-    public static Response gameHistory(String gameHistoryBoards){
-        return new Response( MessageType.BOARD_HISTORY.name(), 0, null, gameHistoryBoards );
+    public static Response gameHistory(String gameHistoryBoards) {
+        return new Response(MessageType.BOARD_HISTORY.name(), 0, null, gameHistoryBoards);
     }
 
-    public static Response serverStatus(int errorNumber) {
+    public static Response serverStatusBadRequest(int errorNumber) {
         return new Response(MessageType.UNKNOWN.name(), errorNumber, null, null);
     }
 

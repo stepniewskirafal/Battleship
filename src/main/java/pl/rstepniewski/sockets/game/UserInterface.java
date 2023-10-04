@@ -1,6 +1,7 @@
 package pl.rstepniewski.sockets.game;
 
 import pl.rstepniewski.sockets.propertiesUtil.PropertiesUtil;
+
 import java.util.Scanner;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Scanner;
  */
 
 public interface UserInterface {
-    static final Scanner scanner = new Scanner(System.in);
+    Scanner scanner = new Scanner(System.in);
 
     static void printText(String string) {
         System.out.println(string);
@@ -25,14 +26,21 @@ public interface UserInterface {
     static String readText() {
         return scanner.nextLine();
     }
+
     static int readInt() {
         int result = scanner.nextInt();
         scanner.nextLine();
         return result;
     }
 
-    static String printAndReadText(String string) {
-        printText(string);
-        return scanner.nextLine();
+    static void printEnter(int nuberOfEnters) {
+        if (nuberOfEnters > 0) {
+            StringBuilder emptyLines = new StringBuilder();
+            for (int i = 0; i < nuberOfEnters; i++) {
+                emptyLines.append(System.lineSeparator());
+            }
+            System.out.print(emptyLines);
+        }
+
     }
 }

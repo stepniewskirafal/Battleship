@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class ShipDto {
     private final List<PointDto> position;
-    private boolean isShipSinking;
+    private final boolean isShipSinking;
 
     @JsonCreator
     public ShipDto(@JsonProperty("position") List<PointDto> position, @JsonProperty("isShipSinking") boolean isShipSinking) {

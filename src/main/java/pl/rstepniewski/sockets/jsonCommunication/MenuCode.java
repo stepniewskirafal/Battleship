@@ -1,16 +1,19 @@
 package pl.rstepniewski.sockets.jsonCommunication;
 
-public enum ErrorCode {
-    ILLEGAL_ARGUMENTS(2),
-    BAD_REQUEST(4);
+public enum MenuCode {
+    CLIENT_CONSOLE(1),
+    CLIENT_AI(2),
+    SERVER_AI(3),
+    GAME_HISTORY(1),
+    EXIT_GAME(0);
 
-    final int errorNumberCode;
+    final int menuNumberCode;
 
-    public int getErrorNumberCode() {
-        return errorNumberCode;
+    public int getMenuNumberCode() {
+        return menuNumberCode;
     }
 
-    ErrorCode(int errorNumberCode) {
-        this.errorNumberCode = errorNumberCode;
+    MenuCode(int menuNumberCode) {
+        this.menuNumberCode = menuNumberCode;
     }
 }

@@ -1,8 +1,5 @@
 package pl.rstepniewski.sockets.dto;
 
-import java.util.List;
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -16,10 +13,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class PointDto {
     private final int x;
     private final int y;
-    private boolean pointSinking;
+    private final boolean pointSinking;
 
     @JsonCreator
-    public PointDto(@JsonProperty("x") int x, @JsonProperty("y")int y, @JsonProperty("pointSinking") boolean pointSinking) {
+    public PointDto(@JsonProperty("x") int x, @JsonProperty("y") int y, @JsonProperty("pointSinking") boolean pointSinking) {
         this.x = x;
         this.y = y;
         this.pointSinking = pointSinking;

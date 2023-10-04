@@ -4,13 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import pl.rstepniewski.sockets.dto.ShipDto;
 import pl.rstepniewski.sockets.dto.ShotDto;
-import pl.rstepniewski.sockets.game.Ship;
 import pl.rstepniewski.sockets.game.ShotType;
 import pl.rstepniewski.sockets.jsonCommunication.MessageType;
 
 import java.util.List;
 
-public class Request extends Message{
+public class Request extends Message {
     @JsonCreator
     public Request(
             @JsonProperty("type") String type,
@@ -39,9 +38,15 @@ public class Request extends Message{
         return new Request(MessageType.RESULT.name(), ShotType.MISS.name());
     }
 
-    public static Request shotResultSinking() { return new Request(MessageType.RESULT.name(), ShotType.SINKING.name()); }
+    public static Request shotResultSinking() {
+        return new Request(MessageType.RESULT.name(), ShotType.SINKING.name());
+    }
 
-    public static Request shipsArrangement(List<ShipDto> shipPosition) { return new Request(MessageType.BOARD.name(), shipPosition); }
+    public static Request shipsArrangement(List<ShipDto> shipPosition) {
+        return new Request(MessageType.BOARD.name(), shipPosition);
+    }
 
-    public static Request getGameHistory(){ return new Request(MessageType.BOARD_HISTORY.name(), null); }
+    public static Request getGameHistory() {
+        return new Request(MessageType.BOARD_HISTORY.name(), null);
+    }
 }

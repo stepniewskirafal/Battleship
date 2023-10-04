@@ -12,15 +12,12 @@ public interface ShipCreator {
         for (String coordinate : coordinates) {
             shipCoordinates.add(new Point(coordinate));
         }
-        Ship ship = new Ship(shipCoordinates, ShipTypeConverter.convertToNumber(shipType));
-        System.out.println(ship);
-        return ship;
+        return new Ship(shipCoordinates, ShipTypeConverter.convertToNumber(shipType));
     }
 
     static Ship createShip(String shipType, String coordinate) {
         List<Point> shipCoordinates = new ArrayList<>();
         shipCoordinates.add(new Point(coordinate));
-
         return new Ship(shipCoordinates, ShipTypeConverter.convertToNumber(shipType));
     }
 }

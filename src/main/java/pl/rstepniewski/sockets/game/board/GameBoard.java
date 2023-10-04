@@ -21,10 +21,10 @@ public class GameBoard implements UserInterface {
     private List<List<BoardCellStatus>> boardShips = new ArrayList<>();
     private List<List<BoardCellStatus>> boardShots = new ArrayList<>();
 
-    private Map<Integer, List<List<BoardCellStatus>>> boardShipsHistory;
-    private Map<Integer, List<List<BoardCellStatus>>> boardShotsHistory;
+    private final Map<Integer, List<List<BoardCellStatus>>> boardShipsHistory;
+    private final Map<Integer, List<List<BoardCellStatus>>> boardShotsHistory;
 
-    public GameBoard(){
+    public GameBoard() {
         gameBoardHistory = new GameBoardHistory();
         boardShipsHistory = gameBoardHistory.getBoardShipsHistory();
         boardShotsHistory = gameBoardHistory.getBoardShotsHistory();
@@ -39,7 +39,7 @@ public class GameBoard implements UserInterface {
         return gameBoardHistory.getBoardShotsHistory();
     }
 
-    public boolean isShotNotAllowed(Point point){
+    public boolean isShotNotAllowed(Point point) {
         BoardCellStatus boardCellStatus = boardShips.get(point.getX()).get(point.getY());
         return boardCellStatus.equals(BoardCellStatus.HIT) || boardCellStatus.equals(BoardCellStatus.MISS);
     }
@@ -115,17 +115,17 @@ public class GameBoard implements UserInterface {
         int maxHistorySize = Math.max(boardShipsHistorySize, boardShotsHistorySize);
 
         for (int i = 1; i <= maxHistorySize; i++) {
-            List<List<BoardCellStatus>> boardShipsToDraw = boardShipsHistory.get(i <= boardShipsHistorySize ? i : boardShipsHistorySize );
-            List<List<BoardCellStatus>> boardShotsToDraw = boardShotsHistory.get(i <= boardShotsHistorySize ? i : boardShotsHistorySize );
+            List<List<BoardCellStatus>> boardShipsToDraw = boardShipsHistory.get(i <= boardShipsHistorySize ? i : boardShipsHistorySize);
+            List<List<BoardCellStatus>> boardShotsToDraw = boardShotsHistory.get(i <= boardShotsHistorySize ? i : boardShotsHistorySize);
             List<String> outputToDraw;
-            UserInterface.printText("   ROUND : "+i);
+            UserInterface.printText("   ROUND : " + i);
             UserInterface.printText("   Your fleet             Your shots                                                 legend:");
             UserInterface.printText("   A B C D E F G H I J    A B C D E F G H I J                                        O: Ship    X: Hit    M: Missed Shot");
-            outputToDraw  = getBoardOutput(boardShipsToDraw, boardShotsToDraw);
+            outputToDraw = getBoardOutput(boardShipsToDraw, boardShotsToDraw);
             outputToDraw.forEach(System.out::println);
 
-            List<List<BoardCellStatus>> serverBoardShipsToDraw = serverBoardShipsHistory.get(i <= serverBoardShipsHistorySize ? i : serverBoardShipsHistorySize );
-            List<List<BoardCellStatus>> serverBoardShotsToDraw = serverBoardShotsHistory.get(i <= serverBoardShotsHistorySize ? i : serverBoardShotsHistorySize );
+            List<List<BoardCellStatus>> serverBoardShipsToDraw = serverBoardShipsHistory.get(i <= serverBoardShipsHistorySize ? i : serverBoardShipsHistorySize);
+            List<List<BoardCellStatus>> serverBoardShotsToDraw = serverBoardShotsHistory.get(i <= serverBoardShotsHistorySize ? i : serverBoardShotsHistorySize);
             UserInterface.printText("   Opponent fleet         Opponent shots         ");
             UserInterface.printText("   A B C D E F G H I J    A B C D E F G H I J    ");
             outputToDraw = getBoardOutput(serverBoardShipsToDraw, serverBoardShotsToDraw);
@@ -147,10 +147,10 @@ public class GameBoard implements UserInterface {
         int maxHistorySize = Math.max(boardShipsHistorySize, boardShotsHistorySize);
 
         for (int i = 1; i <= maxHistorySize; i++) {
-            List<List<BoardCellStatus>> boardShipsToDraw = boardShipsHistory.get(i <= boardShipsHistorySize ? i : boardShipsHistorySize );
-            List<List<BoardCellStatus>> boardShotsToDraw = boardShotsHistory.get(i <= boardShotsHistorySize ? i : boardShotsHistorySize );
+            List<List<BoardCellStatus>> boardShipsToDraw = boardShipsHistory.get(i <= boardShipsHistorySize ? i : boardShipsHistorySize);
+            List<List<BoardCellStatus>> boardShotsToDraw = boardShotsHistory.get(i <= boardShotsHistorySize ? i : boardShotsHistorySize);
 
-            UserInterface.printText("   ROUND : "+i);
+            UserInterface.printText("   ROUND : " + i);
             UserInterface.printText("   You're fleet           You're shots                                               legend:");
             UserInterface.printText("   A B C D E F G H I J    A B C D E F G H I J                                        O: Ship    X: Hit    M: Missed Shot");
 
@@ -176,7 +176,7 @@ public class GameBoard implements UserInterface {
         AtomicInteger counter = new AtomicInteger(1);
         return IntStream.range(0, 10)
                 .mapToObj(index -> {
-                    StringBuilder rowNumber = (counter.get() < 10) ? new StringBuilder(counter.getAndIncrement() + "  ") : new StringBuilder(counter.getAndIncrement() + " ");
+                    StringBuilder rowNumber = counter.get() < 10 ? new StringBuilder(counter.getAndIncrement() + "  ") : new StringBuilder(counter.getAndIncrement() + " ");
                     StringBuilder builder = new StringBuilder(rowNumber);
                     List<BoardCellStatus> rowList1 = boardShipsToDraw.get(index);
                     List<BoardCellStatus> rowList2 = boardShotsToDraw.get(index);
@@ -201,7 +201,6 @@ public class GameBoard implements UserInterface {
                                 rowShips.append("M ");
                                 break;
                             default:
-                                rowShips.append("");
                                 break;
                         }
 
@@ -219,7 +218,6 @@ public class GameBoard implements UserInterface {
                                 rowShots.append("M ");
                                 break;
                             default:
-                                rowShots.append("");
                                 break;
                         }
                     }

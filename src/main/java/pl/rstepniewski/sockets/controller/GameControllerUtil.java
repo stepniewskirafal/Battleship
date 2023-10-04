@@ -4,44 +4,72 @@ import pl.rstepniewski.sockets.controller.client.ClientAIController;
 import pl.rstepniewski.sockets.controller.client.ClientController;
 import pl.rstepniewski.sockets.controller.server.ServerConroller;
 import pl.rstepniewski.sockets.game.UserInterface;
+import pl.rstepniewski.sockets.jsonCommunication.MenuCode;
 
 import java.io.IOException;
 
-public class GameController implements UserInterface {
+public class GameControllerUtil implements UserInterface {
+
+    private GameControllerUtil() {
+    }
 
     public static void main(String[] args) throws IOException {
-        int chose;
+        MenuCode choice;
 
-        do{
-            UserInterface.printText("Wybierz zadanie: " );
-            UserInterface.printText("1: klient konsolowy, 2: klient AI, 3: server AI, 0: zakończ");
-            chose = UserInterface.readInt();
-            switch (chose){
-                case 1:
-                    ClientController clientController = new ClientController();
-                    clientController.playGame();
-                    UserInterface.printText("Czy chcesz zobaczyć przebieg gry: 1/0");
-                    chose = UserInterface.readInt();
-                    if (chose == 1) {
-                        UserInterface.printText("Wybierz odstęp czasowy pomiędzy wyświetlanymi kolejnymi turami. Podaj likość sekund w postaci liczby całkowitej");
-                        chose = UserInterface.readInt();
-                        clientController.viewGameHistory(chose*1000);
-                    }
-                    clientController.endGame();
+        do {
+            printMenu();
+            choice = getMenuChoice();
+            switch (choice) {
+                case CLIENT_CONSOLE:
+                    handleClientConsole();
                     break;
-                case 2:
-                    ClientAIController clientAIController = new ClientAIController();
-                    clientAIController.playGame();
-                    clientAIController.endGame();
+                case CLIENT_AI:
+                    handleClientAI();
                     break;
-                case 3:
-                    ServerConroller serverConroller = new ServerConroller();
-                    serverConroller.handleGame();
-                    serverConroller.endGame();
+                case SERVER_AI:
+                    handleServerAI();
                     break;
                 default:
-                    UserInterface.printText("Wybierz jeszcze raz");
+                    printInvalidChoiceMessage();
             }
-        }while(chose != 0);
+        } while (choice != MenuCode.EXIT_GAME);
+    }
+
+    private static void printMenu() {
+        UserInterface.printProperty("game.menu");
+        UserInterface.printProperty("game.menu.options");
+    }
+
+    private static MenuCode getMenuChoice() {
+        return MenuCode.valueOf(UserInterface.readText());
+    }
+
+    private static void handleClientConsole() throws IOException {
+        ClientController clientController = new ClientController();
+        clientController.playGame();
+        UserInterface.printProperty("game.menu.options.history");
+        MenuCode historyChoice = getMenuChoice();
+        if (historyChoice == MenuCode.GAME_HISTORY) {
+            UserInterface.printProperty("game.menu.options.history.speed");
+            int secondNumber = UserInterface.readInt();
+            clientController.viewGameHistory(secondNumber * 1000);
+        }
+        clientController.endGame();
+    }
+
+    private static void handleClientAI() throws IOException {
+        ClientAIController clientAIController = new ClientAIController();
+        clientAIController.playGame();
+        clientAIController.endGame();
+    }
+
+    private static void handleServerAI() throws IOException {
+        ServerConroller serverConroller = new ServerConroller();
+        serverConroller.handleGame();
+        serverConroller.endGame();
+    }
+
+    private static void printInvalidChoiceMessage() {
+        UserInterface.printProperty("game.menu.again");
     }
 }

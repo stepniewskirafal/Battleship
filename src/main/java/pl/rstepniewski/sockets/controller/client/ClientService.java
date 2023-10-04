@@ -23,18 +23,18 @@ public class ClientService {
     private Socket socket;
     PrintWriter printWriter;
     BufferedReader bufferedReader;
-    private static final Logger logger = LogManager.getLogger(ClientService.class);
+    private static final Logger LOGGER = LogManager.getLogger(ClientService.class);
 
     public ClientService() {
         startClient();
-        logger.info("Starting Battleship application");
+        LOGGER.info("Starting Battleship application");
     }
 
     private void startClient() {
-        try{
+        try {
             socket = connectToServer();
             startBufferedStreams(socket);
-            logger.info("Client is ready to play");
+            LOGGER.info("Client is ready to play");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -43,19 +43,19 @@ public class ClientService {
     private void startBufferedStreams(Socket socket) throws IOException {
         bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         printWriter = new PrintWriter(socket.getOutputStream(), true);
-        logger.info("bufferedReader and printWriter created");
+        LOGGER.info("bufferedReader and printWriter created");
     }
 
     private static Socket connectToServer() {
-        Socket socket = null;
-        try{
+        Socket socket;
+        try {
             socket = new Socket(LOCALHOST, PORT);
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        logger.info("Client connected to the server");
+        LOGGER.info("Client connected to the server");
         return socket;
     }
 
@@ -63,7 +63,7 @@ public class ClientService {
         try {
             if (socket != null && !socket.isClosed()) {
                 socket.close();
-                logger.info("Disconnected from the server");
+                LOGGER.info("Disconnected from the server");
             }
 
             if (printWriter != null) {
@@ -74,7 +74,7 @@ public class ClientService {
                 bufferedReader.close();
             }
         } catch (IOException e) {
-            logger.error("Error while disconnecting from the server: " + e.getMessage());
+            LOGGER.error("Error while disconnecting from the server: " + e.getMessage());
         }
     }
 

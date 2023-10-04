@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 public class GameBoardAIController {
 
-    private static final Logger logger = LogManager.getLogger(GameBoardAIController.class);
+    private static final Logger LOGGER = LogManager.getLogger(GameBoardAIController.class);
 
     private final GameBoard gameBoard;
     private Fleet fleet;
@@ -40,50 +40,50 @@ public class GameBoardAIController {
         this.fleetLoader = fleetLoader;
     }
 
-    public void initialiseBord(){
+    public void initialiseBord() {
         fleet = fleetLoader.loadRandomFleet();
-        logger.info("Server initialized it's gameboards succesfully");
+        LOGGER.info("Server initialized it's gameboards succesfully");
 
         gameBoard.markShipPosition(fleet.getFleet());
-        logger.info("Server marked ships positions succesfully");
+        LOGGER.info("Server marked ships positions succesfully");
 
         gameBoard.printBoards();
     }
 
-    public void markHitOnShotBoard(Point shot){
+    public void markHitOnShotBoard(Point shot) {
         gameBoard.markHitOnShotBoard(shot, BoardCellStatus.HIT);
         UserInterface.printProperty("shoot.hit");
         gameBoard.printBoards();
     }
 
-    public void markMissOnShotBoard(Point shot){
+    public void markMissOnShotBoard(Point shot) {
         gameBoard.markHitOnShotBoard(shot, BoardCellStatus.MISS);
         UserInterface.printProperty("shoot.miss");
         gameBoard.printBoards();
     }
 
-    public void markSinkingOnShotBoard(Point shot){
+    public void markSinkingOnShotBoard(Point shot) {
         markHitOnShotBoard(shot);
         UserInterface.printProperty("shoot.sunk");
         gameBoard.printBoards();
     }
 
-    public boolean isFleetAlive(){
+    public boolean isFleetAlive() {
         return !fleet.isFleetSunk();
     }
 
-    public boolean isShipSinking(Point point){
+    public boolean isShipSinking(Point point) {
         Ship ship = fleet.findShip(point).get();
         return ship.isSinking();
     }
 
-    public boolean isShotHit(Point shot){
+    public boolean isShotHit(Point shot) {
         Optional<Ship> ship = fleet.findShip(shot);
         return ship.isPresent();
     }
 
-    public boolean isShotInBoundaries(Point shot){
-        return shot.getX()>=0 && shot.getX()<=9 && shot.getY()>=0 && shot.getY()<=9;
+    public boolean isShotInBoundaries(Point shot) {
+        return shot.getX() >= 0 && shot.getX() <= 9 && shot.getY() >= 0 && shot.getY() <= 9;
     }
 
     public boolean markHitOnShipBoard(Point shot) {
@@ -118,11 +118,12 @@ public class GameBoardAIController {
     }
 
     public void reportReceivedShot(Point receivedShot) {
-        UserInterface.printText("The enemy shoot at "+ receivedShot.toString()
+        UserInterface.printText("The enemy shoot at " + receivedShot.toString()
                 + ", X:" + receivedShot.getX()
                 + " Y:" + receivedShot.getY());
     }
-    public void printBoardsHistory(int sleeptime){
+
+    public void printBoardsHistory(int sleeptime) {
         try {
             gameBoard.printBoardsHistory(sleeptime);
         } catch (InterruptedException e) {
@@ -130,7 +131,7 @@ public class GameBoardAIController {
         }
     }
 
-    public Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> getBoardsHistory(){
+    public Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> getBoardsHistory() {
         Map<Integer, Map<Integer, List<List<BoardCellStatus>>>> boardsHistory = new HashMap<>();
         boardsHistory.put(0, gameBoard.getBoardShipsHistory());
         boardsHistory.put(1, gameBoard.getBoardShotsHistory());
@@ -141,9 +142,7 @@ public class GameBoardAIController {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
-        String json = objectMapper.writeValueAsString(boardsHistory);
-
-        return json;
+        return objectMapper.writeValueAsString(boardsHistory);
     }
 
     public List<ShipDto> getFleetAsShipDtoList() {
@@ -154,7 +153,7 @@ public class GameBoardAIController {
 
     private ShipDto mapShipToShipDto(Ship ship) {
         List<PointDto> pointDto = ship.getPosition().stream()
-                .map(point -> new PointDto(point.getX(), point.getY(), point.isPointSinking()) )
+                .map(point -> new PointDto(point.getX(), point.getY(), point.isPointSinking()))
                 .collect(Collectors.toList());
 
         return new ShipDto(pointDto, ship.isSinking());

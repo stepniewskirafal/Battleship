@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 public class GameBoardHistory {
-    private Map<Integer, List<List<BoardCellStatus>>> boardShipsHistory = new HashMap<>();
-    private Map<Integer, List<List<BoardCellStatus>>> boardShotsHistory = new HashMap<>();
+    private final Map<Integer, List<List<BoardCellStatus>>> boardShipsHistory = new HashMap<>();
+    private final Map<Integer, List<List<BoardCellStatus>>> boardShotsHistory = new HashMap<>();
 
     public Map<Integer, List<List<BoardCellStatus>>> getBoardShipsHistory() {
         return boardShipsHistory;
@@ -17,11 +17,10 @@ public class GameBoardHistory {
         return boardShotsHistory;
     }
 
-    public void addToBoardHistory(Map<Integer, List<List<BoardCellStatus>>> boardHistory, List<List<BoardCellStatus>> board){
+    public void addToBoardHistory(Map<Integer, List<List<BoardCellStatus>>> boardHistory, List<List<BoardCellStatus>> board) {
         List<List<BoardCellStatus>> copiedboard = deepCopyBoard(board);
 
         boardHistory.put(boardHistory.size() + 1, copiedboard);
-        copiedboard= null;
     }
 
     public List<List<BoardCellStatus>> deepCopyBoard(List<List<BoardCellStatus>> board) {

@@ -23,25 +23,24 @@ public class ServerService {
     ServerSocket serverSocket;
     private PrintWriter printWriter;
     private BufferedReader bufferedReader;
-    private static final Logger logger = LogManager.getLogger(ServerService.class);
+    private static final Logger LOGGER = LogManager.getLogger(ServerService.class);
 
     public ServerService() {
-        logger.info("Starting Battleship application");
+        LOGGER.info("Starting Battleship application");
         startServer();
-        logger.info("Starting server");
+        LOGGER.info("Starting server");
     }
 
-    private void startServer(){
-        try{
+    private void startServer() {
+        try {
             startSocket();
-            //startBufferedStreams();
             handleClient();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void startSocket() throws IOException{
+    private void startSocket() throws IOException {
         serverSocket = new ServerSocket(PORT);
         clientSocket = serverSocket.accept();
     }
@@ -50,7 +49,7 @@ public class ServerService {
         try {
             startBufferedStreams();
         } catch (IOException e) {
-            logger.error("Client connection closed unexpectedly: " + e.getMessage());
+            LOGGER.error("Client connection closed unexpectedly: " + e.getMessage());
             closeConnection();
         }
     }
@@ -75,7 +74,7 @@ public class ServerService {
                 printWriter.close();
             }
         } catch (IOException e) {
-            logger.error("Error while closing the connection: " + e.getMessage());
+            LOGGER.error("Error while closing the connection: " + e.getMessage());
         }
     }
 

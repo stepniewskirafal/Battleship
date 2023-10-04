@@ -1,8 +1,14 @@
 package pl.rstepniewski.sockets.game.fleet;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pl.rstepniewski.sockets.game.Ship;
+import pl.rstepniewski.sockets.game.board.GameBoardUserController;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -15,14 +21,12 @@ import java.util.Random;
  * @project : Battleship
  */
 public class FleetLoader {
-    private static final String FILE_PATH = "/fleet.ai";
-
-    public FleetLoader() {
-    }
+    private static final Logger LOGGER = LogManager.getLogger(GameBoardUserController.class);
+    static final String FILE_PATH = "/fleet.ai";
 
     public Fleet loadRandomFleet() {
         try {
-            List<Map<String, Object>> jsonDataList = FleetDataProvider.getFleetData();
+            List<Map<String, Object>> jsonDataList = getFleetData();
             int randomIndex = new Random().nextInt(jsonDataList.size());
             Map<String, Object> jsonData = jsonDataList.get(randomIndex);
 
@@ -30,9 +34,19 @@ public class FleetLoader {
 
             return new Fleet(fleet);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
 
         return null;
+    }
+
+    private List<Map<String, Object>> getFleetData() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Map<String, Object>> maps;
+        try (InputStream inputStream = Fleet.class.getResourceAsStream(FILE_PATH)) {
+            maps = objectMapper.readValue(inputStream, new TypeReference<List<Map<String, Object>>>() {
+            });
+        }
+        return maps;
     }
 }
